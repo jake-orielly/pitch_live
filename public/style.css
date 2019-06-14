@@ -1,0 +1,26 @@
+html, body {
+    margin: 5px 5px 5px 1em;
+    padding: 0;
+}
+
+.clickable {
+    cursor:pointer;
+    text-decoration: underline;
+    user-select: none;
+}
+
+#chat-container {
+    display:inline-block;
+    position: absolute;
+    right: 2em;
+    bottom:1em;
+    background-color: lightgrey;
+    border: 2px solid black;
+    border-radius: 1em;
+    padding: 1em;
+}
+
+#messages {
+    height: 20em;
+    overflow-y: scroll;
+}
