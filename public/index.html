@@ -8,15 +8,29 @@
         <title>Pitch Live</title>
     </head>
     <body>
-        <div id="chat-container">
-            <div id="messages"></div>
-            <div id="chat-ui-container">
-                <input id="userName" type="text" placeholder="UserName" />
-                <input id="message" type="text" placeholder="Message" />
-                <button id="send">Send</button>
+        <div id="vue-app">
+            <button id="deal-button">Deal</button>
+            <div id="username-container">
+                <p>Enter your name:</p>
+                <input id="username-input" type="text" placeholder="UserName" />
+                <button id="username-confirm">Confirm</button>
+            </div>
+            <div id="chat-container">
+                <div id="messages"></div>
+                <div id="chat-ui-container">
+                    <input id="message" type="text" placeholder="Message" />
+                    <button id="send">Send</button>
+                </div>
+            </div>
+            <div id="hand-container">
+                <ul>
+                    <li v-for="card in hand">{{card}}</li>
+                </ul>
             </div>
         </div>
+        <script src="main_vue.js"></script>
         <script src="/chat.js"></script>
+        <script src="ui_functions.js"></script>
         <script src="main.js"></script>
     </body>
 <html>
