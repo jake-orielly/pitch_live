@@ -27,18 +27,22 @@ sock.on("connection", function(socket) {
   socket.on("ready_signal",function(data) {
     deck = shuffle()
     shuffle()
-    sock.sockets.emit('deal',deal());
+    let hand;
+    for (var i = 0; i < users.length; i++) {
+      hand = []
+      for (var j = 0; j < 6; j++)
+          hand.push(deck.pop())
+      users[i].socket.emit("deal",hand)
+    }
   });
 
   socket.on("username_submission",function(data) {
-    users.push(data['username']);
+    users.push({username:data['username_submission'],socket:socket});
+    socket.broadcast.emit("chat",{username:data['username_submission'],message:'has joined',status_message:true})
   });
 });
 
-var deck
-
 var master_deck = []
-var deck;
 
 var nums = []
 var suits = ["Spades","Clubs","Hearts","Diamonds"]
@@ -74,14 +78,4 @@ function shuffle(){
         new_deck[new_pos] = new_master.pop()
     }
     return new_deck
-}
-
-function deal(){ 
-    let hands = {}
-    for (var i = 0; i < users.length; i++) {
-      hands[users[i]] = []
-      for (var j = 0; j < 6; j++)
-          hands[users[i]].push(deck.pop())
-    }
-    return hands;
 }

@@ -1,10 +1,12 @@
-var username = 'Jake';
+var username, socket;
 
 $('#username-confirm').click(function() {
+    socket = io.connect("http://localhost:3000");
+    chat_setup();
     username = $('#username-input').val()
     $('#username-container').hide();
     socket.emit("username_submission",{
-        username: username
+        username_submission: username
     });
 });
 
