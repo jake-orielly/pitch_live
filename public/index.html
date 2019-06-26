@@ -15,6 +15,14 @@
                 <input id="username-input" type="text" placeholder="Username" />
                 <button id="username-confirm">Confirm</button>
             </div>
+            <div>
+                <p id="status-text">{{status_text}}</p>
+                <p v-if="status == 'bidder'">Bid: 
+                    <button class="clickable" v-for="i in ['pass',2,3,4,5]" 
+                        v-if="typeof curr_bid != 'number' || (dealer && i >= curr_bid) || i > curr_bid" 
+                        @click="bid(i)">{{i}}</button>
+                </p>
+            </div>
             <div id="chat-container">
                 <div id="messages"></div>
                 <div id="chat-ui-container">

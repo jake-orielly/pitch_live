@@ -1,53 +1,94 @@
 // Get our dependencies
-var express = require("express");
-var socket = require("socket.io");
+var express = require('express');
+var socket = require('socket.io');
 
 var app = express();
 
 var port = 3000;
 
 var server = app.listen(port, function() {
-  console.log("Listening at http://localhost: " + port);
+  console.log('Listening at http://localhost: ' + port);
 });
 
-app.use(express.static("public"));
+app.use(express.static('public'));
 
 var sock = socket(server);
 
 var users = [];
+var curr_player_num;
+var curr_bid;
 
-sock.on("connection", function(socket) {
-  console.log("made connection with socket " + socket.id);
+sock.on('connection', function(socket) {
+  console.log('made connection with socket ' + socket.id);
   // when the server receives a chat event
-  socket.on("chat", function(data) {
+  socket.on('chat', function(data) {
     // use emit to send the “chat” event to everybody that is connected, including the sender
-    sock.sockets.emit("chat", data);
+    sock.sockets.emit('chat', data);
   });
 
-  socket.on("ready_signal",function(data) {
+  socket.on('ready_signal',function(data) {
     deck = shuffle()
     shuffle()
+  
+    dealer = users[0]
+    socket.broadcast.emit('chat',dealer.username + ' is dealer')
+    socket.emit('chat','You are the dealer')
+    socket.emit('dealer_assign')
+
     let hand;
     for (var i = 0; i < users.length; i++) {
       hand = []
       for (var j = 0; j < 6; j++)
           hand.push(deck.pop())
-      users[i].socket.emit("deal",hand)
+      users[i].socket.emit('deal',hand)
     }
+
+    curr_bid = {player:'',amount:''}
+
+    // Will be incremented by next bidder
+    curr_player_num = 0;
+    next_bidder();
   });
 
-  socket.on("username_submission",function(data) {
+  socket.on('username_submission',function(data) {
     users.push({username:data['username_submission'],socket:socket});
-    socket.broadcast.emit("chat",{username:data['username_submission'],message:'has joined',status_message:true})
+    socket.broadcast.emit('chat',data['username_submission'] + ' has joined')
   });
+
+  socket.on('bid',function(data) {
+    if (data != 'pass') {
+      curr_bid = {player:curr_player.username,amount:data}
+      curr_player.socket.broadcast.emit('chat',curr_player.username + ' bid ' + data)
+    }
+    else
+      curr_player.socket.broadcast.emit('chat',curr_player.username + ' passed')
+    if (curr_player_num < users.length-1)
+      next_bidder();
+    else {
+      curr_player_num = -1;
+      next_bidder();
+    }
+  })
+
+  socket.on('dealer_bid',function(data) {
+    sock.sockets.emit('chat',curr_bid.player + ' has it for ' + curr_bid.amount)
+  })
 });
+
+function next_bidder() {
+  curr_player_num++;
+  curr_player = users[curr_player_num]
+  curr_player.socket.emit('status',{status:'bid',bid:curr_bid});
+  curr_player.socket.broadcast.emit('status',
+    {status:'waiting',info:{player:curr_player.username,action:' to choose a bid'}});
+}
 
 var master_deck = []
 
 var nums = []
-var suits = ["Spades","Clubs","Hearts","Diamonds"]
+var suits = ['Spades','Clubs','Hearts','Diamonds']
 
-var faces = ["Jack","Queen","King","Ace"]
+var faces = ['Jack','Queen','King','Ace']
 
 create_deck()
 
