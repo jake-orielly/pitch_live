@@ -16,7 +16,8 @@ var sock = socket(server);
 
 var users = [];
 var curr_player_num;
-var curr_bid;
+var curr_bid, curr_player;
+var trump_suit, lead_suit;
 
 sock.on('connection', function(socket) {
   console.log('made connection with socket ' + socket.id);
@@ -71,9 +72,24 @@ sock.on('connection', function(socket) {
   })
 
   socket.on('dealer_bid',function(data) {
-    sock.sockets.emit('chat',curr_bid.player + ' has it for ' + curr_bid.amount)
+    sock.sockets.emit('chat',curr_bid.player + ' has it for ' + curr_bid.amount);
+    
+    for (var i = 0; i < users.length; i++)
+      if (users[i].username == curr_bid.player.username)
+        curr_player_num = i;
+    next_play();
+  })
+
+  socket.on('play',function(card){
+    curr_player.socket.broadcast.emit('chat',curr_player.username + ' played ' + card)
   })
 });
+
+function next_play(){
+  curr_player = users[curr_player_num]
+  curr_player.socket.broadcast.emit('status',{status:'waiting',info:{player:curr_player.username,action:' to make a play'}})
+  curr_player.socket.emit('curr_play',true)
+}
 
 function next_bidder() {
   curr_player_num++;
@@ -87,6 +103,7 @@ var master_deck = []
 
 var nums = []
 var suits = ['Spades','Clubs','Hearts','Diamonds']
+var suit_symbols = {spades:'♠',clubs:'♣',hearts:'♥',diamonds:'♦'}
 
 var faces = ['Jack','Queen','King','Ace']
 

@@ -26,6 +26,10 @@ function chat_setup() {
         vue_app.dealer = true;
     })
 
+    socket.on('curr_play',function() {
+        vue_app.curr_play = true;
+    })
+
     // Listen for status events
     socket.on('status', function(data) {
         if (data.status == 'bid') {
