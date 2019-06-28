@@ -30,6 +30,10 @@ function chat_setup() {
         vue_app.curr_play = true;
     })
 
+    socket.on('set_prop',function(prop,val){
+        vue_app[prop] = val;
+    })
+
     // Listen for status events
     socket.on('status', function(data) {
         if (data.status == 'bid') {

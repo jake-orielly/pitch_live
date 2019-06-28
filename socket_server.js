@@ -17,7 +17,7 @@ var sock = socket(server);
 var users = [];
 var curr_player_num;
 var curr_bid, curr_player;
-var trump_suit, lead_suit;
+var trump_suit, lead_suit, curr_bout;
 
 sock.on('connection', function(socket) {
   console.log('made connection with socket ' + socket.id);
@@ -77,15 +77,40 @@ sock.on('connection', function(socket) {
     for (var i = 0; i < users.length; i++)
       if (users[i].username == curr_bid.player.username)
         curr_player_num = i;
+    
+    // It will get incremented by next_play
+    curr_player_num--;
+
+    set_prop('lead_suit',undefined);
+    set_prop('trump_suit',undefined);
+    trump_suit = undefined;
+    lead_suit = undefined;
+    curr_bout = [];
+
     next_play();
   })
 
   socket.on('play',function(card){
     curr_player.socket.broadcast.emit('chat',curr_player.username + ' played ' + card)
+    if (!trump_suit) {
+      trump_suit = card.split(' ')[2]
+      set_prop('trump_suit',card.split(' ')[2])
+    }
+    if (!lead_suit) {
+      lead_suit = card.split(' ')[2]
+      set_prop('lead_suit',card.split(' ')[2])
+    }
+    curr_bout.push(card);
+    next_play();
   })
 });
 
+function set_prop(prop,val){
+  sock.sockets.emit('set_prop',prop,val);
+}
+
 function next_play(){
+  curr_player_num = (curr_player_num + 1) % users.length;
   curr_player = users[curr_player_num]
   curr_player.socket.broadcast.emit('status',{status:'waiting',info:{player:curr_player.username,action:' to make a play'}})
   curr_player.socket.emit('curr_play',true)
