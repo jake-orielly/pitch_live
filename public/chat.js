@@ -16,20 +16,8 @@ function chat_setup() {
     else
         messages.innerHTML += '<p><strong>' + data.username + ': </strong>' + data.message + '</p>';
     });
-    
-    // Listen for deal events
-    socket.on('deal', function(data) {
-        vue_app.hand = data;
-    });
 
-    socket.on('dealer_assign',function() {
-        vue_app.dealer = true;
-    })
-
-    socket.on('curr_play',function() {
-        vue_app.curr_play = true;
-    })
-
+    // Used when the server wants to change a value in the vue app
     socket.on('set_prop',function(prop,val){
         vue_app[prop] = val;
     })

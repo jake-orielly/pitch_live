@@ -11,10 +11,7 @@ var vue_app = new Vue({
     },
     methods: {
         bid(given) {
-            if (!this.dealer)
-                this.socket.emit('bid',given);
-            else
-                this.socket.emit('dealer_bid',given)
+            this.socket.emit('bid',given);
             this.status = ''
             this.status_text = ''
         },
