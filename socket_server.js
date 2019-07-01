@@ -33,19 +33,26 @@ sock.on('connection', function(socket) {
   });
 
   socket.on('play',function(card){
-    curr_player.socket.broadcast.emit('chat',curr_player.username + ' played ' + card)
+    curr_player.socket.broadcast.emit('chat',curr_player.username + ' played the ' + card.num + ' of ' + card.suit)
     if (!trump_suit) {
-      trump_suit = card.split(' ')[2]
-      sock.sockets.emit('set_prop','trump_suit',card.split(' ')[2])
+      trump_suit = card.suit
+      sock.sockets.emit('set_prop','trump_suit',card.suit)
     }
     if (!lead_suit) {
-      lead_suit = card.split(' ')[2]
-      sock.sockets.emit('set_prop','lead_suit',card.split(' ')[2])
+      lead_suit = card.suit
+      sock.sockets.emit('set_prop','lead_suit',card.suit)
     }
-    curr_bout.push(card);
-    next_play();
+    curr_bout.push({user:curr_player,card:card});
+    if (curr_player_num == users.length-1)
+      eval_winner();
+    else
+      next_play();
   })
 });
+
+function eval_winner(){
+  console.log(1);
+}
 
 // Placeholder, triggered by deal button
 function deal_cards(){
@@ -125,24 +132,15 @@ function next_play(){
 
 var master_deck = []
 
-var nums = []
+var nums = [2,3,4,5,6,7,8,9,10,'Jack','Queen','King','Ace']
 var suits = ['Spades','Clubs','Hearts','Diamonds']
-var suit_symbols = {spades:'♠',clubs:'♣',hearts:'♥',diamonds:'♦'}
-
-var faces = ['Jack','Queen','King','Ace']
 
 create_deck()
 
 function create_deck() {
-    for (let i = 2; i < 11; i++)
-        nums.push(i)
-
-    for (let i = 0; i < faces.length; i++)
-        nums.push(faces[i])
-
     for (let i = 0; i < nums.length; i++)
         for (let j = 0; j < suits.length; j++)
-            master_deck.push(nums[i] + ' of ' + suits[j])
+            master_deck.push({num:nums[i],suit:suits[j]})
 }
 
 function shuffle(){

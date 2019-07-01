@@ -17,11 +17,10 @@ var vue_app = new Vue({
         },
         play(card) {
             if (this.curr_play) {
-                let suit = card.split(' ')[2]
                 let legal = true;
-                if (this.lead_suit && this.lead_suit != suit && this.trump_suit != suit)
+                if (this.lead_suit && this.lead_suit != card.suit && this.trump_suit != card.suit)
                     for (var i = 0; i < this.hand.length; i++)
-                        if (this.hand[i].split(' ')[2] == this.lead_suit)
+                        if (this.hand[i].suit == this.lead_suit)
                             legal = false;
                 if (!legal)
                     alert("Illegal move, you must follow")

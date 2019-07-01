@@ -32,7 +32,7 @@
             </div>
             <div id="hand-container">
                 <ul>
-                    <li v-for="card in hand" @click="play(card)">{{card}}</li>
+                    <li v-for="card in hand" @click="play(card)">{{card.num + ' of ' + card.suit}}</li>
                 </ul>
             </div>
         </div>

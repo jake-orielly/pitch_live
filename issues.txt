@@ -1,2 +1,3 @@
 Dealer can’t pass
 Problem if p2 deals
+User[0] always wins bid
