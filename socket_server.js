@@ -15,6 +15,7 @@ app.use(express.static('public'));
 var sock = socket(server);
 
 var users = [];
+var teams = [[],[]]
 var curr_player_num, curr_bid, curr_player, trump_suit, lead_suit, curr_bout;
 
 sock.on('connection', function(socket) {
@@ -29,6 +30,7 @@ sock.on('connection', function(socket) {
 
   socket.on('username_submission',function(data) {
     users.push({username:data['username_submission'],socket:socket});
+    users[users.length-1].team = teams[users.length%2]
     socket.broadcast.emit('chat',data['username_submission'] + ' has joined')
   });
 
@@ -51,7 +53,35 @@ sock.on('connection', function(socket) {
 });
 
 function eval_winner(){
-  console.log(1);
+  let winning = curr_bout[0];
+  let curr;
+  for (let i = 0; i < curr_bout.length; i++)
+    curr = curr_bout[i]
+    if (((winning.card.suit == trump_suit && curr.card.suit == trump_suit) || (curr.card.suit == lead_suit)) 
+    && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
+      winning = curr;
+
+  sock.sockets.emit('chat',winning.user.username + ' takes it with the ' + winning.card.num + ' of ' + winning.card.suit)
+  for (let i = 0; i < curr_bout.length; i++)
+    winning.user.team.push(curr_bout[i].card)
+  bout_reset(winning);
+}
+
+function bout_reset(winner) {
+  // Rotate users array until winner is in 0th position
+  while (users[0].username != winner.user.username)
+    users.unshift(users.pop())
+  winner.user.socket.broadcast.emit('chat',winner.user.username + ' has the lead');
+  winner.user.socket.emit('chat','Your lead')
+
+  // It will get incremented by next_play
+  curr_player_num = -1;
+
+  sock.sockets.emit('set_prop','lead_suit',undefined);
+  lead_suit = undefined;
+  curr_bout = [];
+
+  next_play();
 }
 
 // Placeholder, triggered by deal button
@@ -80,9 +110,9 @@ function deal_cards(){
 }
 
 function next_bidder() {
-  curr_player.socket.emit('status',{status:'bid',bid:curr_bid});
-  curr_player.socket.broadcast.emit('status',
-    {status:'waiting',info:{player:curr_player.username,action:' to choose a bid'}});
+  curr_player.socket.emit('status','Your bid',curr_bid);
+  curr_player.socket.broadcast.emit('status', 'Waiting for ' + curr_player.username + ' to choose a bid');
+  curr_player.socket.emit('status','Your bid');
 }
 
 function recieve_bid(data) {
@@ -126,7 +156,7 @@ function set_up_hand(){
 function next_play(){
   curr_player_num = (curr_player_num + 1) % users.length;
   curr_player = users[curr_player_num]
-  curr_player.socket.broadcast.emit('status',{status:'waiting',info:{player:curr_player.username,action:' to make a play'}})
+  curr_player.socket.broadcast.emit('status','Waiting for ' + curr_player.username + ' to make a play')
   curr_player.socket.emit('set_prop','curr_play',true)
 }
 

@@ -23,17 +23,14 @@ function chat_setup() {
     })
 
     // Listen for status events
-    socket.on('status', function(data) {
-        if (data.status == 'bid') {
-            vue_app.curr_bid = data.bid.amount;
-            vue_app.status_text = 'Your bid';
-            if (typeof data.bid.amount == 'number')
-                vue_app.status_text += ' - ' + data.bid.player + ' has it with ' + data.bid.amount
+    socket.on('status', function(data,bid) {
+        if (bid) {
+            vue_app.curr_bid = bid.amount;
+            if (typeof bid.amount == 'number')
+                vue_app.status_text += ' - ' + bid.player + ' has it with ' + bid.amount
             vue_app.status = 'bidder';
         }
-        else if (data.status == 'waiting') {
-            vue_app.status_text = 'Waiting for ' + data.info.player + data.info.action;
-        }
+        vue_app.status_text = data;
     });
 
     $('#message').keyup(function(e) {

@@ -27,6 +27,11 @@ var vue_app = new Vue({
                 else {
                     this.socket.emit('play',card)
                     this.curr_play = false;
+                    for (let i = 0; i < this.hand.length; i++)
+                        if (this.hand[i].suit == card.suit && this.hand[i].num == card.num) {
+                            this.hand.splice(i,1)
+                            break;
+                        }
                 }
                 return;
             }
