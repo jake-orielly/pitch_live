@@ -15,7 +15,8 @@ app.use(express.static('public'));
 var sock = socket(server);
 
 var users = [];
-var teams = [[],[]]
+var teams = [{cards:[],points:[]},{cards:[],points:[]}];
+var score = [0,0]
 var curr_player_num, curr_bid, curr_player, trump_suit, lead_suit, curr_bout;
 
 sock.on('connection', function(socket) {
@@ -30,12 +31,12 @@ sock.on('connection', function(socket) {
 
   socket.on('username_submission',function(data) {
     users.push({username:data['username_submission'],socket:socket});
-    users[users.length-1].team = teams[users.length%2]
+    users[users.length-1].team = teams[users.length%2].cards
     socket.broadcast.emit('chat',data['username_submission'] + ' has joined')
   });
 
   socket.on('play',function(card){
-    curr_player.socket.broadcast.emit('chat',curr_player.username + ' played the ' + card.num + ' of ' + card.suit)
+    sock.sockets.emit('chat',curr_player.username + ' played the ' + card.num + ' of ' + card.suit)
     if (!trump_suit) {
       trump_suit = card.suit
       sock.sockets.emit('set_prop','trump_suit',card.suit)
@@ -81,7 +82,51 @@ function bout_reset(winner) {
   lead_suit = undefined;
   curr_bout = [];
 
-  next_play();
+  if (teams[0].cards.length + teams[1].cards.length == users.length * 6)
+    count_points();
+  else
+    next_play();
+}
+
+function count_points(){
+  let game = [0,0]
+  let high = {team:undefined,index:-1};
+  let low = {team:undefined,index:14};
+  let curr;
+  let points_map = [10,1,2,3,4]
+
+  for (let i = 0; i < 2; i++)
+    for (let j = 0; j < teams[i].cards.length; j++) {
+      curr = teams[i].cards[j];
+      if (curr.suit == trump_suit) {
+        if (curr.num == 'Jack')
+          teams[1].points.push('Jack');
+        if (nums.indexOf(curr.num) < low.index) {
+          low.team = teams[i].points
+          low.index = nums.indexOf(curr.num)
+        }
+        if (nums.indexOf(curr.num) > high.index) {
+          high.team = teams[i].points
+          high.index = nums.indexOf(curr.num)
+        }
+      }
+      if (nums.indexOf(curr.num) > 7)
+        game[i] += points_map[nums.indexOf(curr.num) - 8]
+    }
+  if (game[0] > game[1])
+    teams[0].points.push('Game');
+  else if (game[0] < game[1])
+    teams[1].points.push('Game');
+  high.team.push('High')
+  low.team.push('Low')
+  console.log(teams)
+  score[0] += teams[0].points.length;
+  score[1] += teams[1].points.length;
+
+  sock.sockets.emit('set_prop','score',score);
+
+  teams = [{cards:[],points:[]},{cards:[],points:[]}];
+  deal_cards();
 }
 
 // Placeholder, triggered by deal button

@@ -7,7 +7,8 @@ var vue_app = new Vue({
         status: '',
         status_text: '',
         dealer: false,
-        curr_play: false
+        curr_play: false,
+        score: [0,0]
     },
     methods: {
         bid(given) {
