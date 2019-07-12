@@ -24,3 +24,13 @@ html, body {
     height: 20em;
     overflow-y: scroll;
 }
+
+.card {
+    height: 10em;
+    margin-right: 1em;
+}
+
+li {
+    list-style: none;
+    display: inline;
+}

@@ -36,6 +36,13 @@ var vue_app = new Vue({
                 }
                 return;
             }
+        },
+        get_card_image(card) {
+            let face_map = {'Jack':'J','Queen':'Q','King':'K','Ace':'A'}
+            let num = card.num;
+            if (isNaN(num))
+                num = face_map[num];
+            return 'cards/' + num + card.suit[0] + '.png'
         }
     }
 })
