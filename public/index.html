@@ -34,6 +34,13 @@
                     <button id="send">Send</button>
                 </div>
             </div>
+            <div id="deck-container">
+                <ul>
+                    <li v-for="num in 20">
+                        <img class="deck-card" v-bind:src="get_card_image('back')">
+                    </li>
+                </ul>
+            </div>
             <div id="hand-container">
                 <ul>
                     <li v-for="card in hand" @click="play(card)">

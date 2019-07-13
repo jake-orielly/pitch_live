@@ -8,7 +8,8 @@ var vue_app = new Vue({
         status_text: '',
         dealer: false,
         curr_play: false,
-        score: [0,0]
+        score: [0,0],
+        nums: [1,2,3,4,5,6]
     },
     methods: {
         bid(given) {
@@ -37,7 +38,22 @@ var vue_app = new Vue({
                 return;
             }
         },
+        deal() {
+            let count = 0;
+            let interval = setInterval(function() {
+                if (count == 6)
+                    interval = clearInterval(interval);
+                else
+                    count = vue_app.deal_card(count);
+            },500)
+        },
+        deal_card(num) {
+            $(".deck-card").eq(num).addClass("deck-card-dealt-" + num);
+            return num + 1;
+        },
         get_card_image(card) {
+            if (card == 'back')
+                return 'cards/red_back.png';
             let face_map = {'Jack':'J','Queen':'Q','King':'K','Ace':'A'}
             let num = card.num;
             if (isNaN(num))
