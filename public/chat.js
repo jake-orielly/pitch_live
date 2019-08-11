@@ -22,6 +22,12 @@ function chat_setup() {
         vue_app[prop] = val;
     })
 
+    socket.on('deal',function(hand){
+        console.log(hand)
+        vue_app.deal(hand);
+    })
+
+
     // Listen for status events
     socket.on('status', function(data,bid) {
         if (bid) {

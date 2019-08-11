@@ -144,7 +144,7 @@ function deal_cards(){
     hand = []
     for (var j = 0; j < 6; j++)
         hand.push(deck.pop())
-    users[i].socket.emit('set_prop','hand',hand)
+    users[i].socket.emit('deal',hand)
   }
 
   curr_bid = {player:'',amount:''}

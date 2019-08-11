@@ -26,7 +26,7 @@ html, body {
 }
 
 .card, .deck-card {
-    height: 10em;
+    width:6.5em;
 }
 
 .card {
@@ -34,35 +34,15 @@ html, body {
 }
 
 .deck-card {
-    margin-right: -6.5em;
+    margin-right: -6.4em;
     transition: 1s;
-}
-
-.deck-card-dealt-0 {
-    transform: translate(8em,27em);
-}
-
-.deck-card-dealt-1 {
-    transform: translate(16em,27em);
-}
-
-.deck-card-dealt-2 {
-    transform: translate(24em,27em);
-}
-
-.deck-card-dealt-3 {
-    transform: translate(32em,27em);
-}
-
-.deck-card-dealt-4 {
-    transform: translate(40em,27em);
-}
-
-.deck-card-dealt-5 {
-    transform: translate(48em,27em);
 }
 
 li {
     list-style: none;
     display: inline;
+}
+
+.hand-card {
+    visibility: hidden;
 }

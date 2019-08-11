@@ -44,7 +44,7 @@
             <div id="hand-container">
                 <ul>
                     <li v-for="card in hand" @click="play(card)">
-                        <img class="card" v-bind:src="get_card_image(card)">
+                        <img class="card hand-card" v-bind:src="get_card_image(card)">
                     </li>
                 </ul>
             </div>

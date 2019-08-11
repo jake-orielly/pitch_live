@@ -8,6 +8,7 @@ var vue_app = new Vue({
         status_text: '',
         dealer: false,
         curr_play: false,
+        deal_done: false,
         score: [0,0],
         nums: [1,2,3,4,5,6]
     },
@@ -38,18 +39,39 @@ var vue_app = new Vue({
                 return;
             }
         },
-        deal() {
+        deal(hand) {
             let count = 0;
+            this.hand = hand;
+            this.deal_done = false;
             let interval = setInterval(function() {
-                if (count == 6)
+                if (count == 6) {
                     interval = clearInterval(interval);
+                    this.deal_done = true;
+                    setTimeout(()=>vue_app.card_switch(),500)
+                }
                 else
                     count = vue_app.deal_card(count);
             },500)
         },
         deal_card(num) {
-            $(".deck-card").eq(num).addClass("deck-card-dealt-" + num);
+            console.log(1)
+            let destination = document.getElementsByClassName("hand-card")[num];
+            let left_pos = destination.offsetLeft;
+            let top_pos = destination.offsetTop;
+            let target = document.getElementsByClassName("deck-card")[num];
+            let left_diff = left_pos - target.offsetLeft;
+            let top_diff = top_pos - target.offsetTop;
+            target.style.transform = "translate(" + left_diff + "px," + top_diff +"px";
             return num + 1;
+        },
+        card_switch() {
+            let card_backs = document.getElementsByClassName('deck-card');
+            let hand_cards = document.getElementsByClassName('hand-card');
+            for (var i = 0; i < 6; i++)
+                card_backs[i].style.display = "none";
+            for (var i = 0; i < hand_cards.length; i++)
+                hand_cards[i].style.visibility = "visible";
+            
         },
         get_card_image(card) {
             if (card == 'back')
