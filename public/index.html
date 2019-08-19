@@ -41,9 +41,12 @@
                     </li>
                 </ul>
             </div>
+            <div id="played-pile">
+                <img class="deck-card" v-bind:src="get_card_image('back')">
+            </div>
             <div id="hand-container">
                 <ul>
-                    <li v-for="card in hand" @click="play(card)">
+                    <li v-for="card in hand" @click="play(card)" class="hand-card-slot">
                         <img class="card hand-card" v-bind:src="get_card_image(card)">
                     </li>
                 </ul>

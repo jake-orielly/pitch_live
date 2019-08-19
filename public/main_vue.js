@@ -19,7 +19,7 @@ var vue_app = new Vue({
             this.status_text = ''
         },
         play(card) {
-            if (this.curr_play) {
+            if (this.curr_play && !card.played) {
                 let legal = true;
                 if (this.lead_suit && this.lead_suit != card.suit && this.trump_suit != card.suit)
                     for (var i = 0; i < this.hand.length; i++)
@@ -32,7 +32,10 @@ var vue_app = new Vue({
                     this.curr_play = false;
                     for (let i = 0; i < this.hand.length; i++)
                         if (this.hand[i].suit == card.suit && this.hand[i].num == card.num) {
-                            this.hand.splice(i,1)
+                            card.played = true;
+                            let destination = document.getElementById("played-pile");
+                            let target = document.getElementsByClassName("hand-card")[i];
+                            this.move_card(destination,target);
                             break;
                         }
                 }
@@ -47,22 +50,31 @@ var vue_app = new Vue({
                 if (count == 6) {
                     interval = clearInterval(interval);
                     this.deal_done = true;
-                    setTimeout(()=>vue_app.card_switch(),500)
+                    //setTimeout(()=>vue_app.card_switch(),700)
                 }
                 else
                     count = vue_app.deal_card(count);
             },500)
         },
         deal_card(num) {
-            console.log(1)
-            let destination = document.getElementsByClassName("hand-card")[num];
+            let destination = document.getElementsByClassName("hand-card-slot")[num];
+            let target = document.getElementsByClassName("deck-card")[num];
+            this.move_card(destination,target);
+            return num + 1;
+        },
+        move_card(destination,target,offset_x = 0) {
+            /* Issue with absolute move, investigate this:
+            var bodyRect = document.body.getBoundingClientRect(),
+            elemRect = element.getBoundingClientRect(),
+            offset   = elemRect.top - bodyRect.top;
+
+            alert('Element is ' + offset + ' vertical pixels from <body>');
+            */
             let left_pos = destination.offsetLeft;
             let top_pos = destination.offsetTop;
-            let target = document.getElementsByClassName("deck-card")[num];
-            let left_diff = left_pos - target.offsetLeft;
+            let left_diff = left_pos - target.offsetLeft + offset_x;
             let top_diff = top_pos - target.offsetTop;
-            target.style.transform = "translate(" + left_diff + "px," + top_diff +"px";
-            return num + 1;
+            target.style.transform = "translate(" + left_diff + "px," + top_diff +"px";  
         },
         card_switch() {
             let card_backs = document.getElementsByClassName('deck-card');

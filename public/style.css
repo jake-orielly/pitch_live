@@ -1,6 +1,7 @@
 html, body {
     margin: 5px 5px 5px 1em;
     padding: 0;
+    background: seagreen;
 }
 
 .clickable {
@@ -45,4 +46,15 @@ li {
 
 .hand-card {
     visibility: hidden;
+}
+
+#played-pile {
+    position: absolute;
+    left: calc(50% - 6.5em);
+    top: calc(50% - 8em);
+}
+
+#hand-container {
+    position: absolute;
+    bottom: 5em;
 }
