@@ -1,3 +1,6 @@
-Dealer can’t pass
 Problem if p2 deals
+No visual for card played by other player
+
+Resolved This Commit:
+Dealer can’t pass
 User[0] always wins bid

@@ -4,10 +4,48 @@ html, body {
     background: seagreen;
 }
 
+p, button, input {
+    font-size: 2rem;
+}
+
+p, button {
+    color: white;
+}
+
+button {
+    background: none;
+    border: 3px solid white;
+    box-shadow: 1px 1px 9px #0000009c;
+    border-radius: 0.5rem;
+}
+
+button:hover {
+    box-shadow: 2px 2px 9px #000000de;
+    transform: scale(1.01) translateY(-2px);
+}
+
+button:active, button:focus {
+    outline: none;
+    box-shadow: 1px 1px 5px #00000085;
+    transform: scale(0.99) translateY(2px);
+}
+
+.message-text {
+    color: black;
+}
+
 .clickable {
     cursor:pointer;
     text-decoration: underline;
     user-select: none;
+}
+
+.send-button {
+    background: #ffffff;
+    border: 3px solid #00467d;
+    box-shadow: 2px 2px 9px #0000009c;
+    border-radius: 0.5rem;
+    color: #00467d;
 }
 
 #chat-container {
@@ -16,9 +54,15 @@ html, body {
     right: 2em;
     bottom:1em;
     background-color: lightgrey;
-    border: 2px solid black;
     border-radius: 1em;
     padding: 1em;
+    box-shadow: 3px 3px 4px #0000008f;
+}
+
+.score-text {
+    position: absolute;
+    top: 0;
+    right: 5em;
 }
 
 #messages {

@@ -12,9 +12,9 @@ function chat_setup() {
     socket.on('chat', function(data) {
     // When we receive a “chat” event, display the message to the user
     if (typeof data == 'string')
-        messages.innerHTML += '<p><strong>' + data + '</p></strong>';
+        messages.innerHTML += '<p class="message-text"><strong>' + data + '</p></strong>';
     else
-        messages.innerHTML += '<p><strong>' + data.username + ': </strong>' + data.message + '</p>';
+        messages.innerHTML += '<p class="message-text"><strong>' + data.username + ': </strong>' + data.message + '</p>';
     });
 
     // Used when the server wants to change a value in the vue app

@@ -1,25 +1,12 @@
 {
-  "name": "pitch_live",
-  "version": "1.0.0",
-  "description": "Online card game",
-  "main": "socket_server.js",
+  "name": "socket-chat-example",
+  "version": "0.0.1",
+  "description": "my first socket.io app",
   "dependencies": {
-    "express": "^4.17.1",
-    "nodemon": "^1.19.1",
-    "socket.io": "^2.2.0"
+    "express": "^4.15.2",
+    "socket.io": "^1.7.3"
   },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jake-orielly/pitch_live.git"
-  },
-  "author": "Jake O'Rielly",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/jake-orielly/pitch_live/issues"
-  },
-  "homepage": "https://github.com/jake-orielly/pitch_live#readme"
+    "start": "node index.js"
+  }
 }

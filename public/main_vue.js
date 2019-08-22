@@ -50,7 +50,7 @@ var vue_app = new Vue({
                 if (count == 6) {
                     interval = clearInterval(interval);
                     this.deal_done = true;
-                    //setTimeout(()=>vue_app.card_switch(),700)
+                    setTimeout(()=>vue_app.card_switch(),700)
                 }
                 else
                     count = vue_app.deal_card(count);

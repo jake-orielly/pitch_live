@@ -1,13 +1,18 @@
 // Get our dependencies
-var express = require('express');
-var socket = require('socket.io');
+var express = require('express')();
+var http = require('http').Server(express);
+var socket = require('socket.io')(http);
 
 var app = express();
 
 var port = 3000;
 
-var server = app.listen(port, function() {
-  console.log('Listening at http://localhost: ' + port);
+var server = http.listen(port, function(){
+  console.log('listening on *:' + port);
+});
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
 });
 
 app.use(express.static('public'));

@@ -18,20 +18,18 @@
             <div>
                 <p id="status-text">{{status_text}}</p>
                 <p v-if="status == 'bidder'">Bid: 
-                    <button class="clickable" v-for="i in ['pass',2,3,4,5]" 
-                        v-if="typeof curr_bid != 'number' || (dealer && i >= curr_bid) || i > curr_bid" 
+                    <button class="clickable" v-for="i in ['pass',2,3,4,5].filter(bid => bid == 'pass' || bid > curr_bid)"
                         @click="bid(i)">{{i}}</button>
                 </p>
             </div>
             <div>
-                <p>Score</p>
-                <p>{{score[0]}} | {{score[1]}}</p>
+                <p class="score-text">Score: {{score[0]}} | {{score[1]}}</p>
             </div>
             <div id="chat-container">
                 <div id="messages"></div>
                 <div id="chat-ui-container">
                     <input id="message" type="text" placeholder="Message" />
-                    <button id="send">Send</button>
+                    <button id="send" class="send-button">Send</button>
                 </div>
             </div>
             <div id="deck-container">
