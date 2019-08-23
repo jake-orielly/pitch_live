@@ -70,7 +70,7 @@ button:active, button:focus {
     overflow-y: scroll;
 }
 
-.card, .deck-card {
+.card, .deck-card, .other-player-card {
     width:6.5em;
 }
 
@@ -101,4 +101,35 @@ li {
 #hand-container {
     position: absolute;
     bottom: 5em;
+}
+
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+.rotate-270 {
+    transform: rotate(270deg);
+}
+
+.opponent-1 {
+    position: absolute;
+    left: 4em;
+    top: 35%
+}
+
+.opponent-2 {
+    position: absolute;
+    right: 4em;
+    top: 35%;
+}
+
+.teammate-1 {
+    position: absolute;
+    left: 42%;
+    top: 4em;
+}
+
+.other-player-card {
+    margin-right: -2.5em;
+    margin-left: -2.5em;
 }

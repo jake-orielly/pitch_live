@@ -42,6 +42,21 @@
             <div id="played-pile">
                 <img class="deck-card" v-bind:src="get_card_image('back')">
             </div>
+            <div class="opponent-1 rotate-90">
+                <img v-for="i in 6" 
+                v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
+                class="other-player-card" v-bind:src="get_card_image('back')">
+            </div>
+            <div class="teammate-1">
+                <img v-for="i in 6" 
+                v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
+                class="other-player-card" v-bind:src="get_card_image('back')">
+            </div>
+            <div class="opponent-2 rotate-270">
+                <img v-for="i in 6" 
+                v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
+                class="other-player-card" v-bind:src="get_card_image('back')">
+            </div>
             <div id="hand-container">
                 <ul>
                     <li v-for="card in hand" @click="play(card)" class="hand-card-slot">
