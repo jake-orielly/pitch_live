@@ -32,6 +32,12 @@ io.on('connection', function(socket){
     socket.broadcast.emit('chat',data['username_submission'] + ' has joined')
   });
 
+  socket.on('disconnect', function() {
+      let pos = users.indexOf(socket);
+      io.emit('chat',users[pos].username + ' has left');
+      users.splice(pos, 1);
+  });
+
   socket.on('play',function(card){
     io.sockets.emit('chat',curr_player.username + ' played the ' + card.num + ' of ' + card.suit)
     if (!trump_suit) {

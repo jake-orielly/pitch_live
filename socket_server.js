@@ -35,9 +35,13 @@ sock.on('connection', function(socket) {
   socket.on('bid',recieve_bid);
 
   socket.on('username_submission',function(data) {
+    console.log("join")
     users.push({username:data['username_submission'],socket:socket});
     users[users.length-1].team = teams[users.length%2].cards
-    socket.broadcast.emit('chat',data['username_submission'] + ' has joined')
+    socket.broadcast.emit('chat',data['username_submission'] + ' has joined');
+  });
+
+  socket.on('disconnect', function() {
   });
 
   socket.on('play',function(card){
