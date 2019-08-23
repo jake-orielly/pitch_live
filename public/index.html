@@ -40,7 +40,10 @@
                 </ul>
             </div>
             <div id="played-pile">
-                <img class="deck-card" v-bind:src="get_card_image('back')">
+                <img class="deck-card played played-pos-0" v-bind:src="get_card_image({num:'2',suit:'C'})">
+                <img class="deck-card played played-pos-1" v-bind:src="get_card_image({num:'2',suit:'D'})">
+                <img class="deck-card played played-pos-2" v-bind:src="get_card_image({num:'2',suit:'H'})">
+                <img class="deck-card played played-pos-3" v-bind:src="get_card_image({num:'2',suit:'S'})">
             </div>
             <div class="opponent-1 rotate-90">
                 <img v-for="i in 6" 
@@ -68,6 +71,5 @@
         <script src="main_vue.js"></script>
         <script src="/chat.js"></script>
         <script src="ui_functions.js"></script>
-        <script src="main.js"></script>
     </body>
 <html>
