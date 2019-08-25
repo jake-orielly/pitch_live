@@ -27,22 +27,31 @@ io.on('connection', function(socket){
   socket.on('bid',recieve_bid);
 
   socket.on('username_submission',function(data) {
-    users.push({username:data['username_submission'],socket:socket});
+    users.push({username:data['username_submission'],ready:false,socket:socket});
     users[users.length-1].team = teams[users.length%2].cards
-    socket.broadcast.emit('chat',data['username_submission'] + ' has joined')
+    socket.broadcast.emit('chat',data['username_submission'] + ' has joined');
+    send_updated_users();
   });
 
   socket.on('disconnect', function() {
       let pos = users.indexOf(socket);
-      io.emit('chat',users[pos].username + ' has left');
-      users.splice(pos, 1);
+      if (users[pos]) {
+        io.emit('chat',users[pos].username + ' has left');
+        users.splice(pos, 1);
+      }
+  });
+
+  socket.on('ready',function(ready){
+    console.log(ready)
+    users.filter(user => user.socket == socket)[0].ready = ready;
+    send_updated_users();
   });
 
   socket.on('play',function(card){
     io.sockets.emit('chat',curr_player.username + ' played the ' + card.num + ' of ' + card.suit)
     if (!trump_suit) {
       trump_suit = card.suit
-      io.sockets.emit('set_prop','trump_suit',card.suit)
+      io.sockets.emit('set_prop','trump_suit',card.suit);
     }
     if (!lead_suit) {
       lead_suit = card.suit
@@ -55,6 +64,16 @@ io.on('connection', function(socket){
       next_play();
   })
 });
+
+function send_updated_users() {
+  let simple_users = [];
+  console.log('Updating users')
+  users.forEach(function(user){
+    simple_users.push({username:user.username,ready:user.ready});
+  });
+  console.log(simple_users)
+  io.sockets.emit('set_prop','users',JSON.stringify(simple_users),true);
+}
 
 function eval_winner(){
   let winning = curr_bout[0];

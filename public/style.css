@@ -8,8 +8,28 @@ p, button, input {
     font-size: 2rem;
 }
 
-p, button {
+p, button, .user-list {
     color: white;
+}
+
+.user-list {
+    font-size: 3rem;
+}
+
+.user-list td {
+    padding-right: 1em;
+}
+
+.ready-mark {
+    color: #68ff68;
+}
+
+.not-ready-mark {
+    color: #dc0202;
+}
+
+.ready-mark, .not-ready-mark {
+    text-shadow: 2px 3px 7px black;
 }
 
 button {
@@ -36,7 +56,10 @@ button:active, button:focus {
 
 .clickable {
     cursor:pointer;
-    text-decoration: underline;
+    user-select: none;
+}
+
+.unselectable {
     user-select: none;
 }
 
@@ -83,7 +106,7 @@ button:active, button:focus {
     transition: 1s;
 }
 
-li {
+.card-list {
     list-style: none;
     display: inline;
 }

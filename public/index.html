@@ -9,63 +9,75 @@
     </head>
     <body>
         <div id="vue-app">
-            <button id="deal-button">Deal</button>
-            <div id="username-container">
-                <p>Enter your name:</p>
-                <input id="username-input" type="text" placeholder="Username" />
-                <button id="username-confirm">Confirm</button>
+            <div v-if="game_stage == 'lobby'">
+                <div id="username-container">
+                    <p>Enter your name:</p>
+                    <input id="username-input" type="text" placeholder="Username" />
+                    <button id="username-confirm">Confirm</button>
+                </div>
+                <p v-if="signed_in">In This Lobby:</p>
+                <table v-if="signed_in" class="user-list">
+                    <tr v-for="user in users" class="unselectable">
+                        <td>{{user.username}}</td>
+                        <td @click="ready_click(user.username,false)" :class="{clickable : user.username == username}" v-if="user.ready"><span class="ready-mark">&#10004;</span></td>
+                        <td @click="ready_click(user.username,true)" :class="{clickable : user.username == username}" v-if="!user.ready"><span class="not-ready-mark">&#10006;</span></td>
+                    </tr>
+                </table>
             </div>
-            <div>
-                <p id="status-text">{{status_text}}</p>
-                <p v-if="status == 'bidder'">Bid: 
-                    <button class="clickable" v-for="i in ['pass',2,3,4,5].filter(bid => bid == 'pass' || bid > curr_bid)"
-                        @click="bid(i)">{{i}}</button>
-                </p>
+            <div v-if="game_stage == 'playing'">
+                <button id="deal-button">Deal</button>
+                <div>
+                    <p id="status-text">{{status_text}}</p>
+                    <p v-if="status == 'bidder'">Bid: 
+                        <button class="clickable" v-for="i in ['pass',2,3,4,5].filter(bid => bid == 'pass' || bid > curr_bid)"
+                            @click="bid(i)">{{i}}</button>
+                    </p>
+                </div>
+                <div>
+                    <p class="score-text">Score: {{score[0]}} | {{score[1]}}</p>
+                </div>
+                <div id="deck-container">
+                    <ul>
+                        <li class="card-list" v-for="num in 20">
+                            <img class="deck-card" v-bind:src="get_card_image('back')">
+                        </li>
+                    </ul>
+                </div>
+                <div id="played-pile">
+                    <img class="deck-card played played-pos-0" v-bind:src="get_card_image({num:'2',suit:'C'})">
+                    <img class="deck-card played played-pos-1" v-bind:src="get_card_image({num:'2',suit:'D'})">
+                    <img class="deck-card played played-pos-2" v-bind:src="get_card_image({num:'2',suit:'H'})">
+                    <img class="deck-card played played-pos-3" v-bind:src="get_card_image({num:'2',suit:'S'})">
+                </div>
+                <div class="opponent-1 rotate-90">
+                    <img v-for="i in 6" 
+                    v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
+                    class="other-player-card" v-bind:src="get_card_image('back')">
+                </div>
+                <div class="teammate-1">
+                    <img v-for="i in 6" 
+                    v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
+                    class="other-player-card" v-bind:src="get_card_image('back')">
+                </div>
+                <div class="opponent-2 rotate-270">
+                    <img v-for="i in 6" 
+                    v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
+                    class="other-player-card" v-bind:src="get_card_image('back')">
+                </div>
+                <div id="hand-container">
+                    <ul>
+                        <li v-for="card in hand" @click="play(card)" class="hand-card-slot card-list">
+                            <img class="card hand-card" v-bind:src="get_card_image(card)">
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div>
-                <p class="score-text">Score: {{score[0]}} | {{score[1]}}</p>
-            </div>
-            <div id="chat-container">
+            <div id="chat-container" v-if="signed_in">
                 <div id="messages"></div>
                 <div id="chat-ui-container">
                     <input id="message" type="text" placeholder="Message" />
                     <button id="send" class="send-button">Send</button>
                 </div>
-            </div>
-            <div id="deck-container">
-                <ul>
-                    <li v-for="num in 20">
-                        <img class="deck-card" v-bind:src="get_card_image('back')">
-                    </li>
-                </ul>
-            </div>
-            <div id="played-pile">
-                <img class="deck-card played played-pos-0" v-bind:src="get_card_image({num:'2',suit:'C'})">
-                <img class="deck-card played played-pos-1" v-bind:src="get_card_image({num:'2',suit:'D'})">
-                <img class="deck-card played played-pos-2" v-bind:src="get_card_image({num:'2',suit:'H'})">
-                <img class="deck-card played played-pos-3" v-bind:src="get_card_image({num:'2',suit:'S'})">
-            </div>
-            <div class="opponent-1 rotate-90">
-                <img v-for="i in 6" 
-                v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
-                class="other-player-card" v-bind:src="get_card_image('back')">
-            </div>
-            <div class="teammate-1">
-                <img v-for="i in 6" 
-                v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
-                class="other-player-card" v-bind:src="get_card_image('back')">
-            </div>
-            <div class="opponent-2 rotate-270">
-                <img v-for="i in 6" 
-                v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
-                class="other-player-card" v-bind:src="get_card_image('back')">
-            </div>
-            <div id="hand-container">
-                <ul>
-                    <li v-for="card in hand" @click="play(card)" class="hand-card-slot">
-                        <img class="card hand-card" v-bind:src="get_card_image(card)">
-                    </li>
-                </ul>
             </div>
         </div>
         <script src="main_vue.js"></script>

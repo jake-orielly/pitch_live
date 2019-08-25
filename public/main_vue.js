@@ -10,13 +10,21 @@ var vue_app = new Vue({
         curr_play: false,
         deal_done: false,
         score: [0,0],
-        nums: [1,2,3,4,5,6]
+        nums: [1,2,3,4,5,6],
+        game_stage: 'lobby',
+        signed_in: false,
+        users: [],
+        username: ''
     },
     methods: {
         bid(given) {
             this.socket.emit('bid',given);
             this.status = ''
             this.status_text = ''
+        },
+        ready_click(name,ready) {
+            if (name == this.username)
+                this.socket.emit('ready',ready);
         },
         play(card) {
             if (this.curr_play && !card.played) {

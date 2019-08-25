@@ -1,24 +1,21 @@
 function chat_setup() {
-    // get dom elements
-    var sendBtn = document.getElementById('send');
-    var messages = document.getElementById('messages');
-
-    // add click listener to our button
-    sendBtn.addEventListener('click', function() {
-        send_message();
-    });
-
+    var messages; 
     // Listen for chat events
     socket.on('chat', function(data) {
-    // When we receive a “chat” event, display the message to the user
-    if (typeof data == 'string')
-        messages.innerHTML += '<p class="message-text"><strong>' + data + '</p></strong>';
-    else
-        messages.innerHTML += '<p class="message-text"><strong>' + data.username + ': </strong>' + data.message + '</p>';
+        if (!messages)
+            messages = document.getElementById('messages');
+        // When we receive a “chat” event, display the message to the user
+        if (typeof data == 'string')
+            messages.innerHTML += '<p class="message-text"><strong>' + data + '</p></strong>';
+        else
+            messages.innerHTML += '<p class="message-text"><strong>' + data.username + ': </strong>' + data.message + '</p>';
     });
 
     // Used when the server wants to change a value in the vue app
-    socket.on('set_prop',function(prop,val){
+    socket.on('set_prop',function(prop,val,is_JSON=false){
+        if (is_JSON)
+            val = JSON.parse(val);
+        console.log(prop,val)
         vue_app[prop] = val;
     })
 
