@@ -16,10 +16,12 @@ $('#username-confirm').click(function() {
     });
 
     chat_load_wait = setInterval(function(){
-        sendBtn = document.getElementById('send');
-        if (sendBtn) {
-            sendBtn.addEventListener('click', function() {
-                send_message();
+        if ($('#send')) {
+            $('#send').click(send_message);
+            $('#message').on('keyup', function (e) {
+                console.log(e.keycode)
+                if (e.keyCode === 13) 
+                    send_message();
             });
             clearInterval(chat_load_wait);
         }
