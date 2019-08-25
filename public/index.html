@@ -15,14 +15,20 @@
                     <input id="username-input" type="text" placeholder="Username" />
                     <button id="username-confirm">Confirm</button>
                 </div>
-                <p v-if="signed_in">In This Lobby:</p>
-                <table v-if="signed_in" class="user-list">
-                    <tr v-for="user in users" class="unselectable">
-                        <td>{{user.username}}</td>
-                        <td @click="ready_click(user.username,false)" :class="{clickable : user.username == username}" v-if="user.ready"><span class="ready-mark">&#10004;</span></td>
-                        <td @click="ready_click(user.username,true)" :class="{clickable : user.username == username}" v-if="!user.ready"><span class="not-ready-mark">&#10006;</span></td>
-                    </tr>
-                </table>
+                <div v-if="signed_in">
+                    <p>In This Lobby:</p>
+                    <table class="user-list">
+                        <tr v-for="user in users" class="unselectable">
+                            <td>{{user.username}}</td>
+                            <td @click="ready_click(user.username,false)" :class="{clickable : user.username == username}" v-if="user.ready"><span class="ready-mark">&#10004;</span></td>
+                            <td @click="ready_click(user.username,true)" :class="{clickable : user.username == username}" v-if="!user.ready"><span class="not-ready-mark">&#10006;</span></td>
+                        </tr>
+                    </table>
+                    <div v-if="game_starting">
+                        <p>Game starting in {{game_starting}}</p>
+                        <button @click="ready_click('self',false)">Cancel</button>
+                    </div>
+                </div>
             </div>
             <div v-if="game_stage == 'playing'">
                 <button id="deal-button">Deal</button>

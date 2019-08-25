@@ -15,7 +15,7 @@ function chat_setup() {
     socket.on('set_prop',function(prop,val,is_JSON=false){
         if (is_JSON)
             val = JSON.parse(val);
-        console.log(prop,val)
+        console.log(prop,val);
         vue_app[prop] = val;
     })
 
@@ -23,7 +23,6 @@ function chat_setup() {
         console.log(hand)
         vue_app.deal(hand);
     })
-
 
     // Listen for status events
     socket.on('status', function(data,bid) {

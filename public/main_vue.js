@@ -14,7 +14,8 @@ var vue_app = new Vue({
         game_stage: 'lobby',
         signed_in: false,
         users: [],
-        username: ''
+        username: '',
+        game_starting: 0
     },
     methods: {
         bid(given) {
@@ -23,6 +24,9 @@ var vue_app = new Vue({
             this.status_text = ''
         },
         ready_click(name,ready) {
+            console.log('Ready:',name,ready)
+            if (name == 'self')
+                name = this.username;
             if (name == this.username)
                 this.socket.emit('ready',ready);
         },

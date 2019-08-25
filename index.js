@@ -4,6 +4,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = 3000;
+var game_start_countdown;
 
 var htmlPath = path.join(__dirname, 'public');
 
@@ -42,9 +43,24 @@ io.on('connection', function(socket){
   });
 
   socket.on('ready',function(ready){
-    console.log(ready)
+    let count = 5;
     users.filter(user => user.socket == socket)[0].ready = ready;
     send_updated_users();
+    if (count && !ready) {
+      clearInterval(game_start_countdown);
+      io.sockets.emit('set_prop','game_starting',0);
+    }
+    else if (users.filter(user => !user.ready).length == 0) {
+      io.sockets.emit('set_prop','game_starting',count);
+      game_start_countdown = setInterval(function(){
+        count--;
+        io.sockets.emit('set_prop','game_starting',count);
+        if (count == 0) {
+          clearInterval(game_start_countdown);
+          io.sockets.emit('set_prop','game_stage','playing');
+        }
+      },1000);
+    }
   });
 
   socket.on('play',function(card){
