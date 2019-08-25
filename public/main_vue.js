@@ -15,7 +15,9 @@ var vue_app = new Vue({
         signed_in: false,
         users: [],
         username: '',
-        game_starting: 0
+        game_starting: 0,
+        trump_suit: '',
+        lead_suit: ''
     },
     methods: {
         bid(given) {
@@ -105,6 +107,20 @@ var vue_app = new Vue({
             if (isNaN(num))
                 num = face_map[num];
             return 'cards/' + num + card.suit[0] + '.png'
+        },
+        suit_to_icon(suit) {
+            switch(suit) {
+            case 'Clubs':
+                return '♣';
+            case 'Diamonds':
+                return '♦';
+            case 'Hearts':
+                return '♥';
+            case 'Spades':
+                return '♠';
+            default:
+                return '';
+            }
         }
     }
 })

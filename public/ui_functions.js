@@ -25,9 +25,3 @@ $('#username-confirm').click(function() {
         }
     },50);
 });
-
-$('#deal-button').click(function(){
-    socket.emit('ready_signal', {
-        staus: 'ready'
-    });
-})

@@ -31,7 +31,8 @@
                 </div>
             </div>
             <div v-if="game_stage == 'playing'">
-                <button id="deal-button">Deal</button>
+                <p>Trump: <span :class="trump_suit.toLowerCase()">{{suit_to_icon(trump_suit)}}</span></p>
+                <p>Lead: <span :class="lead_suit.toLowerCase()">{{suit_to_icon(lead_suit)}}</span></p>
                 <div>
                     <p id="status-text">{{status_text}}</p>
                     <p v-if="status == 'bidder'">Bid: 

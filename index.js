@@ -24,7 +24,6 @@ io.on('connection', function(socket){
     io.emit('chat', msg);
   });
 
-  socket.on('ready_signal',deal_cards);
   socket.on('bid',recieve_bid);
 
   socket.on('username_submission',function(data) {
@@ -43,7 +42,8 @@ io.on('connection', function(socket){
   });
 
   socket.on('ready',function(ready){
-    let count = 5;
+    //let count = 5;
+    let count = 1;
     users.filter(user => user.socket == socket)[0].ready = ready;
     send_updated_users();
     if (count && !ready) {
@@ -58,6 +58,7 @@ io.on('connection', function(socket){
         if (count == 0) {
           clearInterval(game_start_countdown);
           io.sockets.emit('set_prop','game_stage','playing');
+          setTimeout(deal_cards,500);
         }
       },1000);
     }
