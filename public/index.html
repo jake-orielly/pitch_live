@@ -35,7 +35,7 @@
                 <p>Lead: <span :class="(lead_suit ? lead_suit.toLowerCase() : '')">{{suit_to_icon(lead_suit)}}</span></p>
                 <div>
                     <p id="status-text">{{status_text}}</p>
-                    <p v-if="status == 'bidder'">Bid: 
+                    <p v-if="status == 'bidder'" class="bid-paragraph">Bid: 
                         <button class="clickable" v-for="i in ['pass',2,3,4,5].filter(bid => bid == 'pass' || bid > curr_bid)"
                             @click="bid(i)">{{i}}</button>
                     </p>

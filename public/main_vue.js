@@ -17,7 +17,8 @@ var vue_app = new Vue({
         username: '',
         game_starting: 0,
         trump_suit: '',
-        lead_suit: ''
+        lead_suit: '',
+        curr_bout: 0
     },
     methods: {
         bid(given) {
@@ -47,9 +48,10 @@ var vue_app = new Vue({
                     for (let i = 0; i < this.hand.length; i++)
                         if (this.hand[i].suit == card.suit && this.hand[i].num == card.num) {
                             card.played = true;
-                            let destination = document.getElementById("played-pile");
+                            let destination = document.getElementsByClassName("played-pos-3")[0];
                             let target = document.getElementsByClassName("hand-card")[i];
                             this.move_card(destination,target);
+                            this.curr_bout++;
                             break;
                         }
                 }
@@ -76,11 +78,12 @@ var vue_app = new Vue({
             this.move_card(destination,target);
             return num + 1;
         },
-        move_card(destination,target,offset_x = 0) {
+        move_card(destination,target) {
             let dest_rect = destination.getBoundingClientRect();
             target.style.position = 'absolute'; 
             target.style.top = dest_rect.y + 'px';
             target.style.left = dest_rect.x + 'px';
+            target.style["z-index"] = 10 + this.curr_bout;
         },
         card_switch() {
             let card_backs = document.getElementsByClassName('deck-card');

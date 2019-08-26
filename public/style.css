@@ -122,8 +122,15 @@ button:active, button:focus {
 }
 
 #hand-container {
+    /* position: absolute;
+    bottom: 5em; */
+    margin-top: 35%;
+}
+
+.bid-paragraph {
     position: absolute;
-    bottom: 5em;
+    top: 9em;
+    left: 37%;
 }
 
 .rotate-90 {
