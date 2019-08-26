@@ -71,24 +71,16 @@ var vue_app = new Vue({
             },500)
         },
         deal_card(num) {
-            let destination = document.getElementsByClassName("hand-card-slot")[num];
+            let destination = document.getElementsByClassName("card hand-card")[num];
             let target = document.getElementsByClassName("deck-card")[num];
             this.move_card(destination,target);
             return num + 1;
         },
         move_card(destination,target,offset_x = 0) {
-            /* Issue with absolute move, investigate this:
-            var bodyRect = document.body.getBoundingClientRect(),
-            elemRect = element.getBoundingClientRect(),
-            offset   = elemRect.top - bodyRect.top;
-
-            alert('Element is ' + offset + ' vertical pixels from <body>');
-            */
-            let left_pos = destination.offsetLeft;
-            let top_pos = destination.offsetTop;
-            let left_diff = left_pos - target.offsetLeft + offset_x;
-            let top_diff = top_pos - target.offsetTop;
-            target.style.transform = "translate(" + left_diff + "px," + top_diff +"px";  
+            let dest_rect = destination.getBoundingClientRect();
+            target.style.position = 'absolute'; 
+            target.style.top = dest_rect.y + 'px';
+            target.style.left = dest_rect.x + 'px';
         },
         card_switch() {
             let card_backs = document.getElementsByClassName('deck-card');
@@ -102,6 +94,7 @@ var vue_app = new Vue({
         get_card_image(card) {
             if (card == 'back')
                 return 'cards/red_back.png';
+            console.log(card)
             let face_map = {'Jack':'J','Queen':'Q','King':'K','Ace':'A'}
             let num = card.num;
             if (isNaN(num))
