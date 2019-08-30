@@ -141,13 +141,13 @@ button:active, button:focus {
     transform: rotate(270deg);
 }
 
-.opponent-1 {
+.opponent-0 {
     position: absolute;
     left: 4em;
     top: 35%
 }
 
-.opponent-2 {
+.opponent-1 {
     position: absolute;
     right: 4em;
     top: 35%;

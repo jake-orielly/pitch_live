@@ -24,6 +24,10 @@ function chat_setup() {
         vue_app.deal(hand);
     })
 
+    socket.on('played',function(data){
+        vue_app.other_played(data);
+    })
+
     // Listen for status events
     socket.on('status', function(data,bid) {
         if (bid) {

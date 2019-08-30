@@ -28,7 +28,8 @@ io.on('connection', function(socket){
 
   socket.on('username_submission',function(data) {
     users.push({username:data['username_submission'],ready:false,socket:socket});
-    users[users.length-1].team = teams[users.length%2].cards
+    users[users.length-1].team = teams[users.length%2].cards;
+    users[users.length-1].team_num = users.length%2;
     socket.broadcast.emit('chat',data['username_submission'] + ' has joined');
     send_updated_users();
   });
@@ -66,6 +67,7 @@ io.on('connection', function(socket){
 
   socket.on('play',function(card){
     io.sockets.emit('chat',curr_player.username + ' played the ' + card.num + ' of ' + card.suit)
+    socket.broadcast.emit('played',{card:card,user:curr_player.username});
     if (!trump_suit) {
       trump_suit = card.suit
       io.sockets.emit('set_prop','trump_suit',card.suit);
@@ -86,7 +88,7 @@ function send_updated_users() {
   let simple_users = [];
   console.log('Updating users')
   users.forEach(function(user){
-    simple_users.push({username:user.username,ready:user.ready});
+    simple_users.push({username:user.username,ready:user.ready,team:user.team_num});
   });
   console.log(simple_users)
   io.sockets.emit('set_prop','users',JSON.stringify(simple_users),true);
@@ -219,15 +221,20 @@ function recieve_bid(data) {
 }
 
 function set_up_hand(){
+  // Case where dealer gets bid
+  if (!curr_bid.player) {
+    curr_player_num = users.length-1;
+    curr_player = users[curr_player_num];
+    console.log("HERE")
+    curr_bid = {player:curr_player.username,amount:2}
+  }
   io.sockets.emit('chat',curr_bid.player + ' has it for ' + curr_bid.amount);
-  
-  for (var i = 0; i < users.length; i++)
-    if (users[i].username == curr_bid.player.username)
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].username == curr_bid.player)
       curr_player_num = i;
-  
-  // It will get incremented by next_play
-  curr_player_num--;
+  }
 
+  users = shuffle_to_front(users,curr_player_num);
   io.sockets.emit('set_prop','lead_suit',undefined);
   io.sockets.emit('set_prop','trump_suit',undefined);
   trump_suit = undefined;
@@ -235,6 +242,11 @@ function set_up_hand(){
   curr_bout = [];
 
   next_play();
+}
+
+function shuffle_to_front(arr,num) {
+  arr = arr.slice(num,arr.length).concat(arr.slice(0,num))
+  return arr;
 }
 
 function next_play(){
