@@ -225,7 +225,6 @@ function set_up_hand(){
   if (!curr_bid.player) {
     curr_player_num = users.length-1;
     curr_player = users[curr_player_num];
-    console.log("HERE")
     curr_bid = {player:curr_player.username,amount:2}
   }
   io.sockets.emit('chat',curr_bid.player + ' has it for ' + curr_bid.amount);
