@@ -9,6 +9,8 @@ function chat_setup() {
             messages.innerHTML += '<p class="message-text"><strong>' + data + '</p></strong>';
         else
             messages.innerHTML += '<p class="message-text"><strong>' + data.username + ': </strong>' + data.message + '</p>';
+        var objDiv = document.getElementById("messages");
+        setTimeout(function(){objDiv.scrollTop = objDiv.scrollHeight;});
     });
 
     // Used when the server wants to change a value in the vue app
@@ -52,5 +54,6 @@ function send_message() {
         username: username
     });
     message.value = '';
-    setTimeout(function(){$('#messages').scrollTop($('#messages').height() + 100)},100);
+    var objDiv = document.getElementById("messages");
+    setTimeout(function(){objDiv.scrollTop = objDiv.scrollHeight;});
 }

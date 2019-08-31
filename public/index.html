@@ -35,8 +35,8 @@
                 <p>Lead: <span :class="(lead_suit ? lead_suit.toLowerCase() : '')">{{suit_to_icon(lead_suit)}}</span></p>
                 <div>
                     <p id="status-text">{{status_text}}</p>
-                    <p v-if="status == 'bidder'" class="bid-paragraph">Bid: 
-                        <button class="clickable" v-for="i in ['pass',2,3,4,5]
+                    <p v-if="status == 'bidder'" class="bid-div">Bid: 
+                        <button class="clickable bid-button" v-for="i in ['pass',2,3,4,5]
                         .filter(bid => ((!dealer || curr_bid != 'pass') && bid == 'pass') || 
                         bid > curr_bid || 
                         (dealer && bid == curr_bid))"
@@ -58,16 +58,19 @@
                     <img class="deck-card played" id="played-pos-3" v-bind:src="get_card_image('placeholder')">
                 </div>
                 <div class="opponent-0 rotate-90">
+                    <p class="nametag">Bob</p>
                     <img v-for="i in 6" 
                     v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
                     class="other-player-card opponent-0-card" v-bind:src="get_card_image('back')">
                 </div>
                 <div class="teammate-1">
+                    <p class="nametag">Bill</p>
                     <img v-for="i in 6" 
                     v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
                     class="other-player-card" v-bind:src="get_card_image('back')">
                 </div>
                 <div class="opponent-1 rotate-270">
+                    <p class="nametag">Brittany</p>
                     <img v-for="i in 6" 
                     v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
                     class="other-player-card opponent-1-card" v-bind:src="get_card_image('back')">
