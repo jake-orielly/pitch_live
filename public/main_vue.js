@@ -18,7 +18,8 @@ var vue_app = new Vue({
         game_starting: 0,
         trump_suit: '',
         lead_suit: '',
-        curr_bout: 0
+        curr_bout: 0,
+        others_cards: ['placeholder','placeholder','placeholder']
     },
     methods: {
         bid(given) {
@@ -48,7 +49,7 @@ var vue_app = new Vue({
                     for (let i = 0; i < this.hand.length; i++)
                         if (this.hand[i].suit == card.suit && this.hand[i].num == card.num) {
                             card.played = true;
-                            let destination = document.getElementsByClassName("played-pos-3")[0];
+                            let destination = document.getElementById("played-pos-3");
                             let target = document.getElementsByClassName("hand-card")[i];
                             this.move_card(destination,target);
                             this.curr_bout++;
@@ -64,10 +65,15 @@ var vue_app = new Vue({
             let opponents;
             let my_team = this._data.users.filter(user => user.username == this.username)[0].team;
             let their_team = this._data.users.filter(user => user.username == data.user)[0].team;
-            
-            if (my_team == their_team) {
+
+            function find_user(element) {
+                return element.username == data.user;
+            }
+            let their_index = this.users.findIndex(find_user);
+            Vue.set(this.others_cards, their_index, data.card);
+            /*if (my_team == their_team) {
                 target = document.getElementsByClassName("teammate-1")[this.curr_bout];
-                destination = document.getElementsByClassName("played-pos-1")[0];
+                destination = document.getElementById("played-pos-1");
             }
             else {
                 opponents = this.users.filter(user => user.team == 1);
@@ -75,13 +81,14 @@ var vue_app = new Vue({
                     if (opponents[i].username == data.user) {
                         console.log("opponent-" + i + "-card")
                         target = document.getElementsByClassName("opponent-" + i + "-card")[this.curr_bout];
-                        destination = document.getElementsByClassName("played-pos-" + i*2)[0];
+                        destination = document.getElementById("played-pos-" + i*2);
                     }
             }
             console.log("Other play")
             console.log(target)
             console.log(destination)
-            this.move_card(destination,target);
+            this.move_card(destination,target);*/
+
         },
         deal(hand) {
             let count = 0;
@@ -122,6 +129,8 @@ var vue_app = new Vue({
         get_card_image(card) {
             if (card == 'back')
                 return 'cards/red_back.png';
+            if (card == 'placeholder')
+                return 'cards/placeholder.png';
             let face_map = {'Jack':'J','Queen':'Q','King':'K','Ace':'A'}
             let num = card.num;
             if (isNaN(num))

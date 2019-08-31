@@ -36,7 +36,10 @@
                 <div>
                     <p id="status-text">{{status_text}}</p>
                     <p v-if="status == 'bidder'" class="bid-paragraph">Bid: 
-                        <button class="clickable" v-for="i in ['pass',2,3,4,5].filter(bid => bid == 'pass' || bid > curr_bid)"
+                        <button class="clickable" v-for="i in ['pass',2,3,4,5]
+                        .filter(bid => ((!dealer || curr_bid != 'pass') && bid == 'pass') || 
+                        bid > curr_bid || 
+                        (dealer && bid == curr_bid))"
                             @click="bid(i)">{{i}}</button>
                     </p>
                 </div>
@@ -51,10 +54,8 @@
                     </ul>
                 </div>
                 <div id="played-pile">
-                    <img class="deck-card played played-pos-0" v-bind:src="get_card_image({num:'2',suit:'C'})">
-                    <img class="deck-card played played-pos-1" v-bind:src="get_card_image({num:'2',suit:'D'})">
-                    <img class="deck-card played played-pos-2" v-bind:src="get_card_image({num:'2',suit:'H'})">
-                    <img class="deck-card played played-pos-3" v-bind:src="get_card_image({num:'2',suit:'S'})">
+                    <img v-for="i in 3" class="deck-card played" :id="'played-pos-' + (i-1)" v-bind:src="get_card_image(others_cards[i-1])">
+                    <img class="deck-card played" id="played-pos-3" v-bind:src="get_card_image('placeholder')">
                 </div>
                 <div class="opponent-0 rotate-90">
                     <img v-for="i in 6" 

@@ -168,19 +168,19 @@ button:active, button:focus {
     position: absolute;
 }
 
-.played-pos-0 {
+#played-pos-0 {
     left: -3.5em;
 }
 
-.played-pos-1 {
+#played-pos-1 {
     top: -3.5em;
 }
 
-.played-pos-2 {
+#played-pos-2 {
     left: 3.5em;
 }
 
-.played-pos-3 {
+#played-pos-3 {
     top: 3.5em;
 }
 
