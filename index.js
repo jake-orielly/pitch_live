@@ -90,8 +90,12 @@ function send_updated_users() {
   users.forEach(function(user){
     simple_users.push({username:user.username,ready:user.ready,team:user.team_num});
   });
-  console.log(simple_users)
-  io.sockets.emit('set_prop','users',JSON.stringify(simple_users),true);
+  for (let i in users) {
+    i = parseInt(i);
+    ordered = shuffle_to_front(simple_users,((i + 1) % simple_users.length));
+    users[i].socket.emit('set_prop','users',JSON.stringify(ordered),true);
+    console.log(ordered);
+  }
 }
 
 function eval_winner(){
