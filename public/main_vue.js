@@ -63,9 +63,10 @@ var vue_app = new Vue({
             let target;
             let destination;
             let opponents;
+            console.log(1)
             let my_team = this._data.users.filter(user => user.username == this.username)[0].team;
             let their_team = this._data.users.filter(user => user.username == data.user)[0].team;
-
+            console.log(2)
             function find_user(element) {
                 return element.username == data.user;
             }

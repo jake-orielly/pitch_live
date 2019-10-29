@@ -1,6 +1,8 @@
 Problem if p2 deals
 No visual for card played by other player
+Status text not getting updated correctly
 
 Resolved This Commit:
 Dealer can’t pass
 User[0] always wins bid
+Enter button should submit username

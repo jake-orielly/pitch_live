@@ -1,8 +1,14 @@
 var username, socket;
 var io = io();
 
-$('#username-confirm').click(function() {
-    var sendBtn;
+$('#username-input').keyup(function(e) {
+    if (e.key == 'Enter')
+        submitUsername();
+});
+
+$('#username-confirm').click(submitUsername);
+
+function submitUsername() {
     let chat_load_wait; 
     socket = io.connect('http://localhost:3000');
     vue_app.socket = socket;
@@ -10,6 +16,7 @@ $('#username-confirm').click(function() {
     username = $('#username-input').val()
     vue_app.username = username
     chat_setup();
+
     $('#username-container').hide();
     socket.emit('username_submission',{
         username_submission: username
@@ -25,5 +32,5 @@ $('#username-confirm').click(function() {
             });
             clearInterval(chat_load_wait);
         }
-    },50);
-});
+    },50)
+}

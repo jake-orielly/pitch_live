@@ -1,9 +1,11 @@
 var path = require('path');
 var express = require('express');
 var app = express();
+
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = 3000;
+
 var game_start_countdown;
 
 var htmlPath = path.join(__dirname, 'public');
@@ -195,7 +197,6 @@ function deal_cards(){
   curr_bid = {player:'',amount:''}
   curr_player_num = 0;
   curr_player = users[curr_player_num];
-
   next_bidder();
 }
 
