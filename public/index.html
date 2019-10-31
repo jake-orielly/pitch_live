@@ -55,7 +55,7 @@
                 </div>
                 <div id="played-pile">
                     <img v-for="i in 3" class="deck-card played" :id="'played-pos-' + (i-1)" v-bind:src="get_card_image(others_cards[i-1])">
-                    <img class="deck-card played" id="played-pos-3" v-bind:src="get_card_image('placeholder')">
+                    <img class="deck-card played" id="played-pos-3" v-bind:src="get_card_image(my_card)">
                 </div>
                 <div class="opponent-0 rotate-90">
                     <p class="nametag">{{users[0].username}}</p>

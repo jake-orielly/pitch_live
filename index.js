@@ -88,7 +88,6 @@ io.on('connection', function(socket){
 
 function send_updated_users() {
   let simple_users = [];
-  console.log('Updating users')
   users.forEach(function(user){
     simple_users.push({username:user.username,ready:user.ready,team:user.team_num});
   });
@@ -96,7 +95,6 @@ function send_updated_users() {
     i = parseInt(i);
     ordered = shuffle_to_front(simple_users,((i + 1) % simple_users.length));
     users[i].socket.emit('set_prop','users',JSON.stringify(ordered),true);
-    console.log(ordered);
   }
 }
 
@@ -166,7 +164,7 @@ function count_points(){
     teams[1].points.push('Game');
   high.team.push('High')
   low.team.push('Low')
-  console.log(teams)
+  
   score[0] += teams[0].points.length;
   score[1] += teams[1].points.length;
 
@@ -244,7 +242,8 @@ function set_up_hand(){
   trump_suit = undefined;
   lead_suit = undefined;
   curr_bout = [];
-
+  // Compensating for the increment at start of next_play
+  curr_player_num = -1;
   next_play();
 }
 

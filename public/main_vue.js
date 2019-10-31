@@ -19,7 +19,8 @@ var vue_app = new Vue({
         trump_suit: '',
         lead_suit: '',
         curr_bout: 0,
-        others_cards: ['placeholder','placeholder','placeholder']
+        others_cards: ['placeholder','placeholder','placeholder'],
+        my_card: 'placeholder'
     },
     methods: {
         bid(given) {
@@ -49,9 +50,11 @@ var vue_app = new Vue({
                     for (let i = 0; i < this.hand.length; i++)
                         if (this.hand[i].suit == card.suit && this.hand[i].num == card.num) {
                             card.played = true;
-                            let destination = document.getElementById("played-pos-3");
-                            let target = document.getElementsByClassName("hand-card")[i];
-                            this.move_card(destination,target);
+                            //let destination = document.getElementById("played-pos-3");
+                            //let target = document.getElementsByClassName("hand-card")[i];
+                            //console.log(destination,target)
+                            //this.move_card(destination,target);
+                            this.my_card = card;
                             this.curr_bout++;
                             break;
                         }
@@ -60,13 +63,11 @@ var vue_app = new Vue({
             }
         },
         other_played(data) {
-            let target;
+            /*let target;
             let destination;
             let opponents;
-            console.log(1)
             let my_team = this._data.users.filter(user => user.username == this.username)[0].team;
-            let their_team = this._data.users.filter(user => user.username == data.user)[0].team;
-            console.log(2)
+            let their_team = this._data.users.filter(user => user.username == data.user)[0].team;*/
             function find_user(element) {
                 return element.username == data.user;
             }
