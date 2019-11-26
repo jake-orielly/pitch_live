@@ -37,8 +37,8 @@
                     <p id="status-text">{{status_text}}</p>
                     <p v-if="status == 'bidder'" class="bid-div">Bid: 
                         <button class="clickable bid-button" v-for="i in ['pass',2,3,4,5]
-                        .filter(bid => ((!dealer || curr_bid != 'pass') && bid == 'pass') || 
-                        bid > curr_bid || 
+                        .filter(bid => bid > curr_bid || 
+                        (bid == 'pass' && !dealer) ||
                         (dealer && bid == curr_bid))"
                             @click="bid(i)">{{i}}</button>
                     </p>
