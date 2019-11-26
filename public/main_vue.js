@@ -51,6 +51,7 @@ var vue_app = new Vue({
                     for (let i = 0; i < this.hand.length; i++)
                         if (this.hand[i].suit == card.suit && this.hand[i].num == card.num) {
                             card.played = true;
+                            this.hand.splice(i,1)
                             //let destination = document.getElementById("played-pos-3");
                             //let target = document.getElementsByClassName("hand-card")[i];
                             //console.log(destination,target)
