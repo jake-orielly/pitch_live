@@ -101,11 +101,12 @@ function send_updated_users() {
 function eval_winner(){
   let winning = curr_bout[0];
   let curr;
-  for (let i = 0; i < curr_bout.length; i++)
+  for (let i = 0; i < curr_bout.length; i++) {
     curr = curr_bout[i]
     if (((winning.card.suit == trump_suit && curr.card.suit == trump_suit) || (curr.card.suit == lead_suit)) 
     && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
       winning = curr;
+  }
 
   io.sockets.emit('chat',winning.user.username + ' takes it with the ' + winning.card.num + ' of ' + winning.card.suit)
   for (let i = 0; i < curr_bout.length; i++)

@@ -1,6 +1,7 @@
 Problem if p2 deals
 Status text not getting updated correctly
 Move card moves player card all the way to bottom
+Bout end state
 
 Resolved This Commit:
-Cards don't clear at end of bout
+Bout winner not being evaluated correctly
