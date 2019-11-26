@@ -256,6 +256,7 @@ function next_play(){
   curr_player_num = (curr_player_num + 1) % users.length;
   curr_player = users[curr_player_num]
   curr_player.socket.broadcast.emit('status','Waiting for ' + curr_player.username + ' to make a play')
+  curr_player.socket.emit('status','Waiting for you to make a play')
   curr_player.socket.emit('set_prop','curr_play',true)
 }
 

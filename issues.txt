@@ -1,8 +1,7 @@
 Problem if p2 deals
 Status text not getting updated correctly
-Message says "Waiting for [username] to make a play" even when you're the user
 Move card moves player card all the way to bottom
 Cards don't clear at end of bout
 
 Resolved This Commit:
-Dealer has option to pass/bid even when everyone has passed
+Message says "Waiting for [username] to make a play" even when you're the user
