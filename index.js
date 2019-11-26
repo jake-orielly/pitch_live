@@ -192,7 +192,7 @@ function deal_cards(){
     users[i].socket.emit('deal',hand)
   }
 
-  curr_bid = {player:'',amount:''}
+  curr_bid = {player:'',amount:'pass'}
   curr_player_num = 0;
   curr_player = users[curr_player_num];
   next_bidder();

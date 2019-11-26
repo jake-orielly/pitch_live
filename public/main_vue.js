@@ -20,7 +20,8 @@ var vue_app = new Vue({
         lead_suit: '',
         curr_bout: 0,
         others_cards: ['placeholder','placeholder','placeholder'],
-        my_card: 'placeholder'
+        my_card: 'placeholder',
+        curr_bid: undefined
     },
     methods: {
         bid(given) {

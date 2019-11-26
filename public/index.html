@@ -38,10 +38,12 @@
                     <p v-if="status == 'bidder'" class="bid-div">Bid: 
                         <button class="clickable bid-button" v-for="i in ['pass',2,3,4,5]
                         .filter(bid => bid > curr_bid || 
-                        (bid == 'pass' && !dealer) ||
-                        (dealer && bid == curr_bid))"
+                        (bid > 0 && curr_bid == 'pass') ||
+                        (bid == 'pass' && (!dealer || curr_bid != 'pass')) ||
+                        (dealer && bid == curr_bid && curr_bid != 'pass'))"
                             @click="bid(i)">{{i}}</button>
                     </p>
+                    <p>{{curr_bid + ' : ' + dealer}}</p>
                 </div>
                 <div>
                     <p class="score-text">Score: {{score[0]}} | {{score[1]}}</p>
