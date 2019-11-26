@@ -110,7 +110,7 @@ function eval_winner(){
   io.sockets.emit('chat',winning.user.username + ' takes it with the ' + winning.card.num + ' of ' + winning.card.suit)
   for (let i = 0; i < curr_bout.length; i++)
     winning.user.team.push(curr_bout[i].card)
-  bout_reset(winning);
+  setTimeout(function() {bout_reset(winning);}, 1500);
 }
 
 function bout_reset(winner) {
@@ -126,6 +126,8 @@ function bout_reset(winner) {
   io.sockets.emit('set_prop','lead_suit',undefined);
   lead_suit = undefined;
   curr_bout = [];
+
+  io.sockets.emit('new_bout','');
 
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6)
     count_points();

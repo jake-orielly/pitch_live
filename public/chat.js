@@ -21,6 +21,10 @@ function chat_setup() {
         vue_app[prop] = val;
     })
 
+    socket.on('new_bout',function() {
+        vue_app.new_bout();
+    })
+
     socket.on('deal',function(hand){
         console.log(hand)
         vue_app.deal(hand);

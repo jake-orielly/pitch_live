@@ -94,6 +94,10 @@ var vue_app = new Vue({
             this.move_card(destination,target);*/
 
         },
+        new_bout() {
+            this.others_cards = ['placeholder','placeholder','placeholder'];
+            this.my_card = 'placeholder';
+        },
         deal(hand) {
             let count = 0;
             this.hand = hand;
