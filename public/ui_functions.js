@@ -34,3 +34,18 @@ function submitUsername() {
         }
     },50)
 }
+
+$('#test-request').click(checkAlive);
+
+function checkAlive(){
+    const Http = new XMLHttpRequest();
+    let username = $('#username-input').val()
+    const url='http://23.254.164.217:8000/user_exists?name=' + username;
+    Http.open("GET", url);
+    Http.send();
+
+    Http.onreadystatechange = (e) => {
+        if (Http.readyState == 4)
+            console.log(Http.responseText)
+    }
+}

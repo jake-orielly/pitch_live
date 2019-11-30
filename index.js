@@ -174,6 +174,7 @@ function count_points(){
   io.sockets.emit('set_prop','score',score);
 
   teams = [{cards:[],points:[]},{cards:[],points:[]}];
+
   deal_cards();
 }
 

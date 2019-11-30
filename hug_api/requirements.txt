@@ -1,0 +1,3 @@
+hug
+mysql-connector-python
+hug_middleware_cors
