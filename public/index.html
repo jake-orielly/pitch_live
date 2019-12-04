@@ -12,9 +12,13 @@
             <div v-if="game_stage == 'lobby'">
                 <div id="username-container">
                     <p>Enter your name:</p>
-                    <input id="username-input" type="text" placeholder="Username" />
-                    <button id="username-confirm">Confirm</button>
-                    <button id="test-request">Test Request</button>
+                    <form id="login-form">
+                        <input class="login-input" id="username-input" type="text" placeholder="Username" required/>
+                        <input class="login-input" id="password-input" type="password" placeholder="Password" required/>
+                        <input class="ui-button" type="submit" id="test-request" value="Login">
+                    </form>
+                    <button class="ui-button" id="username-confirm">Confirm</button>
+                    <p>{{login_status_map[login_status]}}</p>
                 </div>
                 <div v-if="signed_in">
                     <p>In This Lobby:</p>

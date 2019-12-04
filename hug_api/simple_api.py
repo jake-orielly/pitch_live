@@ -23,11 +23,15 @@ def set_password(user: hug.types.text, password: hug.types.text):
 
 @hug.post('/login',examples='user=Jake&password=1234')
 def login(user: hug.types.text, password: hug.types.text):
+    if (not user_exists(user)):
+        return {'message':'bad-user'}
     password_query = 'SELECT Password from fake_users WHERE UserName="' + user + '"'
     stored_password = execute_query(password_query,result=True)
     stored_password = stored_password[0][0]
-    return {'message':verify_password(stored_password,password)}
-
+    if (verify_password(stored_password,password)):
+        return {'message':'success'}
+    else:
+        return {'message':'failure'}
 def user_exists(name):
     query = 'SELECT * FROM fake_users WHERE UserName="' + name + '"'
     result = execute_query(query,result=True)

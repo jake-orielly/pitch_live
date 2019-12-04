@@ -4,17 +4,22 @@ html, body {
     background: seagreen;
 }
 
-p, button, input {
+p, .ui-button, input {
     font-size: 2rem;
 }
 
 @media only screen and (max-width: 1200px)  {
-    p, button, input {
+    p, .ui-button, input {
         font-size: 1.5rem;
     }    
 }
 
-p, button, .user-list {
+.login-input {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+p, .ui-button, .user-list {
     color: white;
 }
 
@@ -38,19 +43,19 @@ p, button, .user-list {
     text-shadow: 2px 3px 7px black;
 }
 
-button {
+.ui-button {
     background: none;
     border: 3px solid white;
     box-shadow: 1px 1px 9px #0000009c;
     border-radius: 0.5rem;
 }
 
-button:hover {
+.ui-button:hover {
     box-shadow: 2px 2px 9px #000000de;
     transform: scale(1.01) translateY(-2px);
 }
 
-button:active, button:focus {
+.ui-button:active, .ui-button:focus {
     outline: none;
     box-shadow: 1px 1px 5px #00000085;
     transform: scale(0.99) translateY(2px);

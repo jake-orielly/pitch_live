@@ -8,6 +8,10 @@ $('#username-input').keyup(function(e) {
 
 $('#username-confirm').click(submitUsername);
 
+$("#login-form").submit(function(e) {
+    e.preventDefault();
+});
+
 function submitUsername() {
     let chat_load_wait; 
     socket = io.connect('http://localhost:3000');
@@ -35,17 +39,20 @@ function submitUsername() {
     },50)
 }
 
-$('#test-request').click(checkAlive);
+$('#test-request').click(login);
 
-function checkAlive(){
+function login(){
     const Http = new XMLHttpRequest();
-    let username = $('#username-input').val()
-    const url='http://23.254.164.217:8000/user_exists?name=' + username;
-    Http.open("GET", url);
+    let username = $('#username-input').val();
+    let password = $('#password-input').val();
+    const url=`http://23.254.164.217:8000/login?user=${username}&password=${password}`;
+    Http.open("POST", url);
     Http.send();
 
     Http.onreadystatechange = (e) => {
-        if (Http.readyState == 4)
-            console.log(Http.responseText)
+        if (Http.readyState == 4) {
+            var result = JSON.parse(Http.responseText)
+            vue_app.login_status = result.message;
+        }
     }
 }

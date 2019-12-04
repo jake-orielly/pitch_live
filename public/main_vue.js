@@ -21,7 +21,9 @@ var vue_app = new Vue({
         curr_bout: 0,
         others_cards: ['placeholder','placeholder','placeholder'],
         my_card: 'placeholder',
-        curr_bid: undefined
+        curr_bid: undefined,
+        login_status: undefined,
+        login_status_map: {'success':'Success','failure':'Password Incorrect','bad-user':'User does not exist'}
     },
     methods: {
         bid(given) {
