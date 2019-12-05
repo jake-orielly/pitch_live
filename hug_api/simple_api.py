@@ -3,6 +3,7 @@ import mysql.connector
 from hug_middleware_cors import CORSMiddleware
 import config
 from hash_pass import hash_password, verify_password
+import random
 
 api = hug.API(__name__)
 api.http.add_middleware(CORSMiddleware(api))
@@ -11,15 +12,17 @@ api.http.add_middleware(CORSMiddleware(api))
 def is_alive():
     return {'result':'API is alive!'}
 
-@hug.post('/set-password',examples='user=Jake&password=1234')
-def set_password(user: hug.types.text, password: hug.types.text):
-    if not user_exists(user):
-        return {'Error':'User ' + user + ' does not exist'}
-    query = 'UPDATE fake_users SET Password = \'' + hash_password(password) + '\' WHERE UserName = \'' + user + '\''
-    
+@hug.post('/sign-up',examples='user=Jake&password=1234')
+def sign_up(user: hug.types.text, password: hug.types.text):
+    if user_exists(user):
+        return {'Error':'That username is not availible.'}
+
+    user_id = random.randint(10**15,10**16-1)
+
+    query = 'INSERT INTO fake_users (UserID,UserName,Password) VALUES (' + str(user_id) + ',"' + user + '","' + hash_password(password) + '")'
     execute_query(query,commit=True)
     
-    return {'message':'Password updated for user ' + user + '.'}
+    return {'message':'Account successfully created!'}
 
 @hug.post('/login',examples='user=Jake&password=1234')
 def login(user: hug.types.text, password: hug.types.text):

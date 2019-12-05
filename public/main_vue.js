@@ -23,7 +23,8 @@ var vue_app = new Vue({
         my_card: 'placeholder',
         curr_bid: undefined,
         login_status: undefined,
-        login_status_map: {'success':'Success','failure':'Password Incorrect','bad-user':'User does not exist'}
+        login_status_map: {'success':'Success','failure':'Password Incorrect','bad-user':'User does not exist'},
+        signup_status: undefined,
     },
     methods: {
         bid(given) {
