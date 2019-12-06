@@ -16,7 +16,7 @@ p, .ui-button, input {
 
 .login-input {
     display: block;
-    margin-bottom: 0.5em;
+    margin: 0.5em auto;
 }
 
 p, .ui-button, .user-list {
@@ -43,6 +43,11 @@ p, .ui-button, .user-list {
     text-shadow: 2px 3px 7px black;
 }
 
+.user-option-button {
+    display: block; 
+    margin: 0 auto;
+}
+
 .ui-button {
     background: none;
     border: 3px solid white;
@@ -55,10 +60,14 @@ p, .ui-button, .user-list {
     transform: scale(1.01) translateY(-2px);
 }
 
-.ui-button:active, .ui-button:focus {
+.ui-button:active {
     outline: none;
     box-shadow: 1px 1px 5px #00000085;
     transform: scale(0.99) translateY(2px);
+}
+
+.ui-button:focus {
+    outline: none;
 }
 
 .nametag {
@@ -96,6 +105,10 @@ p, .ui-button, .user-list {
     box-shadow: 2px 2px 9px #0000009c;
     border-radius: 0.5rem;
     color: #00467d;
+}
+
+#username-container {
+    text-align: center;
 }
 
 #chat-container {

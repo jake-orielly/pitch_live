@@ -25,8 +25,64 @@ var vue_app = new Vue({
         login_status: undefined,
         login_status_map: {'success':'Success','failure':'Password Incorrect','bad-user':'User does not exist'},
         signup_status: undefined,
+        user_confirm: {'guest':'Confirm','existing':'Log In','new':'Sign Up'},
+        user_mode: ''
     },
     methods: {
+        confirm_click() {
+            switch(this.user_mode) {
+                case 'guest':
+                    this.guest_confirm();
+                    break;
+                case 'existing':
+                    this.login();
+                    break;
+                case 'new':
+                    this.create_account();
+                    break;
+            }
+        },
+        set_user_mode(given) {
+            this.user_mode = given;
+        },
+        guest_confirm() {
+            console.log(1)
+        },
+        login(){
+            const Http = new XMLHttpRequest();
+            let username = $('#username-input').val();
+            let password = $('#password-input').val();
+            const url=`http://23.254.164.217:8000/login?user=${username}&password=${password}`;
+            Http.open("POST", url);
+            Http.send();
+        
+            Http.onreadystatechange = (e) => {
+                if (Http.readyState == 4) {
+                    var result = JSON.parse(Http.responseText)
+                    this.login_status = result.message;
+                }
+            }
+        },
+        create_account(){
+            const Http = new XMLHttpRequest();
+            let username = $('#username-input').val();
+            let password = $('#password-input').val();
+            const url=`http://23.254.164.217:8000/sign-up?user=${username}&password=${password}`;
+            Http.open("POST", url);
+            Http.send();
+        
+            Http.onreadystatechange = (e) => {
+                if (Http.readyState == 4) {
+                    var result = JSON.parse(Http.responseText)
+                    if (result.message)
+                        this.signup_status = result.message;
+                    else if (result.error)
+                        this.signup_status = 'Error: ' + result.error;
+                    else
+                        this.signup_status = 'Error: Uknown Error';
+                }
+            }
+        },
         bid(given) {
             this.socket.emit('bid',given);
             this.status = ''
