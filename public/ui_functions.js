@@ -6,8 +6,6 @@ $('#username-input').keyup(function(e) {
         submitUsername();
 });
 
-$('#username-confirm').click(submitUsername);
-
 $("#login-form").submit(function(e) {
     e.preventDefault();
 });
@@ -20,7 +18,6 @@ function submitUsername() {
     username = $('#username-input').val()
     vue_app.username = username
     chat_setup();
-
     $('#username-container').hide();
     socket.emit('username_submission',{
         username_submission: username

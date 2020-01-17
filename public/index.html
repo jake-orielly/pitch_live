@@ -15,7 +15,7 @@
                     <button class="ui-button user-option-button" @click="set_user_mode('existing')">Login</button>
                     <button class="ui-button user-option-button" @click="set_user_mode('new')">Sign Up</button>
                     <form id="login-form">
-                        <input class="login-input" id="username-input" type="text" placeholder="Username" v-if="user_mode" required/>
+                        <input class="login-input" id="username-input" type="text" placeholder="Username" v-if="user_mode" autocomplete="off" required/>
                         <input class="login-input" id="password-input" type="password" placeholder="Password" v-if="user_mode == 'new' || user_mode == 'existing'"required/>
                         <input class="ui-button" type="submit" id="username-confirm" v-if="user_mode" :value="user_confirm[user_mode]" @click="confirm_click">
                     <p>{{login_status_map[login_status]}}</p>

@@ -49,7 +49,7 @@ var vue_app = new Vue({
             },2)
         },
         guest_confirm() {
-            console.log(1)
+            submitUsername();
         },
         login(){
             const Http = new XMLHttpRequest();
