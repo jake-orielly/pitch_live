@@ -44,6 +44,9 @@ var vue_app = new Vue({
         },
         set_user_mode(given) {
             this.user_mode = given;
+            setTimeout(()=>{
+                $('#username-input').focus()
+            },2)
         },
         guest_confirm() {
             console.log(1)

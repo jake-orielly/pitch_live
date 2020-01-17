@@ -17,6 +17,21 @@ p, .ui-button, input {
 .login-input {
     display: block;
     margin: 0.5em auto;
+    background: none;
+    border: none;
+    color: white;
+    text-align: center;
+    padding: 0.5em;
+    border-bottom: 2px solid white;
+}
+
+.login-input:focus {
+    outline: none;
+}
+
+.login-input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: white;
+    opacity: 1; /* Firefox */
 }
 
 p, .ui-button, .user-list {
@@ -46,6 +61,12 @@ p, .ui-button, .user-list {
 .user-option-button {
     display: block; 
     margin: 0 auto;
+    margin: 2rem auto;
+    font-size: 2.5rem;
+}
+
+.user-option-button:first-child {
+    margin-top: 20%;
 }
 
 .ui-button {
