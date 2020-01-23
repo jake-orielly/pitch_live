@@ -164,11 +164,12 @@ var vue_app = new Vue({
             let count = 0;
             this.hand = hand;
             this.deal_done = false;
+            document.getElementById('hand-container').style.display = "block";
             let interval = setInterval(function() {
                 if (count == 6) {
-                    interval = clearInterval(interval);
-                    this.deal_done = true;
-                    setTimeout(()=>vue_app.card_switch(),700)
+                    //interval = clearInterval(interval);
+                    //this.deal_done = true;
+                    //setTimeout(()=>vue_app.card_switch(),700)
                 }
                 else
                     count = vue_app.deal_card(count);
@@ -190,7 +191,6 @@ var vue_app = new Vue({
         card_switch() {
             let card_backs = document.getElementsByClassName('deck-card');
             let hand_cards = document.getElementsByClassName('hand-card');
-            document.getElementById('hand-container').style.display = "block";
             for (var i = 0; i < 6; i++)
                 card_backs[i].style.display = "none";
             for (var i = 0; i < hand_cards.length; i++)
