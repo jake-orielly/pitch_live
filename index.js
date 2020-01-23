@@ -76,7 +76,8 @@ io.on('connection', function(socket){
     }
     if (!lead_suit) {
       lead_suit = card.suit
-      io.sockets.emit('set_prop','lead_suit',card.suit)
+      io.sockets.emit('set_prop','lead_suit',card.suit);
+      io.sockets.emit('set_prop','leader', curr_player.username)
     }
     curr_bout.push({user:curr_player,card:card});
     if (curr_player_num == users.length-1)

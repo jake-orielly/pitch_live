@@ -18,6 +18,7 @@ var vue_app = new Vue({
         game_starting: 0,
         trump_suit: '',
         lead_suit: '',
+        leader: '',
         curr_bout: 0,
         others_cards: ['placeholder','placeholder','placeholder'],
         my_card: 'placeholder',
@@ -167,9 +168,9 @@ var vue_app = new Vue({
             document.getElementById('hand-container').style.display = "block";
             let interval = setInterval(function() {
                 if (count == 6) {
-                    //interval = clearInterval(interval);
-                    //this.deal_done = true;
-                    //setTimeout(()=>vue_app.card_switch(),700)
+                    interval = clearInterval(interval);
+                    this.deal_done = true;
+                    setTimeout(()=>vue_app.card_switch(),700)
                 }
                 else
                     count = vue_app.deal_card(count);

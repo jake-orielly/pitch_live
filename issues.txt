@@ -2,3 +2,5 @@ Problem if p2 deals
 Status text not getting updated correctly
 Move card moves player card all the way to bottom
 Bout end state
+No notification at bout end of which team got which points
+On second bout second player to bid can't pass?
