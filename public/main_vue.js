@@ -190,6 +190,7 @@ var vue_app = new Vue({
         card_switch() {
             let card_backs = document.getElementsByClassName('deck-card');
             let hand_cards = document.getElementsByClassName('hand-card');
+            document.getElementById('hand-container').style.display = "block";
             for (var i = 0; i < 6; i++)
                 card_backs[i].style.display = "none";
             for (var i = 0; i < hand_cards.length; i++)
