@@ -70,6 +70,7 @@ io.on('connection', function(socket){
   socket.on('play',function(card){
     io.sockets.emit('chat',curr_player.username + ' played the ' + card.num + ' of ' + card.suit)
     socket.broadcast.emit('played',{card:card,user:curr_player.username});
+    curr_bout.push({user:curr_player,card:card});
     if (!trump_suit) {
       trump_suit = card.suit
       io.sockets.emit('set_prop','trump_suit',card.suit);
@@ -77,11 +78,10 @@ io.on('connection', function(socket){
     if (!lead_suit) {
       lead_suit = card.suit
       io.sockets.emit('set_prop','lead_suit',card.suit);
-      io.sockets.emit('set_prop','leader', curr_player.username)
     }
-    curr_bout.push({user:curr_player,card:card});
+    io.sockets.emit('set_prop','leader', eval_winner().user.username)
     if (curr_player_num == users.length-1)
-      eval_winner();
+      award_winner();
     else
       next_play();
   })
@@ -99,6 +99,15 @@ function send_updated_users() {
   }
 }
 
+function award_winner(){
+  let winning = eval_winner();
+
+  io.sockets.emit('chat',winning.user.username + ' takes it with the ' + winning.card.num + ' of ' + winning.card.suit)
+  for (let i = 0; i < curr_bout.length; i++)
+    winning.user.team.push(curr_bout[i].card)
+  setTimeout(function() {bout_reset(winning);}, 1500);
+}
+
 function eval_winner(){
   let winning = curr_bout[0];
   let curr;
@@ -108,11 +117,7 @@ function eval_winner(){
     && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
       winning = curr;
   }
-
-  io.sockets.emit('chat',winning.user.username + ' takes it with the ' + winning.card.num + ' of ' + winning.card.suit)
-  for (let i = 0; i < curr_bout.length; i++)
-    winning.user.team.push(curr_bout[i].card)
-  setTimeout(function() {bout_reset(winning);}, 1500);
+  return winning;
 }
 
 function bout_reset(winner) {
@@ -130,7 +135,7 @@ function bout_reset(winner) {
   curr_bout = [];
 
   io.sockets.emit('new_bout','');
-
+  io.sockets.emit('set_prop','leader', '')
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6)
     count_points();
   else

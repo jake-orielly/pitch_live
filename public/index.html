@@ -40,7 +40,7 @@
                 <p>Trump: <span :class="(trump_suit ? trump_suit.toLowerCase() : '')">{{suit_to_icon(trump_suit)}}</span></p>
                 <p>Lead: 
                     <span :class="(lead_suit ? lead_suit.toLowerCase() : '')">{{suit_to_icon(lead_suit)}}</span>
-                    <span>Held by {{leader}}</span>
+                    <span v-if="leader">Held by {{leader}}</span>
                 </p>
                 <div>
                     <p id="status-text">{{status_text}}</p>
