@@ -147,7 +147,7 @@ function count_points(){
   let high = {team:undefined,index:-1};
   let low = {team:undefined,index:14};
   let curr;
-  let points_map = [10,1,2,3,4]
+  let points_map = [10,1,2,3,4];
 
   for (let i = 0; i < 2; i++)
     for (let j = 0; j < teams[i].cards.length; j++) {
@@ -174,14 +174,27 @@ function count_points(){
   high.team.push('High')
   low.team.push('Low')
   
-  score[0] += teams[0].points.length;
-  score[1] += teams[1].points.length;
-
-  io.sockets.emit('set_prop','score',score);
+  assign_points();
 
   teams = [{cards:[],points:[]},{cards:[],points:[]}];
 
   deal_cards();
+}
+
+function assign_points() {
+  let curr_team;
+  for (let i in users) {
+    if (users[i].username == curr_bid.player) {
+      curr_team = users[i].team_num;
+    }
+  }
+  if (teams[curr_team].points.length < curr_bid.amount)
+    score[curr_team] -= curr_bid.amount;
+  else
+    score[curr_team] += teams[curr_team].points.length;
+  score[(curr_team + 1) % 2] += teams[(curr_team + 1) % 2].points.length;
+
+  io.sockets.emit('set_prop','score',score);
 }
 
 // Placeholder, triggered by deal button
