@@ -150,7 +150,8 @@ p, .ui-button, .user-list {
 }
 
 #messages {
-    height: 20em;
+    height: 22rem;
+    width: 22rem;
     overflow-y: scroll;
 }
 
