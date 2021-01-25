@@ -72,7 +72,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('play',function(card){
-    let winning = eval_winner();
+    let winning;
     io.sockets.emit('chat',curr_player.username + ' played the ' + card.num + ' of ' + card.suit)
     socket.broadcast.emit('played',{card:card,user:curr_player.username});
     curr_bout.push({user:curr_player,card:card});
@@ -84,6 +84,7 @@ io.on('connection', function(socket){
       lead_suit = card.suit
       io.sockets.emit('set_prop','lead_suit',card.suit);
     }
+    winning = eval_winner();
     io.sockets.emit('set_prop','leader', winning.user.username)
     if (curr_player_num == users.length-1) {
       award_winner(winning);
@@ -114,11 +115,16 @@ function award_winner(winning){
 
 function eval_winner(){
   let winning = curr_bout[0];
+  console.log(winning)
+  console.log(curr_bout)
   let curr;
   for (let i = 0; i < curr_bout.length; i++) {
     curr = curr_bout[i]
-    if (((winning.card.suit == trump_suit && curr.card.suit == trump_suit) || (curr.card.suit == lead_suit)) 
-    && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
+    if (curr.card.suit == trump_suit && winning.card.suirt != trump_suit)
+      winning = curr;
+    else if (curr.card.suit == trump_suit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
+      winning = curr;
+    else if (curr.card.suit == lead_suit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
       winning = curr;
   }
   return winning;
