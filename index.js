@@ -37,7 +37,6 @@ io.on('connection', function(socket){
   });
 
   socket.on('disconnect', function() {
-      console.log(`User left`)
       let pos;
       for (let i = 0; i < users.length; i++)
         if (users[i].socket.id == socket.id)
@@ -73,6 +72,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('play',function(card){
+    let winning = eval_winner();
     io.sockets.emit('chat',curr_player.username + ' played the ' + card.num + ' of ' + card.suit)
     socket.broadcast.emit('played',{card:card,user:curr_player.username});
     curr_bout.push({user:curr_player,card:card});
@@ -84,9 +84,10 @@ io.on('connection', function(socket){
       lead_suit = card.suit
       io.sockets.emit('set_prop','lead_suit',card.suit);
     }
-    io.sockets.emit('set_prop','leader', eval_winner().user.username)
-    if (curr_player_num == users.length-1)
-      award_winner();
+    io.sockets.emit('set_prop','leader', winning.user.username)
+    if (curr_player_num == users.length-1) {
+      award_winner(winning);
+    }
     else
       next_play();
   })
@@ -104,9 +105,7 @@ function send_updated_users() {
   }
 }
 
-function award_winner(){
-  let winning = eval_winner();
-
+function award_winner(winning){
   io.sockets.emit('chat',winning.user.username + ' takes it with the ' + winning.card.num + ' of ' + winning.card.suit)
   for (let i = 0; i < curr_bout.length; i++)
     winning.user.team.push(curr_bout[i].card)
@@ -176,8 +175,8 @@ function count_points(){
     teams[0].points.push('Game');
   else if (game[0] < game[1])
     teams[1].points.push('Game');
-  high.team.push('High')
-  low.team.push('Low')
+  high.team.push('High');
+  low.team.push('Low');
   
   assign_points();
 
@@ -193,6 +192,8 @@ function assign_points() {
       curr_team = users[i].team_num;
     }
   }
+  console.log(teams[0].points)
+  console.log(teams[1].points)
   if (teams[curr_team].points.length < curr_bid.amount)
     score[curr_team] -= curr_bid.amount;
   else
