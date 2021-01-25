@@ -37,10 +37,15 @@ io.on('connection', function(socket){
   });
 
   socket.on('disconnect', function() {
-      let pos = users.indexOf(socket);
+      console.log(`User left`)
+      let pos;
+      for (let i = 0; i < users.length; i++)
+        if (users[i].socket.id == socket.id)
+          pos = i;
       if (users[pos]) {
         io.emit('chat',users[pos].username + ' has left');
         users.splice(pos, 1);
+        send_updated_users();
       }
   });
 
