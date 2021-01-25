@@ -115,16 +115,19 @@ function award_winner(winning){
 
 function eval_winner(){
   let winning = curr_bout[0];
-  console.log(winning)
-  console.log(curr_bout)
   let curr;
   for (let i = 0; i < curr_bout.length; i++) {
     curr = curr_bout[i]
-    if (curr.card.suit == trump_suit && winning.card.suirt != trump_suit)
+    console.log(curr.card.suit == trump_suit, winning.card.suit == trump_suit)
+    if (curr.card.suit == trump_suit && winning.card.suit != trump_suit) {
       winning = curr;
-    else if (curr.card.suit == trump_suit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
+      console.log("Trumped")
+    }
+    else if (curr.card.suit == trump_suit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num)) {
       winning = curr;
-    else if (curr.card.suit == lead_suit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
+      console.log("Higher trump")
+    }
+    else if (winning.card.suit != trump_suit && curr.card.suit == lead_suit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
       winning = curr;
   }
   return winning;
