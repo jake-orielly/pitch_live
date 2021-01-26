@@ -196,8 +196,6 @@
 <script src="./chat.js"></script>
 <script src="./ui_functions.js"></script>
 <script>
-import io from "socket.io-client";
-
 export default {
   name: "App",
   data() {
@@ -239,6 +237,11 @@ export default {
       signedIn: false
     };
   },
+  sockets: {
+    connect() {
+      console.log("Socket connected")
+    },
+  },
   methods: {
     confirmClick(e) {
       e.preventDefault();
@@ -264,18 +267,13 @@ export default {
       this.submitUsername();
     },
     submitUsername() {
-      var username, socket;
       // let chat_load_wait; 
-      socket = io.connect('http://localhost:3000', {
-        withCredentials: true
-      });
-      this.socket = socket;
       this.signedIn = true;
       this.username = this.usernameInput;
       this.showingUsernameContainer = false;
-      this.chatSetup();
-      socket.emit('username_submission',{
-          username_submission: this.usernameInput
+      //this.chatSetup();
+      this.$socket.emit('usernameSubmission',{
+          usernameSubmission: this.usernameInput
       });
       //TODO: reinstate messaging
       /* chat_load_wait = setInterval(function(){
