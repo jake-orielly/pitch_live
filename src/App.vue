@@ -1,7 +1,9 @@
 <template>
   <div>
     <div v-if="gameStage == 'lobby'">
-      <div id="username-container">
+      <div 
+      v-if="showingUsernameContainer"
+      id="username-container">
         <button
           class="ui-button user-option-button"
           @click="setUserMode('guest')"
@@ -194,6 +196,8 @@
 <script src="./chat.js"></script>
 <script src="./ui_functions.js"></script>
 <script>
+import io from "socket.io-client";
+
 export default {
   name: "App",
   data() {
@@ -231,10 +235,13 @@ export default {
       passwordInput: "",
       userConfirm: { guest: "Confirm", existing: "Log In", new: "Sign Up" },
       userMod: "",
+      showingUsernameContainer: true,
+      signedIn: false
     };
   },
   methods: {
-    confirmClick() {
+    confirmClick(e) {
+      e.preventDefault();
       switch (this.userMod) {
         case "guest":
           this.guestConfirm();
@@ -254,7 +261,87 @@ export default {
       }, 2);
     },
     guestConfirm() {
-      submitUsername();
+      this.submitUsername();
+    },
+    submitUsername() {
+      var username, socket;
+      // let chat_load_wait; 
+      socket = io.connect('http://localhost:3000', {
+        withCredentials: true
+      });
+      this.socket = socket;
+      this.signedIn = true;
+      this.username = this.usernameInput;
+      this.showingUsernameContainer = false;
+      this.chatSetup();
+      socket.emit('username_submission',{
+          username_submission: this.usernameInput
+      });
+      //TODO: reinstate messaging
+      /* chat_load_wait = setInterval(function(){
+          if ($('#send')) {
+              $('#send').click(send_message);
+              $('#message').on('keyup', function (e) {
+                  console.log(e.keycode)
+                  if (e.keyCode === 13) 
+                      send_message();
+              });
+              clearInterval(chat_load_wait);
+          }
+      },50) */
+    },
+    chatSetup() {
+        var messages; 
+        // Listen for chat events
+        this.socket.on('chat', function(data) {
+            if (!messages)
+                messages = document.getElementById('messages');
+            // When we receive a “chat” event, display the message to the user
+            if (typeof data == 'string')
+                messages.innerHTML += '<p class="message-text"><strong>' + data + '</p></strong>';
+            else
+                messages.innerHTML += '<p class="message-text"><strong>' + data.username + ': </strong>' + data.message + '</p>';
+            var objDiv = document.getElementById("messages");
+            setTimeout(function(){objDiv.scrollTop = objDiv.scrollHeight;});
+        });
+
+        // Used when the server wants to change a value in the vue app
+        this.socket.on('setProp',function(prop,val,is_JSON=false){
+            if (is_JSON)
+                val = JSON.parse(val);
+            console.log(prop,val);
+            this[prop] = val;
+        })
+
+        this.socket.on('newBout',function() {
+            this.newBout();
+        })
+
+        this.socket.on('deal',function(hand){
+            console.log(hand)
+            this.deal(hand);
+        })
+
+        this.socket.on('played',function(data){
+            this.otherPlayed(data);
+        })
+
+        // Listen for status events
+        this.socket.on('status', function(data,bid) {
+            if (bid) {
+                this.curr_bid = bid.amount;
+                if (typeof bid.amount == 'number')
+                    this.statusText += ' - ' + bid.player + ' has it with ' + bid.amount
+                this.status = 'bidder';
+            }
+            this.statusText = data;
+        });
+
+        //TODO: reinstate messaging
+        /* $('#message').keyup(function(e) {
+            if (e.keyCode == 13)
+                send_message();
+        }); */
     },
     login() {
       const Http = new XMLHttpRequest();
