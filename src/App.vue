@@ -1,51 +1,51 @@
 <template>
   <div>
-      <div v-if="game_stage == 'lobby'">
+      <div v-if="gameStage == 'lobby'">
           <div id="username-container">
-              <button class="ui-button user-option-button" @click="set_user_mode('guest')">Play As Guest</button>
-              <button class="ui-button user-option-button" @click="set_user_mode('existing')">Login</button>
-              <button class="ui-button user-option-button" @click="set_user_mode('new')">Sign Up</button>
+              <button class="ui-button user-option-button" @click="setUserMode('guest')">Play As Guest</button>
+              <button class="ui-button user-option-button" @click="setUserMode('existing')">Login</button>
+              <button class="ui-button user-option-button" @click="setUserMode('new')">Sign Up</button>
               <form id="login-form">
-                  <input class="login-input" id="username-input" type="text" placeholder="Username" v-if="user_mode" autocomplete="off" required/>
-                  <input class="login-input" id="password-input" type="password" placeholder="Password" v-if="user_mode == 'new' || user_mode == 'existing'" required/>
-                  <input class="ui-button" type="submit" id="username-confirm" v-if="user_mode" :value="user_confirm[user_mode]" @click="confirm_click">
+                  <input class="login-input" id="username-input" type="text" placeholder="Username" v-if="userMod" autocomplete="off" required/>
+                  <input class="login-input" id="password-input" type="password" placeholder="Password" v-if="userMod == 'new' || userMod == 'existing'" required/>
+                  <input class="ui-button" type="submit" id="username-confirm" v-if="userMod" :value="userConfirm[userMod]" @click="confirm_click">
               </form>
-              <p>{{login_status_map[login_status]}}</p>
-              <p>{{signup_status}}</p>
+              <p>{{loginStatusMap[loginStatus]}}</p>
+              <p>{{signupStatus}}</p>
           </div>
-          <div v-if="signed_in">
+          <div v-if="signedIn">
               <p>In This Lobby:</p>
               <table class="user-list">
                   <tr v-for="user in users" v-bind:key="user" class="unselectable">
                       <td>{{user.username}}</td>
-                      <td @click="ready_click(user.username,false)" :class="{clickable : user.username == username}" v-if="user.ready"><span class="ready-mark">&#10004;</span></td>
-                      <td @click="ready_click(user.username,true)" :class="{clickable : user.username == username}" v-if="!user.ready"><span class="not-ready-mark">&#10006;</span></td>
+                      <td @click="readyClick(user.username,false)" :class="{clickable : user.username == username}" v-if="user.ready"><span class="ready-mark">&#10004;</span></td>
+                      <td @click="readyClick(user.username,true)" :class="{clickable : user.username == username}" v-if="!user.ready"><span class="not-ready-mark">&#10006;</span></td>
                   </tr>
               </table>
-              <div v-if="game_starting">
-                  <p>Game starting in {{game_starting}}</p>
-                  <button @click="ready_click('self',false)">Cancel</button>
+              <div v-if="gameStarting">
+                  <p>Game starting in {{gameStarting}}</p>
+                  <button @click="readyClick('self',false)">Cancel</button>
               </div>
           </div>
       </div>
-      <div v-if="game_stage == 'playing'">
-          <p>Trump: <span :class="(trump_suit ? trump_suit.toLowerCase() : '')">{{suit_to_icon(trump_suit)}}</span></p>
+      <div v-if="gameStage == 'playing'">
+          <p>Trump: <span :class="(trumpSuit ? trumpSuit.toLowerCase() : '')">{{suitToIcon(trumpSuit)}}</span></p>
           <p>Lead: 
-              <span :class="(lead_suit ? lead_suit.toLowerCase() : '')">{{suit_to_icon(lead_suit)}}</span>
+              <span :class="(leadSuit ? leadSuit.toLowerCase() : '')">{{suitToIcon(leadSuit)}}</span>
               <span v-if="leader">Held by {{leader}}</span>
           </p>
           <div>
-              <p id="status-text">{{status_text}}</p>
+              <p id="status-text">{{statusText}}</p>
               <p v-if="status == 'bidder'" class="bid-div">Bid: 
                   <button class="clickable bid-button" v-for="i in ['pass',2,3,4,5]
-                  .filter(bid => bid > curr_bid || 
-                  (bid > 0 && curr_bid == 'pass') ||
-                  (bid == 'pass' && (!dealer || curr_bid != 'pass')) ||
-                  (dealer && bid == curr_bid && curr_bid != 'pass'))"
+                  .filter(bid => bid > currBid || 
+                  (bid > 0 && currBid == 'pass') ||
+                  (bid == 'pass' && (!dealer || currBid != 'pass')) ||
+                  (dealer && bid == currBid && currBid != 'pass'))"
                       @click="bid(i)"
                       v-bind:key="'bid-' + i">{{i}}</button>
               </p>
-              <!-- <p>{{curr_bid + ' : ' + dealer}}</p> -->
+              <!-- <p>{{currBid + ' : ' + dealer}}</p> -->
           </div>
           <div>
               <p class="score-text">Score: {{score[0]}} | {{score[1]}}</p>
@@ -53,44 +53,44 @@
           <div id="deck-container">
               <ul>
                   <li class="card-list" v-for="num in 20" v-bind:key="'card-' + num">
-                      <img class="deck-card" v-bind:src="get_card_image('back')">
+                      <img class="deck-card" v-bind:src="getCardImage('back')">
                   </li>
               </ul>
           </div>
           <div id="played-pile">
-              <img v-for="i in 3" v-bind:key="'played-card-' + i" class="deck-card played" :id="'played-pos-' + (i-1)" v-bind:src="get_card_image(others_cards[i-1])">
-              <img class="deck-card played" id="played-pos-3" v-bind:src="get_card_image(my_card)">
+              <img v-for="i in 3" v-bind:key="'played-card-' + i" class="deck-card played" :id="'played-pos-' + (i-1)" v-bind:src="getCardImage(others_cards[i-1])">
+              <img class="deck-card played" id="played-pos-3" v-bind:src="getCardImage(myCard)">
           </div>
           <div class="opponent-0 rotate-90">
               <p class="nametag">{{users[0].username}}</p>
               <img v-for="i in 6" 
               v-bind:key="'oponent-1-card-' + i"
               v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
-              class="other-player-card opponent-0-card" v-bind:src="get_card_image('back')">
+              class="other-player-card opponent-0-card" v-bind:src="getCardImage('back')">
           </div>
           <div class="teammate-1">
               <p class="nametag">{{users[1].username}}</p>
               <img v-for="i in 6" 
               v-bind:key="'teamate-card-' + i"
               v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
-              class="other-player-card" v-bind:src="get_card_image('back')">
+              class="other-player-card" v-bind:src="getCardImage('back')">
           </div>
           <div class="opponent-1 rotate-270">
               <p class="nametag">{{users[2].username}}</p>
               <img v-for="i in 6" 
               v-bind:key="'oponent-2-card' + i"
               v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
-              class="other-player-card opponent-1-card" v-bind:src="get_card_image('back')">
+              class="other-player-card opponent-1-card" v-bind:src="getCardImage('back')">
           </div>
           <div id="hand-container">
               <ul>
                   <li v-for="card in hand" v-bind:key="'card-' + card" @click="play(card)" class="hand-card-slot card-list">
-                      <img class="card hand-card" v-bind:src="get_card_image(card)">
+                      <img class="card hand-card" v-bind:src="getCardImage(card)">
                   </li>
               </ul>
           </div>
       </div>
-      <div id="chat-container" v-if="signed_in">
+      <div id="chat-container" v-if="signedIn">
           <div id="messages"></div>
           <div id="chat-ui-container">
               <input id="message" type="text" placeholder="Message" />
@@ -110,52 +110,52 @@ export default {
       socket: undefined,
       hand: [],
       status: '',
-      status_text: '',
+      statusText: '',
       dealer: false,
-      curr_play: false,
-      deal_done: false,
+      currPlay: false,
+      dealDone: false,
       score: [0,0],
       nums: [1,2,3,4,5,6],
-      game_stage: 'lobby',
-      signed_in: false,
+      gameStage: 'lobby',
+      signedIn: false,
       users: [],
       username: '',
-      game_starting: 0,
-      trump_suit: '',
-      lead_suit: '',
+      gameStarting: 0,
+      trumpSuit: '',
+      leadSuit: '',
       leader: '',
-      curr_bout: 0,
+      currBout: 0,
       others_cards: ['placeholder','placeholder','placeholder'],
-      my_card: 'placeholder',
-      curr_bid: undefined,
-      login_status: undefined,
-      login_status_map: {'success':'Success','failure':'Password Incorrect','bad-user':'User does not exist'},
-      signup_status: undefined,
-      user_confirm: {'guest':'Confirm','existing':'Log In','new':'Sign Up'},
-      user_mode: ''
+      myCard: 'placeholder',
+      currBid: undefined,
+      loginStatus: undefined,
+      loginStatusMap: {'success':'Success','failure':'Password Incorrect','bad-user':'User does not exist'},
+      signupStatus: undefined,
+      userConfirm: {'guest':'Confirm','existing':'Log In','new':'Sign Up'},
+      userMod: ''
     }
   },
   methods: {
       confirm_click() {
-          switch(this.user_mode) {
+          switch(this.userMod) {
               case 'guest':
-                  this.guest_confirm();
+                  this.guestConfirm();
                   break;
               case 'existing':
                   this.login();
                   break;
               case 'new':
-                  this.create_account();
+                  this.createAccount();
                   break;
           }
       },
-      set_user_mode(given) {
-          this.user_mode = given;
+      setUserMode(given) {
+          this.userMod = given;
           setTimeout(()=>{
               $('#username-input').focus()
           },2)
       },
-      guest_confirm() {
+      guestConfirm() {
           submitUsername();
       },
       login(){
@@ -169,11 +169,11 @@ export default {
           Http.onreadystatechange = (e) => {
               if (Http.readyState == 4) {
                   var result = JSON.parse(Http.responseText)
-                  this.login_status = result.message;
+                  this.loginStatus = result.message;
               }
           }
       },
-      create_account(){
+      createAccount(){
           const Http = new XMLHttpRequest();
           let username = $('#username-input').val();
           let password = $('#password-input').val();
@@ -185,20 +185,20 @@ export default {
               if (Http.readyState == 4) {
                   var result = JSON.parse(Http.responseText)
                   if (result.message)
-                      this.signup_status = result.message;
+                      this.signupStatus = result.message;
                   else if (result.error)
-                      this.signup_status = 'Error: ' + result.error;
+                      this.signupStatus = 'Error: ' + result.error;
                   else
-                      this.signup_status = 'Error: Uknown Error';
+                      this.signupStatus = 'Error: Uknown Error';
               }
           }
       },
       bid(given) {
           this.socket.emit('bid',given);
           this.status = ''
-          this.status_text = ''
+          this.statusText = ''
       },
-      ready_click(name,ready) {
+      readyClick(name,ready) {
           console.log('Ready:',name,ready)
           if (name == 'self')
               name = this.username;
@@ -206,17 +206,17 @@ export default {
               this.socket.emit('ready',ready);
       },
       play(card) {
-          if (this.curr_play && !card.played) {
+          if (this.currPlay && !card.played) {
               let legal = true;
-              if (this.lead_suit && this.lead_suit != card.suit && this.trump_suit != card.suit)
+              if (this.leadSuit && this.leadSuit != card.suit && this.trumpSuit != card.suit)
                   for (var i = 0; i < this.hand.length; i++)
-                      if (this.hand[i].suit == this.lead_suit)
+                      if (this.hand[i].suit == this.leadSuit)
                           legal = false;
               if (!legal)
                   alert("Illegal move, you must follow")
               else {
                   this.socket.emit('play',card)
-                  this.curr_play = false;
+                  this.currPlay = false;
                   for (let i = 0; i < this.hand.length; i++)
                       if (this.hand[i].suit == card.suit && this.hand[i].num == card.num) {
                           card.played = true;
@@ -224,28 +224,28 @@ export default {
                           //let destination = document.getElementById("played-pos-3");
                           //let target = document.getElementsByClassName("hand-card")[i];
                           //console.log(destination,target)
-                          //this.move_card(destination,target);
-                          this.my_card = card;
-                          this.curr_bout++;
+                          //this.moveCard(destination,target);
+                          this.myCard = card;
+                          this.currBout++;
                           break;
                       }
               }
               return;
           }
       },
-      other_played(data) {
+      otherPlayed(data) {
           /*let target;
           let destination;
           let opponents;
           let my_team = this._data.users.filter(user => user.username == this.username)[0].team;
           let their_team = this._data.users.filter(user => user.username == data.user)[0].team;*/
-          function find_user(element) {
+          function findUser(element) {
               return element.username == data.user;
           }
-          let their_index = this.users.findIndex(find_user);
+          let their_index = this.users.findIndex(findUser);
           Vue.set(this.others_cards, their_index, data.card);
           /*if (my_team == their_team) {
-              target = document.getElementsByClassName("teammate-1")[this.curr_bout];
+              target = document.getElementsByClassName("teammate-1")[this.currBout];
               destination = document.getElementById("played-pos-1");
           }
           else {
@@ -253,49 +253,49 @@ export default {
               for (var i = 0; i < opponents.length; i++)
                   if (opponents[i].username == data.user) {
                       console.log("opponent-" + i + "-card")
-                      target = document.getElementsByClassName("opponent-" + i + "-card")[this.curr_bout];
+                      target = document.getElementsByClassName("opponent-" + i + "-card")[this.currBout];
                       destination = document.getElementById("played-pos-" + i*2);
                   }
           }
           console.log("Other play")
           console.log(target)
           console.log(destination)
-          this.move_card(destination,target);*/
+          this.moveCard(destination,target);*/
 
       },
-      new_bout() {
+      newBout() {
           this.others_cards = ['placeholder','placeholder','placeholder'];
-          this.my_card = 'placeholder';
+          this.myCard = 'placeholder';
       },
       deal(hand) {
           let count = 0;
           this.hand = hand;
-          this.deal_done = false;
+          this.dealDone = false;
           document.getElementById('hand-container').style.display = "block";
           let interval = setInterval(function() {
               if (count == 6) {
                   interval = clearInterval(interval);
-                  this.deal_done = true;
-                  setTimeout(()=>vue_app.card_switch(),700)
+                  this.dealDone = true;
+                  setTimeout(()=>vue_app.cardSwitch(),700)
               }
               else
-                  count = vue_app.deal_card(count);
+                  count = vue_app.dealCard(count);
           },500)
       },
-      deal_card(num) {
+      dealCard(num) {
           let destination = document.getElementsByClassName("card hand-card")[num];
           let target = document.getElementsByClassName("deck-card")[num];
-          this.move_card(destination,target);
+          this.moveCard(destination,target);
           return num + 1;
       },
-      move_card(destination,target) {
+      moveCard(destination,target) {
           let dest_rect = destination.getBoundingClientRect();
           target.style.position = 'absolute'; 
           target.style.top = dest_rect.y + 'px';
           target.style.left = dest_rect.x + 'px';
-          target.style["z-index"] = 10 + this.curr_bout;
+          target.style["z-index"] = 10 + this.currBout;
       },
-      card_switch() {
+      cardSwitch() {
           let card_backs = document.getElementsByClassName('deck-card');
           let hand_cards = document.getElementsByClassName('hand-card');
           for (var i = 0; i < 6; i++)
@@ -304,7 +304,7 @@ export default {
               hand_cards[i].style.visibility = "visible";
           
       },
-      get_card_image(card) {
+      getCardImage(card) {
           if (card == 'back')
               return 'cards/red_back.png';
           if (card == 'placeholder')
@@ -315,7 +315,7 @@ export default {
               num = face_map[num];
           return 'cards/' + num + card.suit[0] + '.png'
       },
-      suit_to_icon(suit) {
+      suitToIcon(suit) {
           switch(suit) {
           case 'Clubs':
               return '♣';
