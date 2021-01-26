@@ -239,6 +239,9 @@ export default {
   sockets: {
     connect() {
       console.log("Socket connected");
+    },
+    setProp() {
+      console.log("HERE")
     }
   },
   methods: {

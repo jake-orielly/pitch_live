@@ -45,7 +45,7 @@ export default {
     },
   },
   sockets: {
-    chat: function (data) {
+    chat (data) {
       // When we receive a “chat” event, display the message to the user
       if (typeof data == "string")
         this.messages.push({
@@ -78,7 +78,7 @@ export default {
       this.chatScroll();
     },
     chatScroll() {
-      setTimeout(function () {
+      setTimeout(() => {
         this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
       });
     },
