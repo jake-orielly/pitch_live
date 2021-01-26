@@ -35,10 +35,6 @@ p, .ui-button, input {
     opacity: 1; /* Firefox */
 }
 
-p, .ui-button, .user-list {
-    color: white;
-}
-
 .user-list {
     font-size: 3rem;
 }

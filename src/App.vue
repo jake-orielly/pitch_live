@@ -1,9 +1,7 @@
 <template>
   <div>
     <div v-if="gameStage == 'lobby'">
-      <div 
-      v-if="showingUsernameContainer"
-      id="username-container">
+      <div v-if="showingUsernameContainer" id="username-container">
         <button
           class="ui-button user-option-button"
           @click="setUserMode('guest')"
@@ -184,18 +182,16 @@
         </ul>
       </div>
     </div>
-    <div id="chat-container" v-if="signedIn">
-      <div id="messages"></div>
-      <div id="chat-ui-container">
-        <input id="message" type="text" placeholder="Message" />
-        <button id="send" class="send-button">Send</button>
-      </div>
-    </div>
+    <ChatBox 
+      v-if="signedIn"
+      :username="username"
+    />
   </div>
 </template>
 <script src="./chat.js"></script>
 <script src="./ui_functions.js"></script>
 <script>
+import ChatBox from "./components/ChatBox.vue"
 export default {
   name: "App",
   data() {
@@ -234,13 +230,16 @@ export default {
       userConfirm: { guest: "Confirm", existing: "Log In", new: "Sign Up" },
       userMod: "",
       showingUsernameContainer: true,
-      signedIn: false
+      signedIn: false,
     };
+  },
+  components: {
+    ChatBox
   },
   sockets: {
     connect() {
-      console.log("Socket connected")
-    },
+      console.log("Socket connected");
+    }
   },
   methods: {
     confirmClick(e) {
@@ -267,79 +266,46 @@ export default {
       this.submitUsername();
     },
     submitUsername() {
-      // let chat_load_wait; 
       this.signedIn = true;
       this.username = this.usernameInput;
       this.showingUsernameContainer = false;
-      //this.chatSetup();
-      this.$socket.emit('usernameSubmission',{
-          usernameSubmission: this.usernameInput
+      this.chatSetup();
+      this.$socket.emit("usernameSubmission", {
+        usernameSubmission: this.usernameInput,
       });
-      //TODO: reinstate messaging
-      /* chat_load_wait = setInterval(function(){
-          if ($('#send')) {
-              $('#send').click(send_message);
-              $('#message').on('keyup', function (e) {
-                  console.log(e.keycode)
-                  if (e.keyCode === 13) 
-                      send_message();
-              });
-              clearInterval(chat_load_wait);
-          }
-      },50) */
     },
     chatSetup() {
-        var messages; 
-        // Listen for chat events
-        this.socket.on('chat', function(data) {
-            if (!messages)
-                messages = document.getElementById('messages');
-            // When we receive a “chat” event, display the message to the user
-            if (typeof data == 'string')
-                messages.innerHTML += '<p class="message-text"><strong>' + data + '</p></strong>';
-            else
-                messages.innerHTML += '<p class="message-text"><strong>' + data.username + ': </strong>' + data.message + '</p>';
-            var objDiv = document.getElementById("messages");
-            setTimeout(function(){objDiv.scrollTop = objDiv.scrollHeight;});
-        });
+      // Used when the server wants to change a value in the vue app
+      this.$socket.on("setProp", function (prop, val, is_JSON = false) {
+        if (is_JSON) val = JSON.parse(val);
+        console.log(prop, val);
+        this[prop] = val;
+      });
 
-        // Used when the server wants to change a value in the vue app
-        this.socket.on('setProp',function(prop,val,is_JSON=false){
-            if (is_JSON)
-                val = JSON.parse(val);
-            console.log(prop,val);
-            this[prop] = val;
-        })
+      this.$socket.on("newBout", function () {
+        this.newBout();
+      });
 
-        this.socket.on('newBout',function() {
-            this.newBout();
-        })
+      this.$socket.on("deal", function (hand) {
+        console.log(hand);
+        this.deal(hand);
+      });
 
-        this.socket.on('deal',function(hand){
-            console.log(hand)
-            this.deal(hand);
-        })
+      this.$socket.on("played", function (data) {
+        this.otherPlayed(data);
+      });
 
-        this.socket.on('played',function(data){
-            this.otherPlayed(data);
-        })
-
-        // Listen for status events
-        this.socket.on('status', function(data,bid) {
-            if (bid) {
-                this.curr_bid = bid.amount;
-                if (typeof bid.amount == 'number')
-                    this.statusText += ' - ' + bid.player + ' has it with ' + bid.amount
-                this.status = 'bidder';
-            }
-            this.statusText = data;
-        });
-
-        //TODO: reinstate messaging
-        /* $('#message').keyup(function(e) {
-            if (e.keyCode == 13)
-                send_message();
-        }); */
+      // Listen for status events
+      this.$socket.on("status", function (data, bid) {
+        if (bid) {
+          this.curr_bid = bid.amount;
+          if (typeof bid.amount == "number")
+            this.statusText +=
+              " - " + bid.player + " has it with " + bid.amount;
+          this.status = "bidder";
+        }
+        this.statusText = data;
+      });
     },
     login() {
       const Http = new XMLHttpRequest();
@@ -374,14 +340,14 @@ export default {
       };
     },
     bid(given) {
-      this.socket.emit("bid", given);
+      this.$socket.emit("bid", given);
       this.status = "";
       this.statusText = "";
     },
     readyClick(name, ready) {
       console.log("Ready:", name, ready);
       if (name == "self") name = this.username;
-      if (name == this.username) this.socket.emit("ready", ready);
+      if (name == this.username) this.$socket.emit("ready", ready);
     },
     play(card) {
       if (this.currPlay && !card.played) {
@@ -395,7 +361,7 @@ export default {
             if (this.hand[i].suit == this.leadSuit) legal = false;
         if (!legal) alert("Illegal move, you must follow");
         else {
-          this.socket.emit("play", card);
+          this.$socket.emit("play", card);
           this.currPlay = false;
           for (let i = 0; i < this.hand.length; i++)
             if (
@@ -531,6 +497,10 @@ input {
   }
 }
 
+p, .ui-button, .user-list {
+    color: white;
+}
+
 .login-input {
   display: block;
   margin: 0.5em auto;
@@ -550,12 +520,6 @@ input {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: white;
   opacity: 1; /* Firefox */
-}
-
-p,
-.ui-button,
-.user-list {
-  color: white;
 }
 
 .user-list {
@@ -624,15 +588,6 @@ p,
   padding: 0em 1em;
 }
 
-.message-text {
-  color: black;
-}
-
-.message-text,
-#message {
-  font-size: 1rem;
-}
-
 .clickable {
   cursor: pointer;
   user-select: none;
@@ -642,39 +597,14 @@ p,
   user-select: none;
 }
 
-.send-button {
-  background: #ffffff;
-  border: 3px solid #00467d;
-  box-shadow: 2px 2px 9px #0000009c;
-  border-radius: 0.5rem;
-  color: #00467d;
-}
-
 #username-container {
   text-align: center;
-}
-
-#chat-container {
-  display: inline-block;
-  position: absolute;
-  right: 2em;
-  bottom: 1em;
-  background-color: lightgrey;
-  border-radius: 1em;
-  padding: 1em;
-  box-shadow: 3px 3px 4px #0000008f;
 }
 
 .score-text {
   position: absolute;
   top: 0;
   right: 5em;
-}
-
-#messages {
-  height: 22rem;
-  width: 22rem;
-  overflow-y: scroll;
 }
 
 .card,

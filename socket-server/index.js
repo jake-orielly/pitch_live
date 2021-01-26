@@ -34,7 +34,6 @@ io.on('connection', function(socket){
   socket.on('bid',recieve_bid);
 
   socket.on('usernameSubmission',function(data) {
-    console.log('Username submitted')
     users.push({username:data['usernameSubmission'],ready:false,socket:socket});
     users[users.length-1].team = teams[users.length%2].cards;
     users[users.length-1].team_num = users.length%2;
