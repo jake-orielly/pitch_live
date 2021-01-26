@@ -47,7 +47,7 @@
             id="username-confirm"
             v-if="userMod"
             :value="userConfirm[userMod]"
-            @click="confirm_click"
+            @click="confirmClick"
           />
         </form>
         <p>{{ loginStatusMap[loginStatus] }}</p>
@@ -234,7 +234,7 @@ export default {
     };
   },
   methods: {
-    confirm_click() {
+    confirmClick() {
       switch (this.userMod) {
         case "guest":
           this.guestConfirm();
