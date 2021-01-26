@@ -2,6 +2,7 @@ html, body {
     margin: 5px 5px 5px 1em;
     padding: 0;
     background: seagreen;
+    user-select: none;
 }
 
 p, .ui-button, input {
