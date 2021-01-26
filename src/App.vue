@@ -22,20 +22,23 @@
         </button>
         <form id="login-form">
           <input
+            v-if="userMod"
+            v-model="usernameInput"
+            ref="usernameInput"
             class="login-input"
             id="username-input"
             type="text"
             placeholder="Username"
-            v-if="userMod"
             autocomplete="off"
             required
           />
           <input
-            class="login-input"
-            id="password-input"
+            v-if="userMod == 'new' || userMod == 'existing'"
+            v-model="passwordInput"
             type="password"
             placeholder="Password"
-            v-if="userMod == 'new' || userMod == 'existing'"
+            class="login-input"
+            id="password-input"
             required
           />
           <input
@@ -224,6 +227,8 @@ export default {
         "bad-user": "User does not exist",
       },
       signupStatus: undefined,
+      usernameInput: "",
+      passwordInput: "",
       userConfirm: { guest: "Confirm", existing: "Log In", new: "Sign Up" },
       userMod: "",
     };
@@ -245,7 +250,7 @@ export default {
     setUserMode(given) {
       this.userMod = given;
       setTimeout(() => {
-        $("#username-input").focus();
+        this.$refs.usernameInput.focus();
       }, 2);
     },
     guestConfirm() {
@@ -253,8 +258,8 @@ export default {
     },
     login() {
       const Http = new XMLHttpRequest();
-      let username = $("#username-input").val();
-      let password = $("#password-input").val();
+      let username = this.usernameInput;
+      let password = this.passwordInput;
       const url = `http://23.254.164.217:8000/login?user=${username}&password=${password}`;
       Http.open("POST", url);
       Http.send();
@@ -268,8 +273,8 @@ export default {
     },
     createAccount() {
       const Http = new XMLHttpRequest();
-      let username = $("#username-input").val();
-      let password = $("#password-input").val();
+      let username = this.usernameInput;
+      let password = this.passwordInput;
       const url = `http://23.254.164.217:8000/sign-up?user=${username}&password=${password}`;
       Http.open("POST", url);
       Http.send();
