@@ -53,32 +53,7 @@
         <p>{{ loginStatusMap[loginStatus] }}</p>
         <p>{{ signupStatus }}</p>
       </div>
-      <div v-if="signedIn">
-        <p>In This Lobby:</p>
-        <table class="user-list">
-          <tr v-for="user in users" v-bind:key="user" class="unselectable">
-            <td>{{ user.username }}</td>
-            <td
-              @click="readyClick(user.username, false)"
-              :class="{ clickable: user.username == username }"
-              v-if="user.ready"
-            >
-              <span class="ready-mark">&#10004;</span>
-            </td>
-            <td
-              @click="readyClick(user.username, true)"
-              :class="{ clickable: user.username == username }"
-              v-if="!user.ready"
-            >
-              <span class="not-ready-mark">&#10006;</span>
-            </td>
-          </tr>
-        </table>
-        <div v-if="gameStarting">
-          <p>Game starting in {{ gameStarting }}</p>
-          <button @click="readyClick('self', false)">Cancel</button>
-        </div>
-      </div>
+      <Lobby v-if="signedIn" :users="users" :username="username" />
     </div>
     <div v-if="gameStage == 'playing'">
       <p>
@@ -182,16 +157,15 @@
         </ul>
       </div>
     </div>
-    <ChatBox 
-      v-if="signedIn"
-      :username="username"
-    />
+    <ChatBox v-if="signedIn" :username="username" />
   </div>
 </template>
 <script src="./chat.js"></script>
 <script src="./ui_functions.js"></script>
 <script>
-import ChatBox from "./components/ChatBox.vue"
+import ChatBox from "./components/ChatBox.vue";
+import Lobby from "./components/Lobby.vue";
+
 export default {
   name: "App",
   data() {
@@ -234,15 +208,14 @@ export default {
     };
   },
   components: {
-    ChatBox
+    ChatBox,
+    Lobby,
   },
   sockets: {
-    connect() {
-      console.log("Socket connected");
+    setProp(data) {
+      if (data.isJson) data.val = JSON.parse(data.val);
+      this[data.prop] = data.val;
     },
-    setProp() {
-      console.log("HERE")
-    }
   },
   methods: {
     confirmClick(e) {
@@ -278,13 +251,6 @@ export default {
       });
     },
     chatSetup() {
-      // Used when the server wants to change a value in the vue app
-      this.$socket.on("setProp", function (prop, val, is_JSON = false) {
-        if (is_JSON) val = JSON.parse(val);
-        console.log(prop, val);
-        this[prop] = val;
-      });
-
       this.$socket.on("newBout", function () {
         this.newBout();
       });
@@ -346,11 +312,6 @@ export default {
       this.$socket.emit("bid", given);
       this.status = "";
       this.statusText = "";
-    },
-    readyClick(name, ready) {
-      console.log("Ready:", name, ready);
-      if (name == "self") name = this.username;
-      if (name == this.username) this.$socket.emit("ready", ready);
     },
     play(card) {
       if (this.currPlay && !card.played) {
@@ -500,8 +461,10 @@ input {
   }
 }
 
-p, .ui-button, .user-list {
-    color: white;
+p,
+.ui-button,
+.user-list {
+  color: white;
 }
 
 .login-input {
