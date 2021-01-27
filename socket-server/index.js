@@ -59,16 +59,28 @@ io.on('connection', function(socket){
     send_updated_users();
     if (count && !ready) {
       clearInterval(game_start_countdown);
-      io.sockets.emit('setProp','game_starting',0);
+      io.sockets.emit('setProp', {
+        prop:'game_starting',
+        val:0
+      });
     }
     else if (users.filter(user => !user.ready).length == 0) {
-      io.sockets.emit('setProp','game_starting',count);
+      io.sockets.emit('setProp', {
+        prop:'game_starting',
+        val: count
+      });
       game_start_countdown = setInterval(function(){
         count--;
-        io.sockets.emit('setProp','game_starting',count);
+        io.sockets.emit('setProp', {
+          prop:'game_starting',
+          val: count
+        });
         if (count == 0) {
           clearInterval(game_start_countdown);
-          io.sockets.emit('setProp','game_stage','playing');
+          io.sockets.emit('setProp', {
+            prop:'game_stage',
+            val: 'playing'
+          });
           setTimeout(deal_cards,500);
         }
       },1000);
@@ -82,14 +94,23 @@ io.on('connection', function(socket){
     curr_bout.push({user:curr_player,card:card});
     if (!trump_suit) {
       trump_suit = card.suit
-      io.sockets.emit('setProp','trump_suit',card.suit);
+      io.sockets.emit('setProp', {
+        prop:'trump_suit',
+        val: card.suit
+      });
     }
     if (!lead_suit) {
       lead_suit = card.suit
-      io.sockets.emit('setProp','lead_suit',card.suit);
+      io.sockets.emit('setProp', {
+        prop:'lead_suit',
+        val: card.suit
+      });
     }
     winning = eval_winner();
-    io.sockets.emit('setProp','leader', winning.user.username)
+    io.sockets.emit('setProp', {
+      prop:'leader', 
+      val: winning.user.username
+    });
     if (curr_player_num == users.length-1) {
       award_winner(winning);
     }
@@ -106,7 +127,11 @@ function send_updated_users() {
   for (let i in users) {
     i = parseInt(i);
     ordered = shuffle_to_front(simple_users,((i + 1) % simple_users.length));
-    users[i].socket.emit('setProp','users',JSON.stringify(ordered),true);
+    users[i].socket.emit('setProp', {
+      prop: 'users',
+      val: JSON.stringify(ordered),
+      isJson: true
+    });
   }
 }
 
@@ -147,12 +172,19 @@ function bout_reset(winner) {
   // It will get incremented by next_play
   curr_player_num = -1;
 
-  io.sockets.emit('setProp','lead_suit',undefined);
+  io.sockets.emit('setProp', {
+    prop: 'lead_suit',
+    val: undefined
+  });
   lead_suit = undefined;
   curr_bout = [];
 
   io.sockets.emit('newBout','');
-  io.sockets.emit('setProp','leader', '')
+  io.sockets.emit('setProp', {
+    prop:'leader',
+    val: ''
+  });
+
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6)
     count_points();
   else
@@ -213,7 +245,10 @@ function assign_points() {
     score[curr_team] += teams[curr_team].points.length;
   score[(curr_team + 1) % 2] += teams[(curr_team + 1) % 2].points.length;
 
-  io.sockets.emit('setProp','score',score);
+  io.sockets.emit('setProp', {
+    prop:'score',
+    val:score
+  });
 }
 
 // Placeholder, triggered by deal button
@@ -224,7 +259,10 @@ function deal_cards(){
   dealer = users[users.length-1]
   dealer.socket.broadcast.emit('chat',dealer.username + ' is dealer')
   dealer.socket.emit('chat','You are the dealer')
-  dealer.socket.emit('setProp','dealer',true)
+  dealer.socket.emit('setProp', {
+    prop:'dealer',
+    val:true
+  });
 
   let hand;
   for (var i = 0; i < users.length; i++) {
@@ -279,8 +317,14 @@ function set_up_hand(){
   }
 
   users = shuffle_to_front(users,curr_player_num);
-  io.sockets.emit('setProp','lead_suit',undefined);
-  io.sockets.emit('setProp','trump_suit',undefined);
+  io.sockets.emit('setProp', {
+    prop:'lead_suit',
+    val: undefined
+  });
+  io.sockets.emit('setProp', {
+    prop:'trump_suit',
+    val:undefined
+  });
   trump_suit = undefined;
   lead_suit = undefined;
   curr_bout = [];
@@ -299,7 +343,10 @@ function next_play(){
   curr_player = users[curr_player_num]
   curr_player.socket.broadcast.emit('status','Waiting for ' + curr_player.username + ' to make a play')
   curr_player.socket.emit('status','Waiting for you to make a play')
-  curr_player.socket.emit('setProp','curr_play',true)
+  curr_player.socket.emit('setProp',{
+    prop:'curr_play',
+    val:true
+  });
 }
 
 var master_deck = []
