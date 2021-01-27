@@ -38,6 +38,10 @@ export default {
       type: String,
       required: true,
     },
+    gameStarting: {
+      type: Number,
+      required: true
+    }
   },
   data() {
     return {};

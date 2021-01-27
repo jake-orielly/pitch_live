@@ -53,7 +53,7 @@
         <p>{{ loginStatusMap[loginStatus] }}</p>
         <p>{{ signupStatus }}</p>
       </div>
-      <Lobby v-if="signedIn" :users="users" :username="username" />
+      <Lobby v-if="signedIn" :users="users" :username="username" :gameStarting="gameStarting" />
     </div>
     <div v-if="gameStage == 'playing'">
       <p>

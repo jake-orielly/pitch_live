@@ -40,6 +40,7 @@ io.on('connection', function(socket){
     socket.broadcast.emit('chat',data['usernameSubmission'] + ' has joined');
     send_updated_users();
   });
+
   socket.on('disconnect', function() {
       let pos;
       for (let i = 0; i < users.length; i++)
@@ -56,29 +57,30 @@ io.on('connection', function(socket){
     //let count = 5;
     let count = 1;
     users.filter(user => user.socket == socket)[0].ready = ready;
+    console.log(users.filter(user => !user.ready).length)
     send_updated_users();
     if (count && !ready) {
       clearInterval(game_start_countdown);
       io.sockets.emit('setProp', {
-        prop:'game_starting',
+        prop:'gameStarting',
         val:0
       });
     }
     else if (users.filter(user => !user.ready).length == 0) {
       io.sockets.emit('setProp', {
-        prop:'game_starting',
+        prop:'gameStarting',
         val: count
       });
       game_start_countdown = setInterval(function(){
         count--;
         io.sockets.emit('setProp', {
-          prop:'game_starting',
+          prop:'gameStarting',
           val: count
         });
         if (count == 0) {
           clearInterval(game_start_countdown);
           io.sockets.emit('setProp', {
-            prop:'game_stage',
+            prop:'gameStage',
             val: 'playing'
           });
           setTimeout(deal_cards,500);
