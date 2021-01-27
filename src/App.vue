@@ -83,18 +83,10 @@
         :numCards="6"
         :playerClass="'opponent-1'"
       />
-      <div id="hand-container">
-        <ul>
-          <li
-            v-for="(card, ind) in hand"
-            v-bind:key="'hand-card-' + ind"
-            @click="play(card)"
-            class="hand-card-slot card-list"
-          >
-            <img class="card hand-card" v-bind:src="getCardImage(card)" />
-          </li>
-        </ul>
-      </div>
+      <HandContainer
+        :hand="hand"
+        ref="handContainer"
+      />
     </div>
     <ChatBox v-if="signedIn" :username="username" />
   </div>
@@ -104,6 +96,7 @@
 <script>
 import ChatBox from "./components/ChatBox.vue";
 import GameLobby from "./components/GameLobby.vue";
+import HandContainer from "./components/HandContainer.vue"
 import OthersHand from "./components/OthersHand.vue";
 import UserOptions from "./components/UserOptions.vue";
 
@@ -118,7 +111,6 @@ export default {
       statusText: "",
       dealer: false,
       currPlay: false,
-      dealDone: false,
       score: [0, 0],
       nums: [1, 2, 3, 4, 5, 6],
       gameStage: "lobby",
@@ -139,6 +131,7 @@ export default {
   components: {
     ChatBox,
     GameLobby,
+    HandContainer,
     OthersHand,
     UserOptions,
   },
@@ -160,7 +153,7 @@ export default {
       this.newBout();
     },
     deal(hand) {
-      this.deal(hand);
+      this.$refs.handContainer.deal(hand);
     },
     played(data) {
       this.otherPlayed(data);
@@ -174,39 +167,6 @@ export default {
       this.$socket.emit("bid", given);
       this.status = "";
       this.statusText = "";
-    },
-    play(card) {
-      if (this.currPlay && !card.played) {
-        let legal = true;
-        if (
-          this.leadSuit &&
-          this.leadSuit != card.suit &&
-          this.trumpSuit != card.suit
-        )
-          for (var i = 0; i < this.hand.length; i++)
-            if (this.hand[i].suit == this.leadSuit) legal = false;
-        if (!legal) alert("Illegal move, you must follow");
-        else {
-          this.$socket.emit("play", card);
-          this.currPlay = false;
-          for (let i = 0; i < this.hand.length; i++)
-            if (
-              this.hand[i].suit == card.suit &&
-              this.hand[i].num == card.num
-            ) {
-              card.played = true;
-              this.hand.splice(i, 1);
-              //let destination = document.getElementById("played-pos-3");
-              //let target = document.getElementsByClassName("hand-card")[i];
-              //console.log(destination,target)
-              //this.moveCard(destination,target);
-              this.myCard = card;
-              this.currBout++;
-              break;
-            }
-        }
-        return;
-      }
     },
     otherPlayed(data) {
       /*let target;
@@ -240,39 +200,6 @@ export default {
     newBout() {
       this.others_cards = ["placeholder", "placeholder", "placeholder"];
       this.myCard = "placeholder";
-    },
-    deal(hand) {
-      let count = 0;
-      this.hand = hand;
-      this.dealDone = false;
-      document.getElementById("hand-container").style.display = "block";
-      let interval = setInterval(() => {
-        if (count == 6) {
-          interval = clearInterval(interval);
-          this.dealDone = true;
-          setTimeout(() => this.cardSwitch(), 700);
-        } else count = this.dealCard(count);
-      }, 500);
-    },
-    dealCard(num) {
-      let destination = document.getElementsByClassName("card hand-card")[num];
-      let target = document.getElementsByClassName("deck-card")[num];
-      this.moveCard(destination, target);
-      return num + 1;
-    },
-    moveCard(destination, target) {
-      let dest_rect = destination.getBoundingClientRect();
-      target.style.position = "absolute";
-      target.style.top = dest_rect.y + "px";
-      target.style.left = dest_rect.x + "px";
-      target.style["z-index"] = 10 + this.currBout;
-    },
-    cardSwitch() {
-      let card_backs = document.getElementsByClassName("deck-card");
-      let hand_cards = document.getElementsByClassName("hand-card");
-      for (var i = 0; i < 6; i++) card_backs[i].style.display = "none";
-      for (var i = 0; i < hand_cards.length; i++)
-        hand_cards[i].style.visibility = "visible";
     },
     suitToIcon(suit) {
       switch (suit) {
@@ -410,20 +337,10 @@ p,
   display: inline;
 }
 
-.hand-card {
-  visibility: hidden;
-}
-
 #played-pile {
   position: absolute;
   left: calc(50% - 6.5em);
   top: calc(50% - 8em);
-}
-
-#hand-container {
-  position: absolute;
-  bottom: 5%;
-  z-index: 10;
 }
 
 .bid-div {
