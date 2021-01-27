@@ -1,10 +1,10 @@
 <template>
-  <p v-if="leadSuit">
+  <p v-if="$store.state.leadSuit">
     Lead:
-    <span :class="leadSuit ? leadSuit.toLowerCase() : ''">{{
-      suitToIcon(leadSuit)
+    <span v-if="$store.state.leader">{{ `${$store.state.leader}'s ` }}</span>
+    <span :class="$store.state.leadSuit ? $store.state.leadSuit.toLowerCase() : ''">{{
+      suitToIcon($store.state.leadSuit)
     }}</span>
-    <span v-if="leader">Held by: {{ leader }}</span>
   </p>
 </template>
 
@@ -12,16 +12,6 @@
 import utilities from "../js/utilities.js";
 
 export default {
-  props: {
-    leadSuit: {
-      type: String,
-      required: false,
-    },
-    leader: {
-      type: String,
-      required: false,
-    },
-  },
   methods: {
     suitToIcon(val) {
       return utilities.suitToIcon(val);

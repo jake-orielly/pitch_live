@@ -24,10 +24,7 @@
         <TrumpSuitContainer 
           :trumpSuit="trumpSuit"
         />
-        <LeadSuitContainer 
-          :leadSuit="leadSuit"
-          :leader="leader"
-        />
+        <LeadSuitContainer/>
       </div>
       <DeckCards />
       <PlayedPile 
@@ -91,8 +88,6 @@ export default {
       username: "",
       gameStarting: 0,
       trumpSuit: "",
-      leadSuit: "",
-      leader: "",
       currBout: 0,
       othersCards: ["placeholder", "placeholder", "placeholder"],
       myCard: "placeholder",
@@ -117,6 +112,9 @@ export default {
     setProp(data) {
       if (data.isJson) data.val = JSON.parse(data.val);
       this[data.prop] = data.val;
+    },
+    callStoreMutation(data) {
+      this.$store.commit(data.mutation, data.val);
     },
     status(data) {
       this.statusText = data;

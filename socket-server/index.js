@@ -102,14 +102,14 @@ io.on('connection', function (socket) {
     }
     if (!leadSuit) {
       leadSuit = card.suit
-      io.sockets.emit('setProp', {
-        prop: 'leadSuit',
+      io.sockets.emit('callStoreMutation', {
+        mutation: 'setLeadSuit',
         val: card.suit
       });
     }
     winning = evalWinner();
-    io.sockets.emit('setProp', {
-      prop: 'leader',
+    io.sockets.emit('callStoreMutation', {
+      mutation: 'setLeader',
       val: winning.user.username
     });
     if (currPlayerNum == users.length - 1) {
@@ -170,16 +170,16 @@ function boutReset(winner) {
   // It will get incremented by nextPlay
   currPlayerNum = -1;
 
-  io.sockets.emit('setProp', {
-    prop: 'leadSuit',
+  io.sockets.emit('callStoreMutation', {
+    mutation: 'setLeadSuit',
     val: undefined
   });
   leadSuit = undefined;
   currBout = [];
 
   io.sockets.emit('newBout', '');
-  io.sockets.emit('setProp', {
-    prop: 'leader',
+  io.sockets.emit('callStoreMutation', {
+    mutation: 'setLeader',
     val: ''
   });
 
@@ -328,8 +328,8 @@ function setUpHand() {
   }
 
   users = shuffleToFront(users, currPlayerNum);
-  io.sockets.emit('setProp', {
-    prop: 'leadSuit',
+  io.sockets.emit('callStoreMutation', {
+    mutation: 'setLeadSuit',
     val: undefined
   });
   io.sockets.emit('setProp', {
