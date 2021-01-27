@@ -148,14 +148,11 @@ function evalWinner() {
   let curr;
   for (let i = 0; i < currBout.length; i++) {
     curr = currBout[i]
-    console.log(curr.card.suit == trumpSuit, winning.card.suit == trumpSuit)
     if (curr.card.suit == trumpSuit && winning.card.suit != trumpSuit) {
       winning = curr;
-      console.log("Trumped")
     }
     else if (curr.card.suit == trumpSuit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num)) {
       winning = curr;
-      console.log("Higher trump")
     }
     else if (winning.card.suit != trumpSuit && curr.card.suit == leadSuit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
       winning = curr;
