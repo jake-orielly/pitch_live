@@ -29,13 +29,7 @@
         <!-- <p>{{currBid + ' : ' + dealer}}</p> -->
       </div>
       <ScoreContainer :score="score" />
-      <div id="deck-container">
-        <ul>
-          <li class="card-list" v-for="num in 20" v-bind:key="'deck-card-' + num">
-            <img class="deck-card" v-bind:src="getCardImage('back')" />
-          </li>
-        </ul>
-      </div>
+      <DeckCards />
       <div id="played-pile">
         <img
           v-for="i in 3"
@@ -78,6 +72,7 @@
 <script>
 import BidOptions from "./components/BidOptions.vue";
 import ChatBox from "./components/ChatBox.vue";
+import DeckCards from "./components/DeckCards.vue"
 import GameLobby from "./components/GameLobby.vue";
 import HandContainer from "./components/HandContainer.vue";
 import OthersHand from "./components/OthersHand.vue";
@@ -115,6 +110,7 @@ export default {
   components: {
     BidOptions,
     ChatBox,
+    DeckCards,
     GameLobby,
     HandContainer,
     OthersHand,
@@ -162,7 +158,7 @@ export default {
         return element.username == data.user;
       }
       let their_index = this.users.findIndex(findUser);
-      Vue.set(this.others_cards, their_index, data.card);
+      this.set(this.others_cards, their_index, data.card);
       /*if (my_team == their_team) {
               target = document.getElementsByClassName("teammate-1")[this.currBout];
               destination = document.getElementById("played-pos-1");
