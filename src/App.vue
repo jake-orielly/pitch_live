@@ -142,19 +142,7 @@ export default {
       others_cards: ["placeholder", "placeholder", "placeholder"],
       myCard: "placeholder",
       currBid: undefined,
-      loginStatus: undefined,
-      loginStatusMap: {
-        success: "Success",
-        failure: "Password Incorrect",
-        "bad-user": "User does not exist",
-      },
-      signupStatus: undefined,
-      usernameInput: "",
-      passwordInput: "",
-      userConfirm: { guest: "Confirm", existing: "Log In", new: "Sign Up" },
-      userMod: "",
       showingUserOptionsContainer: true,
-      signedIn: false,
     };
   },
   components: {
@@ -169,38 +157,6 @@ export default {
     },
   },
   methods: {
-    confirmClick(e) {
-      e.preventDefault();
-      switch (this.userMod) {
-        case "guest":
-          this.guestConfirm();
-          break;
-        case "existing":
-          this.login();
-          break;
-        case "new":
-          this.createAccount();
-          break;
-      }
-    },
-    setUserMode(given) {
-      this.userMod = given;
-      setTimeout(() => {
-        this.$refs.usernameInput.focus();
-      }, 2);
-    },
-    guestConfirm() {
-      this.submitUsername();
-    },
-    submitUsername() {
-      this.signedIn = true;
-      this.username = this.usernameInput;
-      this.showingUserOptionsContainer = false;
-      this.chatSetup();
-      this.$socket.emit("usernameSubmission", {
-        usernameSubmission: this.usernameInput,
-      });
-    },
     chatSetup() {
       this.$socket.on("newBout", function () {
         this.newBout();
@@ -226,38 +182,6 @@ export default {
         }
         this.statusText = data;
       });
-    },
-    login() {
-      const Http = new XMLHttpRequest();
-      let username = this.usernameInput;
-      let password = this.passwordInput;
-      const url = `http://23.254.164.217:8000/login?user=${username}&password=${password}`;
-      Http.open("POST", url);
-      Http.send();
-
-      Http.onreadystatechange = (e) => {
-        if (Http.readyState == 4) {
-          var result = JSON.parse(Http.responseText);
-          this.loginStatus = result.message;
-        }
-      };
-    },
-    createAccount() {
-      const Http = new XMLHttpRequest();
-      let username = this.usernameInput;
-      let password = this.passwordInput;
-      const url = `http://23.254.164.217:8000/sign-up?user=${username}&password=${password}`;
-      Http.open("POST", url);
-      Http.send();
-
-      Http.onreadystatechange = (e) => {
-        if (Http.readyState == 4) {
-          var result = JSON.parse(Http.responseText);
-          if (result.message) this.signupStatus = result.message;
-          else if (result.error) this.signupStatus = "Error: " + result.error;
-          else this.signupStatus = "Error: Uknown Error";
-        }
-      };
     },
     bid(given) {
       this.$socket.emit("bid", given);
