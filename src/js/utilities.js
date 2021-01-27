@@ -1,4 +1,5 @@
 function getCardImage(card) {
+    let cardName;
     if (card == "back") 
         return require("../assets/cards/red_back.png");
     if (card == "placeholder") 
@@ -7,7 +8,11 @@ function getCardImage(card) {
     let num = card.num;
     if (isNaN(num)) 
         num = faceMap[num];
-    return require("../assets/cards/" + num + card.suit[0] + ".png");
+    cardName = num + card.suit[0];
+    // TODO: Figure out why the "AD" card was giving issues
+    if (cardName == "AD")
+        cardName = "AX"
+    return require("../assets/cards/" + cardName + ".png");
 }
 
 export default { getCardImage }

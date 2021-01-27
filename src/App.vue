@@ -157,8 +157,8 @@ export default {
       function findUser(element) {
         return element.username == data.user;
       }
-      let their_index = this.users.findIndex(findUser);
-      this.set(this.others_cards, their_index, data.card);
+      let theirIndex = this.users.findIndex(findUser);
+      this.$set(this.others_cards, data.card, theirIndex);
       /*if (my_team == their_team) {
               target = document.getElementsByClassName("teammate-1")[this.currBout];
               destination = document.getElementById("played-pos-1");
