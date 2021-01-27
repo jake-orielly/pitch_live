@@ -30,20 +30,10 @@
         />
       </div>
       <DeckCards />
-      <div id="played-pile">
-        <img
-          v-for="i in 3"
-          v-bind:key="'played-card-' + i"
-          class="deck-card played"
-          :id="'played-pos-' + (i - 1)"
-          v-bind:src="getCardImage(others_cards[i - 1])"
-        />
-        <img
-          class="deck-card played"
-          id="played-pos-3"
-          v-bind:src="getCardImage(myCard)"
-        />
-      </div>
+      <PlayedPile 
+        :othersCards="othersCards"
+        :myCard="myCard"
+      />
       <OthersHand
         :username="users[0].username"
         :numCards="6"
@@ -77,6 +67,7 @@ import GameLobby from "./components/GameLobby.vue";
 import HandContainer from "./components/HandContainer.vue";
 import LeadSuitContainer from "./components/LeadSuitContainer.vue";
 import OthersHand from "./components/OthersHand.vue";
+import PlayedPile from "./components/PlayedPile.vue";
 import ScoreContainer from "./components/ScoreContainer.vue";
 import TrumpSuitContainer from "./components/TrumpSuitContainer.vue";
 import UserOptions from "./components/UserOptions.vue";
@@ -103,7 +94,7 @@ export default {
       leadSuit: "",
       leader: "",
       currBout: 0,
-      others_cards: ["placeholder", "placeholder", "placeholder"],
+      othersCards: ["placeholder", "placeholder", "placeholder"],
       myCard: "placeholder",
       currBid: undefined,
       showingUserOptionsContainer: true,
@@ -117,6 +108,7 @@ export default {
     HandContainer,
     LeadSuitContainer,
     OthersHand,
+    PlayedPile,
     ScoreContainer,
     TrumpSuitContainer,
     UserOptions,
@@ -148,10 +140,12 @@ export default {
         return element.username == data.user;
       }
       let theirIndex = this.users.findIndex(findUser);
-      this.$set(this.others_cards, data.card, theirIndex);
+      console.log(this.othersCards, data.card, theirIndex)
+      this.$set(this.othersCards, theirIndex, data.card);
+      console.log(this.othersCards)
     },
     newBout() {
-      this.others_cards = ["placeholder", "placeholder", "placeholder"];
+      this.othersCards = ["placeholder", "placeholder", "placeholder"];
       this.myCard = "placeholder";
     },
     getCardImage(val) {
@@ -268,39 +262,6 @@ p,
 .card-list {
   list-style: none;
   display: inline;
-}
-
-#played-pile {
-  position: absolute;
-  left: calc(50% - 6.5em);
-  top: calc(50% - 8em);
-}
-
-.bid-div {
-  position: absolute;
-  top: 9em;
-  left: 37%;
-  z-index: 10;
-}
-
-.played {
-  position: absolute;
-}
-
-#played-pos-0 {
-  left: -3.5em;
-}
-
-#played-pos-1 {
-  top: -3.5em;
-}
-
-#played-pos-2 {
-  left: 3.5em;
-}
-
-#played-pos-3 {
-  top: 3.5em;
 }
 
 .clubs,

@@ -22,7 +22,7 @@
 export default {
   props: {
     bidding: {
-      type: String,
+      type: Boolean,
       required: true
     }
   },
@@ -39,5 +39,12 @@ export default {
 <style scoped>
 .bid-button {
   margin-left: 0.25em;
+}
+
+.bid-div {
+  position: absolute;
+  top: 9em;
+  left: 37%;
+  z-index: 10;
 }
 </style>
