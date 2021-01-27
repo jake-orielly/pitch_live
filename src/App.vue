@@ -10,25 +10,23 @@
       />
     </div>
     <div v-if="gameStage == 'playing'">
-      <p>
-        Trump:
-        <span :class="trumpSuit ? trumpSuit.toLowerCase() : ''">{{
-          suitToIcon(trumpSuit)
-        }}</span>
-      </p>
-      <p>
-        Lead:
-        <span :class="leadSuit ? leadSuit.toLowerCase() : ''">{{
-          suitToIcon(leadSuit)
-        }}</span>
-        <span v-if="leader">Held by {{ leader }}</span>
-      </p>
       <div>
         <p id="status-text">{{ statusText }}</p>
         <BidOptions />
         <!-- <p>{{currBid + ' : ' + dealer}}</p> -->
       </div>
-      <ScoreContainer :score="score" />
+      <div id="game-info-container">
+        <ScoreContainer 
+          :score="score" 
+        />
+        <TrumpSuitContainer 
+          :trumpSuit="trumpSuit"
+        />
+        <LeadSuitContainer 
+          :leadSuit="leadSuit"
+          :leader="leader"
+        />
+      </div>
       <DeckCards />
       <div id="played-pile">
         <img
@@ -75,8 +73,10 @@ import ChatBox from "./components/ChatBox.vue";
 import DeckCards from "./components/DeckCards.vue"
 import GameLobby from "./components/GameLobby.vue";
 import HandContainer from "./components/HandContainer.vue";
+import LeadSuitContainer from "./components/LeadSuitContainer.vue";
 import OthersHand from "./components/OthersHand.vue";
 import ScoreContainer from "./components/ScoreContainer.vue";
+import TrumpSuitContainer from "./components/TrumpSuitContainer.vue";
 import UserOptions from "./components/UserOptions.vue";
 
 import utilities from "./js/utilities.js";
@@ -113,8 +113,10 @@ export default {
     DeckCards,
     GameLobby,
     HandContainer,
+    LeadSuitContainer,
     OthersHand,
     ScoreContainer,
+    TrumpSuitContainer,
     UserOptions,
   },
   sockets: {
@@ -149,51 +151,15 @@ export default {
   },
   methods: {
     otherPlayed(data) {
-      /*let target;
-          let destination;
-          let opponents;
-          let my_team = this._data.users.filter(user => user.username == this.username)[0].team;
-          let their_team = this._data.users.filter(user => user.username == data.user)[0].team;*/
       function findUser(element) {
         return element.username == data.user;
       }
       let theirIndex = this.users.findIndex(findUser);
       this.$set(this.others_cards, data.card, theirIndex);
-      /*if (my_team == their_team) {
-              target = document.getElementsByClassName("teammate-1")[this.currBout];
-              destination = document.getElementById("played-pos-1");
-          }
-          else {
-              opponents = this.users.filter(user => user.team == 1);
-              for (var i = 0; i < opponents.length; i++)
-                  if (opponents[i].username == data.user) {
-                      console.log("opponent-" + i + "-card")
-                      target = document.getElementsByClassName("opponent-" + i + "-card")[this.currBout];
-                      destination = document.getElementById("played-pos-" + i*2);
-                  }
-          }
-          console.log("Other play")
-          console.log(target)
-          console.log(destination)
-          this.moveCard(destination,target);*/
     },
     newBout() {
       this.others_cards = ["placeholder", "placeholder", "placeholder"];
       this.myCard = "placeholder";
-    },
-    suitToIcon(suit) {
-      switch (suit) {
-        case "Clubs":
-          return "♣";
-        case "Diamonds":
-          return "♦";
-        case "Hearts":
-          return "♥";
-        case "Spades":
-          return "♠";
-        default:
-          return "";
-      }
     },
     getCardImage(val) {
       return utilities.getCardImage(val);
@@ -352,5 +318,11 @@ p,
 .hearts,
 .diamonds {
   color: red;
+}
+
+#game-info-container {
+  position: absolute;
+  top: 0rem;
+  right: 2rem;
 }
 </style>
