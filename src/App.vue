@@ -174,7 +174,7 @@ export default {
       // Listen for status events
       this.$socket.on("status", function (data, bid) {
         if (bid) {
-          this.curr_bid = bid.amount;
+          this.currBid = bid.amount;
           if (typeof bid.amount == "number")
             this.statusText +=
               " - " + bid.player + " has it with " + bid.amount;
