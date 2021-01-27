@@ -1,5 +1,5 @@
 <template>
-  <p v-if="$parent.statusText == 'Your bid'" class="bid-div">
+  <p v-if="bidding" class="bid-div">
     Bid:
     <button
       class="clickable bid-button"
@@ -20,10 +20,11 @@
 
 <script>
 export default {
-  data() {
-    return {
-      
-    };
+  props: {
+    bidding: {
+      type: String,
+      required: true
+    }
   },
   methods: {
     bid(given) {

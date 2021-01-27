@@ -12,7 +12,9 @@
     <div v-if="gameStage == 'playing'">
       <div>
         <p id="status-text">{{ statusText }}</p>
-        <BidOptions />
+        <BidOptions 
+          :bidding="bidding"
+        />
         <!-- <p>{{currBid + ' : ' + dealer}}</p> -->
       </div>
       <div id="game-info-container">
@@ -86,8 +88,8 @@ export default {
   data() {
     return {
       hand: [],
-      status: "",
       statusText: "",
+      bidding: false,
       dealer: false,
       currPlay: false,
       score: [0, 0],
@@ -124,17 +126,8 @@ export default {
       if (data.isJson) data.val = JSON.parse(data.val);
       this[data.prop] = data.val;
     },
-    status(data, bid) {
-      console.log(data,bid)
-      if (bid) {
-        this.currBid = bid.amount;
-        if (typeof bid.amount == "number")
-          this.statusText += " - " + bid.player + " has it with " + bid.amount;
-      }
-      else 
-        this.currBid = 0;
+    status(data) {
       this.statusText = data;
-      this.status = "bidder";
     },
     newBout() {
       this.newBout();

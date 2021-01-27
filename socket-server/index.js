@@ -280,9 +280,19 @@ function dealCards() {
 }
 
 function nextBidder() {
-  currPlayer.socket.emit('status', 'Your bid', currBid);
-  currPlayer.socket.broadcast.emit('status', 'Waiting for ' + currPlayer.username + ' to choose a bid');
-  currPlayer.socket.emit('status', 'Your bid');
+  let addon = ""
+  if (currBid.player)
+    addon = `, ${currBid.player} has it for ${currBid.amount}`
+  currPlayer.socket.broadcast.emit('status', `Waiting for ${currPlayer.username} to choose a bid${addon}.`);
+  currPlayer.socket.emit('setProp', {
+    prop: 'currBid',
+    val: currBid.amount
+  });
+  currPlayer.socket.emit('setProp', {
+    prop: 'bidding',
+    val: true
+  });
+  currPlayer.socket.emit('status', 'Your bid' + addon);
 }
 
 function recieveBid(data) {
@@ -292,7 +302,10 @@ function recieveBid(data) {
   }
   else
     currPlayer.socket.broadcast.emit('chat', currPlayer.username + ' passed')
-
+  currPlayer.socket.emit('setProp', {
+    prop: 'bidding',
+    val: false
+  });
   currPlayerNum++;
 
   // If we've had our last bid
