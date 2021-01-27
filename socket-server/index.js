@@ -57,7 +57,6 @@ io.on('connection', function (socket) {
     //let count = 5;
     let count = 1;
     users.filter(user => user.socket == socket)[0].ready = ready;
-    console.log(users.filter(user => !user.ready).length)
     sendUpdatedUsers();
     if (count && !ready) {
       clearInterval(gameStartCountdown);

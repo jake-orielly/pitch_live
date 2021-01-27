@@ -63,36 +63,21 @@
           v-bind:src="getCardImage(myCard)"
         />
       </div>
-      <div class="opponent-0 rotate-90">
-        <p class="nametag">{{ users[0].username }}</p>
-        <img
-          v-for="i in 6"
-          v-bind:key="'oponent-1-card-' + i"
-          v-bind:style="{ transform: 'rotate(' + (i - 3.5) * 5 + 'deg)' }"
-          class="other-player-card opponent-0-card"
-          v-bind:src="getCardImage('back')"
-        />
-      </div>
-      <div class="teammate-1">
-        <p class="nametag">{{ users[1].username }}</p>
-        <img
-          v-for="i in 6"
-          v-bind:key="'teamate-card-' + i"
-          v-bind:style="{ transform: 'rotate(' + (i - 3.5) * 5 + 'deg)' }"
-          class="other-player-card"
-          v-bind:src="getCardImage('back')"
-        />
-      </div>
-      <div class="opponent-1 rotate-270">
-        <p class="nametag">{{ users[2].username }}</p>
-        <img
-          v-for="i in 6"
-          v-bind:key="'oponent-2-card' + i"
-          v-bind:style="{ transform: 'rotate(' + (i - 3.5) * 5 + 'deg)' }"
-          class="other-player-card opponent-1-card"
-          v-bind:src="getCardImage('back')"
-        />
-      </div>
+      <OthersHand 
+        :username="users[0].username" 
+        :numCards="6"
+        :playerClass="'opponent-0'"
+      />
+      <OthersHand 
+        :username="users[1].username" 
+        :numCards="6"
+        :playerClass="'teammate-1'"
+      />
+      <OthersHand 
+        :username="users[2].username" 
+        :numCards="6"
+        :playerClass="'opponent-1'"
+      />
       <div id="hand-container">
         <ul>
           <li
@@ -114,7 +99,11 @@
 <script>
 import ChatBox from "./components/ChatBox.vue";
 import GameLobby from "./components/GameLobby.vue";
+import OthersHand from "./components/OthersHand.vue";
 import UserOptions from "./components/UserOptions.vue";
+
+import utilities from "./js/utilities.js"
+
 
 export default {
   name: "App",
@@ -148,6 +137,7 @@ export default {
   components: {
     ChatBox,
     GameLobby,
+    OthersHand,
     UserOptions
   },
   sockets: {
@@ -287,14 +277,6 @@ export default {
       for (var i = 0; i < hand_cards.length; i++)
         hand_cards[i].style.visibility = "visible";
     },
-    getCardImage(card) {
-      if (card == "back") return "cards/red_back.png";
-      if (card == "placeholder") return "cards/placeholder.png";
-      let face_map = { Jack: "J", Queen: "Q", King: "K", Ace: "A" };
-      let num = card.num;
-      if (isNaN(num)) num = face_map[num];
-      return "cards/" + num + card.suit[0] + ".png";
-    },
     suitToIcon(suit) {
       switch (suit) {
         case "Clubs":
@@ -309,6 +291,9 @@ export default {
           return "";
       }
     },
+    getCardImage(val) {
+      return utilities.getCardImage(val);
+    }
   },
 };
 </script>
@@ -453,37 +438,6 @@ p,
 
 .bid-button {
   margin-left: 0.25em;
-}
-
-.rotate-90 {
-  transform: rotate(90deg);
-}
-
-.rotate-270 {
-  transform: rotate(270deg);
-}
-
-.opponent-0 {
-  position: absolute;
-  left: 4em;
-  top: 35%;
-}
-
-.opponent-1 {
-  position: absolute;
-  right: 4em;
-  top: 35%;
-}
-
-.teammate-1 {
-  position: absolute;
-  left: 42%;
-  top: 4em;
-}
-
-.other-player-card {
-  margin-right: -2.5em;
-  margin-left: -2.5em;
 }
 
 .played {
