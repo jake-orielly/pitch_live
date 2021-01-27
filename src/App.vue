@@ -25,23 +25,7 @@
       </p>
       <div>
         <p id="status-text">{{ statusText }}</p>
-        <p v-if="status == 'bidder'" class="bid-div">
-          Bid:
-          <button
-            class="clickable bid-button"
-            v-for="i in ['pass', 2, 3, 4, 5].filter(
-              (bid) =>
-                bid > currBid ||
-                (bid > 0 && currBid == 'pass') ||
-                (bid == 'pass' && (!dealer || currBid != 'pass')) ||
-                (dealer && bid == currBid && currBid != 'pass')
-            )"
-            @click="bid(i)"
-            v-bind:key="'bid-' + i"
-          >
-            {{ i }}
-          </button>
-        </p>
+        <BidOptions />
         <!-- <p>{{currBid + ' : ' + dealer}}</p> -->
       </div>
       <div>
@@ -94,9 +78,10 @@
 <script src="./chat.js"></script>
 <script src="./ui_functions.js"></script>
 <script>
+import BidOptions from "./components/BidOptions.vue";
 import ChatBox from "./components/ChatBox.vue";
 import GameLobby from "./components/GameLobby.vue";
-import HandContainer from "./components/HandContainer.vue"
+import HandContainer from "./components/HandContainer.vue";
 import OthersHand from "./components/OthersHand.vue";
 import UserOptions from "./components/UserOptions.vue";
 
@@ -129,6 +114,7 @@ export default {
     };
   },
   components: {
+    BidOptions,
     ChatBox,
     GameLobby,
     HandContainer,
@@ -141,13 +127,16 @@ export default {
       this[data.prop] = data.val;
     },
     status(data, bid) {
+      console.log(data,bid)
       if (bid) {
         this.currBid = bid.amount;
         if (typeof bid.amount == "number")
           this.statusText += " - " + bid.player + " has it with " + bid.amount;
-        this.status = "bidder";
       }
+      else 
+        this.currBid = 0;
       this.statusText = data;
+      this.status = "bidder";
     },
     newBout() {
       this.newBout();
@@ -163,11 +152,6 @@ export default {
     this.$socket.disconnect();
   },
   methods: {
-    bid(given) {
-      this.$socket.emit("bid", given);
-      this.status = "";
-      this.statusText = "";
-    },
     otherPlayed(data) {
       /*let target;
           let destination;
