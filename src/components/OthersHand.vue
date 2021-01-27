@@ -5,7 +5,7 @@
         v-for="i in numCards"
         v-bind:key="`${username}-${i}`"
         v-bind:style="{ transform: 'rotate(' + (i - 3.5) * 5 + 'deg)' }"
-        class="other-player-card opponent-0-card"
+        class="other-player-card"
         v-bind:src="getCardImage('back')"
       />
   </div>
