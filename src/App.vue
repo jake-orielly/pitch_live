@@ -109,8 +109,6 @@ export default {
   name: "App",
   data() {
     return {
-      message: "Hello Vue!",
-      socket: undefined,
       hand: [],
       status: "",
       statusText: "",
