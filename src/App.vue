@@ -28,9 +28,7 @@
         <BidOptions />
         <!-- <p>{{currBid + ' : ' + dealer}}</p> -->
       </div>
-      <div>
-        <p class="score-text">Score: {{ score[0] }} | {{ score[1] }}</p>
-      </div>
+      <ScoreContainer :score="score" />
       <div id="deck-container">
         <ul>
           <li class="card-list" v-for="num in 20" v-bind:key="'deck-card-' + num">
@@ -83,6 +81,7 @@ import ChatBox from "./components/ChatBox.vue";
 import GameLobby from "./components/GameLobby.vue";
 import HandContainer from "./components/HandContainer.vue";
 import OthersHand from "./components/OthersHand.vue";
+import ScoreContainer from "./components/ScoreContainer.vue";
 import UserOptions from "./components/UserOptions.vue";
 
 import utilities from "./js/utilities.js";
@@ -119,6 +118,7 @@ export default {
     GameLobby,
     HandContainer,
     OthersHand,
+    ScoreContainer,
     UserOptions,
   },
   sockets: {
@@ -293,12 +293,6 @@ p,
 .clickable {
   cursor: pointer;
   user-select: none;
-}
-
-.score-text {
-  position: absolute;
-  top: 0;
-  right: 5em;
 }
 
 .card,
