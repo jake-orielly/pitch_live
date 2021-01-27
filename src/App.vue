@@ -334,10 +334,6 @@ p,
   z-index: 10;
 }
 
-.bid-button {
-  margin-left: 0.25em;
-}
-
 .played {
   position: absolute;
 }

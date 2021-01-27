@@ -36,5 +36,7 @@ export default {
 </script>
 
 <style scoped>
-
+.bid-button {
+  margin-left: 0.25em;
+}
 </style>
