@@ -1,59 +1,8 @@
 <template>
   <div>
     <div v-if="gameStage == 'lobby'">
-      <div v-if="showingUsernameContainer" id="username-container">
-        <button
-          class="ui-button user-option-button"
-          @click="setUserMode('guest')"
-        >
-          Play As Guest
-        </button>
-        <button
-          class="ui-button user-option-button"
-          @click="setUserMode('existing')"
-        >
-          Login
-        </button>
-        <button
-          class="ui-button user-option-button"
-          @click="setUserMode('new')"
-        >
-          Sign Up
-        </button>
-        <form id="login-form">
-          <input
-            v-if="userMod"
-            v-model="usernameInput"
-            ref="usernameInput"
-            class="login-input"
-            id="username-input"
-            type="text"
-            placeholder="Username"
-            autocomplete="off"
-            required
-          />
-          <input
-            v-if="userMod == 'new' || userMod == 'existing'"
-            v-model="passwordInput"
-            type="password"
-            placeholder="Password"
-            class="login-input"
-            id="password-input"
-            required
-          />
-          <input
-            class="ui-button"
-            type="submit"
-            id="username-confirm"
-            v-if="userMod"
-            :value="userConfirm[userMod]"
-            @click="confirmClick"
-          />
-        </form>
-        <p>{{ loginStatusMap[loginStatus] }}</p>
-        <p>{{ signupStatus }}</p>
-      </div>
-      <Lobby v-if="signedIn" :users="users" :username="username" :gameStarting="gameStarting" />
+      <UserOptions v-if="showingUserOptionsContainer" />
+      <GameLobby v-if="signedIn" :users="users" :username="username" :gameStarting="gameStarting" />
     </div>
     <div v-if="gameStage == 'playing'">
       <p>
@@ -164,7 +113,8 @@
 <script src="./ui_functions.js"></script>
 <script>
 import ChatBox from "./components/ChatBox.vue";
-import Lobby from "./components/Lobby.vue";
+import GameLobby from "./components/GameLobby.vue";
+import UserOptions from "./components/UserOptions.vue";
 
 export default {
   name: "App",
@@ -203,13 +153,14 @@ export default {
       passwordInput: "",
       userConfirm: { guest: "Confirm", existing: "Log In", new: "Sign Up" },
       userMod: "",
-      showingUsernameContainer: true,
+      showingUserOptionsContainer: true,
       signedIn: false,
     };
   },
   components: {
     ChatBox,
-    Lobby,
+    GameLobby,
+    UserOptions
   },
   sockets: {
     setProp(data) {
@@ -244,7 +195,7 @@ export default {
     submitUsername() {
       this.signedIn = true;
       this.username = this.usernameInput;
-      this.showingUsernameContainer = false;
+      this.showingUserOptionsContainer = false;
       this.chatSetup();
       this.$socket.emit("usernameSubmission", {
         usernameSubmission: this.usernameInput,
@@ -488,38 +439,6 @@ p,
   opacity: 1; /* Firefox */
 }
 
-.user-list {
-  font-size: 3rem;
-}
-
-.user-list td {
-  padding-right: 1em;
-}
-
-.ready-mark {
-  color: #68ff68;
-}
-
-.not-ready-mark {
-  color: #dc0202;
-}
-
-.ready-mark,
-.not-ready-mark {
-  text-shadow: 2px 3px 7px black;
-}
-
-.user-option-button {
-  display: block;
-  margin: 0 auto;
-  margin: 2rem auto;
-  font-size: 2.5rem;
-}
-
-.user-option-button:first-child {
-  margin-top: 10%;
-}
-
 .ui-button {
   background: none;
   border: 3px solid white;
@@ -557,14 +476,6 @@ p,
 .clickable {
   cursor: pointer;
   user-select: none;
-}
-
-.unselectable {
-  user-select: none;
-}
-
-#username-container {
-  text-align: center;
 }
 
 .score-text {

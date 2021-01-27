@@ -2,7 +2,7 @@
   <div id="lobby-container">
     <p>In This Lobby:</p>
     <table class="user-list">
-      <tr v-for="user in users" v-bind:key="user.username" class="unselectable">
+      <tr v-for="user in users" v-bind:key="user.username">
         <td>{{ user.username }}</td>
         <td
           @click="readyClick(user.username, false)"
@@ -56,4 +56,25 @@ export default {
 </script>
 
 <style scoped>
+.ready-mark {
+  color: #68ff68;
+}
+
+.not-ready-mark {
+  color: #dc0202;
+}
+
+.ready-mark,
+.not-ready-mark {
+  text-shadow: 2px 3px 7px black;
+}
+
+.user-list {
+  font-size: 3rem;
+}
+
+.user-list td {
+  padding-right: 1em;
+}
+
 </style>
