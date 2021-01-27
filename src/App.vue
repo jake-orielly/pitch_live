@@ -2,7 +2,12 @@
   <div>
     <div v-if="gameStage == 'lobby'">
       <UserOptions v-if="showingUserOptionsContainer" />
-      <GameLobby v-if="signedIn" :users="users" :username="username" :gameStarting="gameStarting" />
+      <GameLobby
+        v-if="signedIn"
+        :users="users"
+        :username="username"
+        :gameStarting="gameStarting"
+      />
     </div>
     <div v-if="gameStage == 'playing'">
       <p>
@@ -44,7 +49,7 @@
       </div>
       <div id="deck-container">
         <ul>
-          <li class="card-list" v-for="num in 20" v-bind:key="'card-' + num">
+          <li class="card-list" v-for="num in 20" v-bind:key="'deck-card-' + num">
             <img class="deck-card" v-bind:src="getCardImage('back')" />
           </li>
         </ul>
@@ -63,26 +68,26 @@
           v-bind:src="getCardImage(myCard)"
         />
       </div>
-      <OthersHand 
-        :username="users[0].username" 
+      <OthersHand
+        :username="users[0].username"
         :numCards="6"
         :playerClass="'opponent-0'"
       />
-      <OthersHand 
-        :username="users[1].username" 
+      <OthersHand
+        :username="users[1].username"
         :numCards="6"
         :playerClass="'teammate-1'"
       />
-      <OthersHand 
-        :username="users[2].username" 
+      <OthersHand
+        :username="users[2].username"
         :numCards="6"
         :playerClass="'opponent-1'"
       />
       <div id="hand-container">
         <ul>
           <li
-            v-for="card in hand"
-            v-bind:key="'card-' + card"
+            v-for="(card, ind) in hand"
+            v-bind:key="'hand-card-' + ind"
             @click="play(card)"
             class="hand-card-slot card-list"
           >
@@ -102,8 +107,7 @@ import GameLobby from "./components/GameLobby.vue";
 import OthersHand from "./components/OthersHand.vue";
 import UserOptions from "./components/UserOptions.vue";
 
-import utilities from "./js/utilities.js"
-
+import utilities from "./js/utilities.js";
 
 export default {
   name: "App",
@@ -136,41 +140,36 @@ export default {
     ChatBox,
     GameLobby,
     OthersHand,
-    UserOptions
+    UserOptions,
   },
   sockets: {
     setProp(data) {
       if (data.isJson) data.val = JSON.parse(data.val);
       this[data.prop] = data.val;
     },
+    status(data, bid) {
+      if (bid) {
+        this.currBid = bid.amount;
+        if (typeof bid.amount == "number")
+          this.statusText += " - " + bid.player + " has it with " + bid.amount;
+        this.status = "bidder";
+      }
+      this.statusText = data;
+    },
+    newBout() {
+      this.newBout();
+    },
+    deal(hand) {
+      this.deal(hand);
+    },
+    played(data) {
+      this.otherPlayed(data);
+    },
+  },
+  destroy() {
+    this.$socket.disconnect();
   },
   methods: {
-    chatSetup() {
-      this.$socket.on("newBout", function () {
-        this.newBout();
-      });
-
-      this.$socket.on("deal", function (hand) {
-        console.log(hand);
-        this.deal(hand);
-      });
-
-      this.$socket.on("played", function (data) {
-        this.otherPlayed(data);
-      });
-
-      // Listen for status events
-      this.$socket.on("status", function (data, bid) {
-        if (bid) {
-          this.currBid = bid.amount;
-          if (typeof bid.amount == "number")
-            this.statusText +=
-              " - " + bid.player + " has it with " + bid.amount;
-          this.status = "bidder";
-        }
-        this.statusText = data;
-      });
-    },
     bid(given) {
       this.$socket.emit("bid", given);
       this.status = "";
@@ -247,12 +246,12 @@ export default {
       this.hand = hand;
       this.dealDone = false;
       document.getElementById("hand-container").style.display = "block";
-      let interval = setInterval(function () {
+      let interval = setInterval(() => {
         if (count == 6) {
           interval = clearInterval(interval);
           this.dealDone = true;
-          setTimeout(() => vue_app.cardSwitch(), 700);
-        } else count = vue_app.dealCard(count);
+          setTimeout(() => this.cardSwitch(), 700);
+        } else count = this.dealCard(count);
       }, 500);
     },
     dealCard(num) {
@@ -291,7 +290,7 @@ export default {
     },
     getCardImage(val) {
       return utilities.getCardImage(val);
-    }
+    },
   },
 };
 </script>
