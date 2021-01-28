@@ -1,20 +1,20 @@
-var path = require('path');
-var express = require('express');
-var app = express();
+const path = require('path');
+const express = require('express');
+const app = express();
 
-var http = require('http').Server(app);
-var io = require('socket.io')(http, {
+const http = require('http').Server(app);
+const io = require('socket.io')(http, {
   cors: {
     origin: "http://vps:8080",
     methods: ["GET", "POST"],
     credentials: true
   }
 });
-var port = 3000;
+const port = 3000;
 
 var gameStartCountdown;
 
-var htmlPath = path.join(__dirname, 'public');
+const htmlPath = path.join(__dirname, 'public');
 
 const constants = require('./constants.js')
 const deckFunctions = require('./deck_functions.js')
