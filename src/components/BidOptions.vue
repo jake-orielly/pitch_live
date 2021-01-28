@@ -5,10 +5,13 @@
       class="clickable bid-button"
       v-for="i in ['pass', 2, 3, 4, 5].filter(
         (bid) =>
-          bid > $parent.currBid ||
-          (bid > 0 && $parent.currBid == 'pass') ||
-          (bid == 'pass' && (!$parent.dealer || $parent.currBid != 'pass')) ||
-          ($parent.dealer && bid == $parent.currBid && $parent.currBid != 'pass')
+          bid > $store.state.currBid ||
+          (bid > 0 && $store.state.currBid == 'pass') ||
+          (bid == 'pass' &&
+            (!$store.state.dealer || $store.state.currBid != 'pass')) ||
+          ($store.state.dealer &&
+            bid == $store.state.currBid &&
+            $store.state.currBid != 'pass')
       )"
       @click="bid(i)"
       v-bind:key="'bid-' + i"
@@ -23,8 +26,8 @@ export default {
   props: {
     bidding: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     bid(given) {

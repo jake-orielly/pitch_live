@@ -33,12 +33,12 @@ export default {
       if (this.$parent.currPlay && !card.played) {
         let legal = true;
         if (
-          this.$parent.leadSuit &&
-          this.$parent.leadSuit != card.suit &&
-          this.$parent.trumpSuit != card.suit
+          this.$store.state.leadSuit &&
+          this.$store.state.leadSuit != card.suit &&
+          this.$store.state.trumpSuit != card.suit
         )
           for (var i = 0; i < this.hand.length; i++)
-            if (this.hand[i].suit == this.$parent.leadSuit) legal = false;
+            if (this.hand[i].suit == this.$store.state.leadSuit) legal = false;
         if (!legal) alert("Illegal move, you must follow");
         else {
           this.$socket.emit("play", card);

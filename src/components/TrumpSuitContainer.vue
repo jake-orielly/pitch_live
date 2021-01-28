@@ -1,8 +1,8 @@
 <template>
-  <p v-if="trumpSuit">
+  <p v-if="$store.state.trumpSuit">
     Trump:
-    <span :class="trumpSuit ? trumpSuit.toLowerCase() : ''">{{
-      suitToIcon(trumpSuit)
+    <span :class="$store.state.trumpSuit ? $store.state.trumpSuit.toLowerCase() : ''">{{
+      suitToIcon($store.state.trumpSuit)
     }}</span>
   </p>
 </template>
@@ -11,12 +11,6 @@
 import utilities from "../js/utilities.js";
 
 export default {
-  props: {
-    trumpSuit: {
-      type: String,
-      required: false,
-    },
-  },
   methods: {
     suitToIcon(val) {
       return utilities.suitToIcon(val);

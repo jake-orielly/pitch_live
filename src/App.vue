@@ -15,15 +15,12 @@
         <BidOptions 
           :bidding="bidding"
         />
-        <!-- <p>{{currBid + ' : ' + dealer}}</p> -->
       </div>
       <div id="game-info-container">
         <ScoreContainer 
           :score="score" 
         />
-        <TrumpSuitContainer 
-          :trumpSuit="trumpSuit"
-        />
+        <TrumpSuitContainer />
         <LeadSuitContainer/>
       </div>
       <DeckCards />
@@ -78,7 +75,6 @@ export default {
       hand: [],
       statusText: "",
       bidding: false,
-      dealer: false,
       currPlay: false,
       score: [0, 0],
       nums: [1, 2, 3, 4, 5, 6],
@@ -87,11 +83,9 @@ export default {
       users: [],
       username: "",
       gameStarting: 0,
-      trumpSuit: "",
       currBout: 0,
       othersCards: ["placeholder", "placeholder", "placeholder"],
       myCard: "placeholder",
-      currBid: undefined,
       showingUserOptionsContainer: true,
     };
   },

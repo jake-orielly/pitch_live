@@ -95,8 +95,8 @@ io.on('connection', function (socket) {
     currBout.push({ user: currPlayer, card: card });
     if (!trumpSuit) {
       trumpSuit = card.suit
-      io.sockets.emit('setProp', {
-        prop: 'trumpSuit',
+      io.sockets.emit('callStoreMutation', {
+        mutation: 'setTrumpSuit',
         val: card.suit
       });
     }
@@ -249,16 +249,19 @@ function assignPoints() {
   });
 }
 
-// Placeholder, triggered by deal button
 function dealCards() {
   deck = shuffle()
   shuffle()
 
+  io.sockets.emit('callStoreMutation', {
+    mutation: 'setDealer',
+    val: false
+  });
   dealer = users[users.length - 1]
   dealer.socket.broadcast.emit('chat', dealer.username + ' is dealer')
   dealer.socket.emit('chat', 'You are the dealer')
-  dealer.socket.emit('setProp', {
-    prop: 'dealer',
+  dealer.socket.emit('callStoreMutation', {
+    mutation: 'setDealer',
     val: true
   });
 
@@ -277,12 +280,12 @@ function dealCards() {
 }
 
 function nextBidder() {
-  let addon = ""
+  let addon = ''
   if (currBid.player)
     addon = `, ${currBid.player} has it for ${currBid.amount}`
   currPlayer.socket.broadcast.emit('status', `Waiting for ${currPlayer.username} to choose a bid${addon}.`);
-  currPlayer.socket.emit('setProp', {
-    prop: 'currBid',
+  currPlayer.socket.emit('callStoreMutation', {
+    mutation: 'setCurrBid',
     val: currBid.amount
   });
   currPlayer.socket.emit('setProp', {
@@ -332,9 +335,9 @@ function setUpHand() {
     mutation: 'setLeadSuit',
     val: undefined
   });
-  io.sockets.emit('setProp', {
-    prop: 'trumpSuit',
-    val: undefined
+  io.sockets.emit('callStoreMutation', {
+    mutation: 'setTrumpSuit',
+    val: ''
   });
   trumpSuit = undefined;
   leadSuit = undefined;
