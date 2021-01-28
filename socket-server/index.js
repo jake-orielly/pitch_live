@@ -364,5 +364,3 @@ function nextPlay() {
     val: true
   });
 }
-
-deckFunctions.createDeck()

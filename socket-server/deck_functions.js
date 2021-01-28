@@ -25,6 +25,6 @@ function shuffle() {
   return newDeck
 }
 
-module.exports = {
-  createDeck, shuffle
-}
+createDeck()
+
+module.exports = { shuffle }
