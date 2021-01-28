@@ -3,4 +3,4 @@ const suits = ['Spades', 'Clubs', 'Hearts', 'Diamonds'];
 
 module.exports = {
     nums, suits
- }
+}
