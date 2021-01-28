@@ -16,6 +16,9 @@ var gameStartCountdown;
 
 var htmlPath = path.join(__dirname, 'public');
 
+const constants = require('./constants.js')
+
+
 app.use(express.static(htmlPath));
 
 http.listen(port, function () {
@@ -151,10 +154,10 @@ function evalWinner() {
     if (curr.card.suit == trumpSuit && winning.card.suit != trumpSuit) {
       winning = curr;
     }
-    else if (curr.card.suit == trumpSuit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num)) {
+    else if (curr.card.suit == trumpSuit && constants.nums.indexOf(winning.card.num) < constants.nums.indexOf(curr.card.num)) {
       winning = curr;
     }
-    else if (winning.card.suit != trumpSuit && curr.card.suit == leadSuit && nums.indexOf(winning.card.num) < nums.indexOf(curr.card.num))
+    else if (winning.card.suit != trumpSuit && curr.card.suit == leadSuit && constants.nums.indexOf(winning.card.num) < constants.nums.indexOf(curr.card.num))
       winning = curr;
   }
   return winning;
@@ -202,17 +205,17 @@ function countPoints() {
       if (curr.suit == trumpSuit) {
         if (curr.num == 'Jack')
           teams[1].points.push('Jack');
-        if (nums.indexOf(curr.num) < low.index) {
+        if (constants.nums.indexOf(curr.num) < low.index) {
           low.team = teams[i].points
-          low.index = nums.indexOf(curr.num)
+          low.index = constants.nums.indexOf(curr.num)
         }
-        if (nums.indexOf(curr.num) > high.index) {
+        if (constants.nums.indexOf(curr.num) > high.index) {
           high.team = teams[i].points
-          high.index = nums.indexOf(curr.num)
+          high.index = constants.nums.indexOf(curr.num)
         }
       }
-      if (nums.indexOf(curr.num) > 7)
-        game[i] += pointsMap[nums.indexOf(curr.num) - 8]
+      if (constants.nums.indexOf(curr.num) > 7)
+        game[i] += pointsMap[constants.nums.indexOf(curr.num) - 8]
     }
   if (game[0] > game[1])
     teams[0].points.push('Game');
@@ -365,15 +368,12 @@ function nextPlay() {
 
 var masterDeck = []
 
-var nums = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace']
-var suits = ['Spades', 'Clubs', 'Hearts', 'Diamonds']
-
 createDeck()
 
 function createDeck() {
-  for (let i = 0; i < nums.length; i++)
-    for (let j = 0; j < suits.length; j++)
-      masterDeck.push({ num: nums[i], suit: suits[j] })
+  for (let i = 0; i < constants.nums.length; i++)
+    for (let j = 0; j < constants.suits.length; j++)
+      masterDeck.push({ num: constants.nums[i], suit: constants.suits[j] })
 }
 
 function shuffle() {
