@@ -7,16 +7,14 @@
         class="message-text"
       >
         <div v-if="message.type == 'event'">
-          <p>
-            <strong>
-              {{ message.content }}
-            </strong>
+          <p class="event-text">
+            {{ message.content }}
           </p>
         </div>
         <div v-if="message.type == 'chat'">
           <p>
             <strong>
-              {{ message.username }}
+              {{ message.username }}:
             </strong>
             {{ message.content }}
           </p>
@@ -32,12 +30,22 @@
         v-on:keyup.13="sendMessage"
       />
       <button id="send" class="send-button" @click="sendMessage">Send</button>
+      <button @click="toggleEmojiPicker">😀</button>
     </div>
+    <VEmojiPicker 
+      v-if="showingEmojiPicker"
+      @select="selectEmoji" 
+    />
   </div>
 </template>
 
 <script>
+import { VEmojiPicker } from 'v-emoji-picker';
+
 export default {
+  components: {
+    VEmojiPicker
+  },
   props: {
     username: {
       type: String,
@@ -65,6 +73,7 @@ export default {
     return {
       messages: [],
       messageText: "",
+      showingEmojiPicker: false
     };
   },
   methods: {
@@ -75,6 +84,7 @@ export default {
         username: this.username,
       });
       this.messageText = "";
+      this.showingEmojiPicker = false;
       this.chatScroll();
     },
     chatScroll() {
@@ -82,6 +92,12 @@ export default {
         this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
       });
     },
+    toggleEmojiPicker() {
+      this.showingEmojiPicker = !this.showingEmojiPicker;
+    },
+    selectEmoji(emoji) {
+      this.messageText += emoji.data;
+    }
   },
 };
 </script>
@@ -119,5 +135,20 @@ export default {
   box-shadow: 2px 2px 9px #0000009c;
   border-radius: 0.5rem;
   color: #00467d;
+}
+
+.event-text {
+  font-style: italic;
+}
+
+#EmojiPicker {
+  position: absolute;
+  top: 0;
+}
+</style>
+
+<style>
+#EmojiPicker .container-emoji {
+  height: 17rem;
 }
 </style>
