@@ -131,7 +131,7 @@ function sendUpdatedUsers() {
   });
   for (let i in users) {
     i = parseInt(i);
-    ordered = shuffleToFront(simpleUsers, ((i + 1) % simpleUsers.length));
+    ordered = rotateArray(simpleUsers, ((i + 1) % simpleUsers.length));
     users[i].socket.emit('setProp', {
       prop: 'users',
       val: JSON.stringify(ordered),
@@ -296,7 +296,7 @@ function setUpHand() {
       currPlayerNum = i;
   }
 
-  users = shuffleToFront(users, currPlayerNum);
+  users = rotateArray(users, currPlayerNum);
   io.sockets.emit('callStoreMutation', {
     mutation: 'setLeadSuit',
     val: undefined
@@ -313,7 +313,7 @@ function setUpHand() {
   nextPlay();
 }
 
-function shuffleToFront(arr, num) {
+function rotateArray(arr, num) {
   arr = arr.slice(num, arr.length).concat(arr.slice(0, num))
   return arr;
 }
