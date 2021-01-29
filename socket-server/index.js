@@ -64,28 +64,16 @@ io.on('connection', function (socket) {
     sendUpdatedUsers();
     if (count && !ready) {
       clearInterval(gameStartCountdown);
-      io.sockets.emit('setProp', {
-        prop: 'gameStarting',
-        val: 0
-      });
+      setProp('gameStarting', 0);
     }
     else if (users.filter(user => !user.ready).length == 0) {
-      io.sockets.emit('setProp', {
-        prop: 'gameStarting',
-        val: count
-      });
+      setProp('gameStarting', count);
       gameStartCountdown = setInterval(function () {
         count--;
-        io.sockets.emit('setProp', {
-          prop: 'gameStarting',
-          val: count
-        });
+        setProp('gameStarting', count);
         if (count == 0) {
           clearInterval(gameStartCountdown);
-          io.sockets.emit('setProp', {
-            prop: 'gameStage',
-            val: 'playing'
-          });
+          setProp('gameStage', 'playing')
           setTimeout(dealCards, 500);
         }
       }, 1000);
@@ -158,10 +146,7 @@ function boutReset(winner) {
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6) {
     teams = gameFunctions.countPoints(teams, trumpSuit);
     assignPoints()
-    io.sockets.emit('setProp', {
-      prop: 'score',
-      val: score
-    });
+    setProp('score', score)
     dealCards();
     teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
   }
@@ -268,6 +253,12 @@ function setUpHand() {
   // Compensating for the increment at start of nextPlay
   currPlayerNum = -1;
   nextPlay();
+}
+
+function setProp(prop, val) {
+  io.sockets.emit('setProp', {
+    prop, val
+  });
 }
 
 function callStoreMutation(mutation, val) {
