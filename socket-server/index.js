@@ -16,7 +16,6 @@ var gameStartCountdown;
 
 const htmlPath = path.join(__dirname, 'public');
 
-const constants = require('./constants.js');
 const deckFunctions = require('./deck_functions.js');
 const gameFunctions = require('./game_functions.js');
 
@@ -145,8 +144,11 @@ function boutReset(winner) {
 
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6) {
     teams = gameFunctions.countPoints(teams, trumpSuit);
-    assignPoints()
-    setProp('score', score)
+    
+    assignPoints();
+    io.sockets.emit('chat', `Team 1: ${printPoints(teams[0])}`);
+    io.sockets.emit('chat', `Team 2: ${printPoints(teams[1])}`);
+    setProp('score', score);
     dealCards();
     teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
   }
@@ -253,6 +255,13 @@ function setUpHand() {
   // Compensating for the increment at start of nextPlay
   currPlayerNum = -1;
   nextPlay();
+}
+
+function printPoints(team) {
+  if (!team.points.length)
+    "Nothing"
+  else
+    return team.points.join(", ")
 }
 
 function setProp(prop, val) {
