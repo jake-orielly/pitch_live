@@ -81,7 +81,7 @@ io.on('connection', function (socket) {
 
   socket.on('play', function (card) {
     let winning;
-    io.sockets.emit('chat', `${currPlayer.username} played the ${card.num} of ${card.suit}`)
+    sendChat(`${currPlayer.username} played the ${card.num} of ${card.suit}`)
     socket.broadcast.emit('played', { card: card, user: currPlayer.username });
     currBout.push({ user: currPlayer, card: card });
     if (!trumpSuit) {
@@ -119,7 +119,7 @@ function sendUpdatedUsers() {
 }
 
 function awardWinner(winning) {
-  io.sockets.emit('chat', `${winning.user.username} takes it with the ${winning.card.num} of ${winning.card.suit}`)
+  sendChat(`${winning.user.username} takes it with the ${winning.card.num} of ${winning.card.suit}`)
   for (let i = 0; i < currBout.length; i++)
     winning.user.team.push(currBout[i].card)
   setTimeout(function () { boutReset(winning); }, 1500);
@@ -146,8 +146,8 @@ function boutReset(winner) {
     teams = gameFunctions.countPoints(teams, trumpSuit);
     
     assignPoints();
-    io.sockets.emit('chat', `Team 1: ${printPoints(teams[0])}`);
-    io.sockets.emit('chat', `Team 2: ${printPoints(teams[1])}`);
+    sendChat(`Team 1: ${printPoints(teams[0])}`)
+    sendChat(`Team 2: ${printPoints(teams[1])}`)
     setProp('score', score);
     dealCards();
     teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
@@ -240,7 +240,7 @@ function setUpHand() {
     currPlayer = users[currPlayerNum];
     currBid = { player: currPlayer.username, amount: 2 }
   }
-  io.sockets.emit('chat', `${currBid.player} has it for ${currBid.amount}`);
+  sendChat(`${currBid.player} has it for ${currBid.amount}`);
   for (var i = 0; i < users.length; i++) {
     if (users[i].username == currBid.player)
       currPlayerNum = i;
@@ -274,6 +274,10 @@ function callStoreMutation(mutation, val) {
   io.sockets.emit('callStoreMutation', {
     mutation, val 
   });
+}
+
+function sendChat(msg) {
+  io.sockets.emit('chat', msg);
 }
 
 function rotateArray(arr, num) {
