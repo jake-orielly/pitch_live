@@ -148,12 +148,17 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+</style>
+
+<style>
 html,
 body {
   margin: 5px 5px 5px 1em;
   padding: 0;
   background: seagreen;
   user-select: none;
+  font-family: 'Montserrat', sans-serif;
 }
 
 p,
