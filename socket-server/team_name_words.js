@@ -16,6 +16,7 @@ const adjectives = [
 
 const nouns = [
     "Bobcats",
+    "Babies",
     "Chickens",
     "Dolphins",
     "Eagles",

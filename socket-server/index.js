@@ -74,9 +74,9 @@ io.on('connection', function (socket) {
         if (count == 0) {
           clearInterval(gameStartCountdown);
           generateTeamNames();
+          callStoreMutation('setTeamNames', [teams[0].name, teams[1].name])
           setProp('gameStage', 'playing')
           setTimeout(dealCards, 500);
-          console.log(teams)
         }
       }, 1000);
     }

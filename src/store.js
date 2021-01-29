@@ -9,6 +9,7 @@ const Store = new Vuex.Store({
         leadSuit: "",
         trumpSuit: "",
         dealer: false,
+        teamNames: [],
         currBid: 0
     },
     mutations: {
@@ -23,6 +24,9 @@ const Store = new Vuex.Store({
         },
         setLeadSuit(state, val) {
             state.leadSuit = val;
+        },
+        setTeamNames(state, val) {
+            state.teamNames = val;
         },
         setTrumpSuit(state, val) {
             state.trumpSuit = val;
