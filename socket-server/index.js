@@ -99,23 +99,14 @@ io.on('connection', function (socket) {
     currBout.push({ user: currPlayer, card: card });
     if (!trumpSuit) {
       trumpSuit = card.suit
-      io.sockets.emit('callStoreMutation', {
-        mutation: 'setTrumpSuit',
-        val: card.suit
-      });
+      callStoreMutation('setTrumpSuit', card.suit)
     }
     if (!leadSuit) {
       leadSuit = card.suit
-      io.sockets.emit('callStoreMutation', {
-        mutation: 'setLeadSuit',
-        val: card.suit
-      });
+      callStoreMutation('setLeadSuit', card.suit)
     };
     winning = gameFunctions.evalWinner(currBout, trumpSuit, leadSuit);
-    io.sockets.emit('callStoreMutation', {
-      mutation: 'setLeader',
-      val: winning.user.username
-    });
+    callStoreMutation('setLeader', winning.user.username)
     if (currPlayerNum == users.length - 1) {
       awardWinner(winning);
     }
@@ -157,18 +148,12 @@ function boutReset(winner) {
   // It will get incremented by nextPlay
   currPlayerNum = -1;
 
-  io.sockets.emit('callStoreMutation', {
-    mutation: 'setLeadSuit',
-    val: undefined
-  });
+  callStoreMutation('setLeadSuit', undefined)
   leadSuit = undefined;
   currBout = [];
 
   io.sockets.emit('newBout', '');
-  io.sockets.emit('callStoreMutation', {
-    mutation: 'setLeader',
-    val: ''
-  });
+  callStoreMutation('setLeader', '')
 
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6) {
     teams = gameFunctions.countPoints(teams, trumpSuit);
@@ -200,10 +185,7 @@ function assignPoints() {
 function dealCards() {
   deck = deckFunctions.shuffle()
 
-  io.sockets.emit('callStoreMutation', {
-    mutation: 'setDealer',
-    val: false
-  });
+  callStoreMutation('setDealer', false);
   dealer = users[users.length - 1]
   dealer.socket.broadcast.emit('chat', dealer.username + ' is dealer')
   dealer.socket.emit('chat', 'You are the dealer')
@@ -278,20 +260,20 @@ function setUpHand() {
   }
 
   users = rotateArray(users, currPlayerNum);
-  io.sockets.emit('callStoreMutation', {
-    mutation: 'setLeadSuit',
-    val: undefined
-  });
-  io.sockets.emit('callStoreMutation', {
-    mutation: 'setTrumpSuit',
-    val: ''
-  });
+  callStoreMutation('setLeadSuit', undefined)
+  callStoreMutation('setTrumpSuit', '')
   trumpSuit = undefined;
   leadSuit = undefined;
   currBout = [];
   // Compensating for the increment at start of nextPlay
   currPlayerNum = -1;
   nextPlay();
+}
+
+function callStoreMutation(mutation, val) {
+  io.sockets.emit('callStoreMutation', {
+    mutation, val 
+  });
 }
 
 function rotateArray(arr, num) {
