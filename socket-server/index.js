@@ -18,6 +18,7 @@ const htmlPath = path.join(__dirname, 'public');
 
 const deckFunctions = require('./deck_functions.js');
 const gameFunctions = require('./game_functions.js');
+const teamNameWords = require('./team_name_words.js');
 
 app.use(express.static(htmlPath));
 
@@ -26,7 +27,7 @@ http.listen(port, function () {
 });
 
 var users = [];
-var teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
+var teams = [{ name:"", cards: [], points: [] }, { name:"", cards: [], points: [] }];
 var score = [0, 0];
 var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currBout;
 
@@ -72,8 +73,10 @@ io.on('connection', function (socket) {
         setProp('gameStarting', count);
         if (count == 0) {
           clearInterval(gameStartCountdown);
+          generateTeamNames();
           setProp('gameStage', 'playing')
           setTimeout(dealCards, 500);
+          console.log(teams)
         }
       }, 1000);
     }
@@ -125,6 +128,23 @@ function awardWinner(winning) {
   setTimeout(function () { boutReset(winning); }, 1500);
 };
 
+function generateTeamNames() {
+  let team0Name = randomName();
+  let team1Name = randomName();
+  while (team1Name[0] == team0Name[0] || team1Name[1] == team0Name[1])
+    team1Name = randomName();
+  teams[0].name = team0Name.join(" ");
+  teams[1].name = team1Name.join(" ");
+}
+
+function randomName() {
+  const adjectives = teamNameWords.adjectives;
+  const nouns = teamNameWords.nouns;
+  const chosenAdjective = adjectives[Math.floor( Math.random() * adjectives.length)];
+  const chosenNoun = nouns[Math.floor( Math.random() * nouns.length)];
+  return [chosenAdjective, chosenNoun];
+}
+
 function boutReset(winner) {
   // Rotate users array until winner is in 0th position
   while (users[0].username != winner.user.username)
@@ -146,8 +166,8 @@ function boutReset(winner) {
     teams = gameFunctions.countPoints(teams, trumpSuit);
     
     assignPoints();
-    sendChat(`Team 1: ${printPoints(teams[0])}`)
-    sendChat(`Team 2: ${printPoints(teams[1])}`)
+    sendChat(`${teams[0].name}: ${printPoints(teams[0])}`)
+    sendChat(`${teams[1].name}: ${printPoints(teams[1])}`)
     setProp('score', score);
     dealCards();
     teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
