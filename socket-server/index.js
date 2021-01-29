@@ -41,7 +41,7 @@ io.on('connection', function (socket) {
     users.push({ username: data['usernameSubmission'], ready: false, socket: socket });
     users[users.length - 1].team = teams[users.length % 2].cards;
     users[users.length - 1].teamNum = users.length % 2;
-    socket.broadcast.emit('chat', data['usernameSubmission'] + ' has joined');
+    socket.broadcast.emit('chat', `${data['usernameSubmission']} has joined`);
     sendUpdatedUsers();
   });
 
@@ -51,7 +51,7 @@ io.on('connection', function (socket) {
       if (users[i].socket.id == socket.id)
         pos = i;
     if (users[pos]) {
-      io.emit('chat', users[pos].username + ' has left');
+      io.emit('chat', `${users[pos].username} has left`);
       users.splice(pos, 1);
       sendUpdatedUsers();
     }
@@ -82,7 +82,7 @@ io.on('connection', function (socket) {
 
   socket.on('play', function (card) {
     let winning;
-    io.sockets.emit('chat', currPlayer.username + ' played the ' + card.num + ' of ' + card.suit)
+    io.sockets.emit('chat', `${currPlayer.username} played the ${card.num} of ${card.suit}`)
     socket.broadcast.emit('played', { card: card, user: currPlayer.username });
     currBout.push({ user: currPlayer, card: card });
     if (!trumpSuit) {
@@ -120,7 +120,7 @@ function sendUpdatedUsers() {
 }
 
 function awardWinner(winning) {
-  io.sockets.emit('chat', winning.user.username + ' takes it with the ' + winning.card.num + ' of ' + winning.card.suit)
+  io.sockets.emit('chat', `${winning.user.username} takes it with the ${winning.card.num} of ${winning.card.suit}`)
   for (let i = 0; i < currBout.length; i++)
     winning.user.team.push(currBout[i].card)
   setTimeout(function () { boutReset(winning); }, 1500);
@@ -130,7 +130,7 @@ function boutReset(winner) {
   // Rotate users array until winner is in 0th position
   while (users[0].username != winner.user.username)
     users.unshift(users.pop())
-  winner.user.socket.broadcast.emit('chat', winner.user.username + ' has the lead');
+  winner.user.socket.broadcast.emit('chat', `${winner.user.username} has the lead`);
   winner.user.socket.emit('chat', 'Your lead')
 
   // It will get incremented by nextPlay
@@ -172,7 +172,7 @@ function dealCards() {
 
   callStoreMutation('setDealer', false);
   dealer = users[users.length - 1]
-  dealer.socket.broadcast.emit('chat', dealer.username + ' is dealer')
+  dealer.socket.broadcast.emit('chat', `${dealer.username} is dealer`)
   dealer.socket.emit('chat', 'You are the dealer')
   dealer.socket.emit('callStoreMutation', {
     mutation: 'setDealer',
@@ -212,10 +212,10 @@ function nextBidder() {
 function recieveBid(data) {
   if (data != 'pass') {
     currBid = { player: currPlayer.username, amount: data }
-    currPlayer.socket.broadcast.emit('chat', currPlayer.username + ' bid ' + data)
+    currPlayer.socket.broadcast.emit('chat', `${currPlayer.username} bid ${data}`)
   }
   else
-    currPlayer.socket.broadcast.emit('chat', currPlayer.username + ' passed')
+    currPlayer.socket.broadcast.emit('chat', `${currPlayer.username} passed`)
   currPlayer.socket.emit('setProp', {
     prop: 'bidding',
     val: false
@@ -238,7 +238,7 @@ function setUpHand() {
     currPlayer = users[currPlayerNum];
     currBid = { player: currPlayer.username, amount: 2 }
   }
-  io.sockets.emit('chat', currBid.player + ' has it for ' + currBid.amount);
+  io.sockets.emit('chat', `${currBid.player} has it for ${currBid.amount}`);
   for (var i = 0; i < users.length; i++) {
     if (users[i].username == currBid.player)
       currPlayerNum = i;
@@ -275,7 +275,7 @@ function rotateArray(arr, num) {
 function nextPlay() {
   currPlayerNum = (currPlayerNum + 1) % users.length;
   currPlayer = users[currPlayerNum]
-  currPlayer.socket.broadcast.emit('status', 'Waiting for ' + currPlayer.username + ' to make a play')
+  currPlayer.socket.broadcast.emit('status', `Waiting for ${currPlayer.username} to make a play`)
   currPlayer.socket.emit('status', 'Waiting for you to make a play')
   currPlayer.socket.emit('setProp', {
     prop: 'currPlay',
