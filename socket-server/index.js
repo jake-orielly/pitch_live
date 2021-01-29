@@ -166,8 +166,8 @@ function boutReset(winner) {
     teams = gameFunctions.countPoints(teams, trumpSuit);
     
     assignPoints();
-    sendChat(`${teams[0].name}: ${printPoints(teams[0])}`)
-    sendChat(`${teams[1].name}: ${printPoints(teams[1])}`)
+    sendChat(`${teams[0].name} won ${printPoints(teams[0])}`)
+    sendChat(`${teams[1].name} won ${printPoints(teams[1])}`)
     setProp('score', score);
     dealCards();
     teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
