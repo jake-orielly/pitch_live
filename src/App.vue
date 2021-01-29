@@ -161,79 +161,9 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-p,
-.ui-button,
-input {
-  font-size: 2rem;
-}
-
-@media only screen and (max-width: 1200px) {
-  p,
-  .ui-button,
-  input {
-    font-size: 1.5rem;
-  }
-}
-
-p,
-.ui-button,
-.user-list {
+#status-text {
+  font-size: 1.5rem;
   color: white;
-}
-
-.login-input {
-  display: block;
-  margin: 0.5em auto;
-  background: none;
-  border: none;
-  color: white;
-  text-align: center;
-  padding: 0.5em;
-  border-bottom: 2px solid white;
-}
-
-.login-input:focus {
-  outline: none;
-}
-
-.login-input::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: white;
-  opacity: 1; /* Firefox */
-}
-
-.ui-button {
-  background: none;
-  border: 3px solid white;
-  box-shadow: 1px 1px 9px #0000009c;
-  border-radius: 0.5rem;
-}
-
-.ui-button:hover {
-  box-shadow: 2px 2px 9px #000000de;
-  transform: scale(1.01) translateY(-2px);
-}
-
-.ui-button:active {
-  outline: none;
-  box-shadow: 1px 1px 5px #00000085;
-  transform: scale(0.99) translateY(2px);
-}
-
-.ui-button:focus {
-  outline: none;
-}
-
-.nametag {
-  background-color: white;
-  color: black;
-  text-align: center;
-  border: 4px solid black;
-  border-radius: 9px;
-  box-shadow: 1px 1px 9px #0000009c;
-  position: absolute;
-  z-index: 30;
-  padding: 0em 1em;
 }
 
 .clickable {

@@ -27,7 +27,7 @@ export default {
 <style scoped>
 table {
   color: white;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .team-name {

@@ -46,8 +46,10 @@ export default {
 
 .bid-div {
   position: absolute;
-  top: 9em;
+  top: 27%;
   left: 37%;
   z-index: 10;
+  font-size: 1.5rem;
+  color: white;
 }
 </style>

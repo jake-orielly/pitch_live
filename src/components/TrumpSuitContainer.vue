@@ -20,4 +20,8 @@ export default {
 </script>
 
 <style scoped>
+p {
+  color: white;
+  font-size: 1.5rem;
+}
 </style>

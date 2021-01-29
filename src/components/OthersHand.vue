@@ -66,4 +66,18 @@ export default {
   margin-right: -2.5em;
   margin-left: -2.5em;
 }
+
+.nametag {
+  background-color: white;
+  color: black;
+  text-align: center;
+  border: 4px solid black;
+  border-radius: 9px;
+  box-shadow: 1px 1px 9px #0000009c;
+  position: absolute;
+  z-index: 30;
+  padding: 0em 1em;
+  font-size: 1.5rem;
+}
+
 </style>

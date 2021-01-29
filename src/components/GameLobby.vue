@@ -56,6 +56,14 @@ export default {
 </script>
 
 <style scoped>
+#lobby-container {
+  color: white;
+}
+
+p {
+  font-size: 1.5rem;
+}
+
 .ready-mark {
   color: #68ff68;
 }
