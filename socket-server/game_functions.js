@@ -41,4 +41,21 @@ function countPoints(teams, trumpSuit) {
   return teams;
 };
 
-module.exports = { countGame, countPoints }
+function evalWinner(currBout, trumpSuit, leadSuit) {
+  let winning = currBout[0];
+  let curr;
+  for (let i = 0; i < currBout.length; i++) {
+    curr = currBout[i]
+    if (curr.card.suit == trumpSuit && winning.card.suit != trumpSuit) {
+      winning = curr;
+    }
+    else if (curr.card.suit == trumpSuit && constants.nums.indexOf(winning.card.num) < constants.nums.indexOf(curr.card.num)) {
+      winning = curr;
+    }
+    else if (winning.card.suit != trumpSuit && curr.card.suit == leadSuit && constants.nums.indexOf(winning.card.num) < constants.nums.indexOf(curr.card.num))
+      winning = curr;
+  }
+  return winning;
+};
+
+module.exports = { countGame, countPoints, evalWinner }

@@ -28,7 +28,7 @@ http.listen(port, function () {
 
 var users = [];
 var teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
-var score = [0, 0]
+var score = [0, 0];
 var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currBout;
 
 io.on('connection', function (socket) {
@@ -110,8 +110,8 @@ io.on('connection', function (socket) {
         mutation: 'setLeadSuit',
         val: card.suit
       });
-    }
-    winning = evalWinner();
+    };
+    winning = gameFunctions.evalWinner(currBout, trumpSuit, leadSuit);
     io.sockets.emit('callStoreMutation', {
       mutation: 'setLeader',
       val: winning.user.username
@@ -145,24 +145,7 @@ function awardWinner(winning) {
   for (let i = 0; i < currBout.length; i++)
     winning.user.team.push(currBout[i].card)
   setTimeout(function () { boutReset(winning); }, 1500);
-}
-
-function evalWinner() {
-  let winning = currBout[0];
-  let curr;
-  for (let i = 0; i < currBout.length; i++) {
-    curr = currBout[i]
-    if (curr.card.suit == trumpSuit && winning.card.suit != trumpSuit) {
-      winning = curr;
-    }
-    else if (curr.card.suit == trumpSuit && constants.nums.indexOf(winning.card.num) < constants.nums.indexOf(curr.card.num)) {
-      winning = curr;
-    }
-    else if (winning.card.suit != trumpSuit && curr.card.suit == leadSuit && constants.nums.indexOf(winning.card.num) < constants.nums.indexOf(curr.card.num))
-      winning = curr;
-  }
-  return winning;
-}
+};
 
 function boutReset(winner) {
   // Rotate users array until winner is in 0th position
@@ -189,7 +172,11 @@ function boutReset(winner) {
 
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6) {
     teams = gameFunctions.countPoints(teams, trumpSuit);
-    assignPoints();
+    assignPoints()
+    io.sockets.emit('setProp', {
+      prop: 'score',
+      val: score
+    });
     dealCards();
     teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
   }
@@ -198,23 +185,17 @@ function boutReset(winner) {
 }
 
 function assignPoints() {
-  let currTeam;
-  for (let i in users) {
-    if (users[i].username == currBid.player) {
-      currTeam = users[i].teamNum;
-    }
-  }
-  if (teams[currTeam].points.length < currBid.amount)
-    score[currTeam] -= currBid.amount;
-  else
-    score[currTeam] += teams[currTeam].points.length;
-  score[(currTeam + 1) % 2] += teams[(currTeam + 1) % 2].points.length;
+  let biddingTeam;
+  for (let i in users)
+    if (users[i].username == currBid.player)
+      biddingTeam = users[i].teamNum;
 
-  io.sockets.emit('setProp', {
-    prop: 'score',
-    val: score
-  });
-}
+  if (teams[biddingTeam].points.length < currBid.amount)
+    score[biddingTeam] -= currBid.amount;
+  else
+    score[biddingTeam] += teams[biddingTeam].points.length;
+  score[(biddingTeam + 1) % 2] += teams[(biddingTeam + 1) % 2].points.length;
+};
 
 function dealCards() {
   deck = deckFunctions.shuffle()
