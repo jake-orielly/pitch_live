@@ -30,14 +30,15 @@ function countPoints(teams, trumpSuit) {
         }
       }
     }
+  // Because I like the order High, Low, Jack, Game
+  low.team.unshift('Low');
+  high.team.unshift('High');
   game0 = countGame(teams[0].cards);
   game1 = countGame(teams[1].cards);
   if (game0 > game1)
     teams[0].points.push('Game');
   else if (game0 < game1)
     teams[1].points.push('Game');
-  high.team.push('High');
-  low.team.push('Low');
   return teams;
 };
 
