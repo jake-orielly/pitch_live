@@ -16,8 +16,9 @@ var gameStartCountdown;
 
 const htmlPath = path.join(__dirname, 'public');
 
-const constants = require('./constants.js')
-const deckFunctions = require('./deck_functions.js')
+const constants = require('./constants.js');
+const deckFunctions = require('./deck_functions.js');
+const gameFunctions = require('./game_functions.js');
 
 app.use(express.static(htmlPath));
 
@@ -186,49 +187,14 @@ function boutReset(winner) {
     val: ''
   });
 
-  if (teams[0].cards.length + teams[1].cards.length == users.length * 6)
-    countPoints();
+  if (teams[0].cards.length + teams[1].cards.length == users.length * 6) {
+    teams = gameFunctions.countPoints(teams, trumpSuit);
+    assignPoints();
+    dealCards();
+    teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
+  }
   else
     nextPlay();
-}
-
-function countPoints() {
-  let game = [0, 0]
-  let high = { team: undefined, index: -1 };
-  let low = { team: undefined, index: 14 };
-  let curr;
-  let pointsMap = [10, 1, 2, 3, 4];
-
-  for (let i = 0; i < 2; i++)
-    for (let j = 0; j < teams[i].cards.length; j++) {
-      curr = teams[i].cards[j];
-      if (curr.suit == trumpSuit) {
-        if (curr.num == 'Jack')
-          teams[1].points.push('Jack');
-        if (constants.nums.indexOf(curr.num) < low.index) {
-          low.team = teams[i].points
-          low.index = constants.nums.indexOf(curr.num)
-        }
-        if (constants.nums.indexOf(curr.num) > high.index) {
-          high.team = teams[i].points
-          high.index = constants.nums.indexOf(curr.num)
-        }
-      }
-      if (constants.nums.indexOf(curr.num) > 7)
-        game[i] += pointsMap[constants.nums.indexOf(curr.num) - 8]
-    }
-  if (game[0] > game[1])
-    teams[0].points.push('Game');
-  else if (game[0] < game[1])
-    teams[1].points.push('Game');
-  high.team.push('High');
-  low.team.push('Low');
-
-  assignPoints();
-
-  teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
-
-  dealCards();
 }
 
 function assignPoints() {
@@ -238,8 +204,6 @@ function assignPoints() {
       currTeam = users[i].teamNum;
     }
   }
-  console.log(teams[0].points)
-  console.log(teams[1].points)
   if (teams[currTeam].points.length < currBid.amount)
     score[currTeam] -= currBid.amount;
   else
