@@ -42,11 +42,11 @@ function countPoints(teams, trumpSuit) {
   return teams;
 };
 
-function evalWinner(currBout, trumpSuit, leadSuit) {
-  let winning = currBout[0];
+function evalWinner(currTrick, trumpSuit, leadSuit) {
+  let winning = currTrick[0];
   let curr;
-  for (let i = 0; i < currBout.length; i++) {
-    curr = currBout[i]
+  for (let i = 0; i < currTrick.length; i++) {
+    curr = currTrick[i]
     if (curr.card.suit == trumpSuit && winning.card.suit != trumpSuit) {
       winning = curr;
     }

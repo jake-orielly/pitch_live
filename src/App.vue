@@ -83,7 +83,7 @@ export default {
       users: [],
       username: "",
       gameStarting: 0,
-      currBout: 0,
+      currTrick: 0,
       othersCards: ["placeholder", "placeholder", "placeholder"],
       myCard: "placeholder",
       showingUserOptionsContainer: true,
@@ -113,8 +113,8 @@ export default {
     status(data) {
       this.statusText = data;
     },
-    newBout() {
-      this.newBout();
+    newTrick() {
+      this.newTrick();
     },
     deal(hand) {
       this.$refs.handContainer.deal(hand);
@@ -136,7 +136,7 @@ export default {
       this.$set(this.othersCards, theirIndex, data.card);
       console.log(this.othersCards)
     },
-    newBout() {
+    newTrick() {
       this.othersCards = ["placeholder", "placeholder", "placeholder"];
       this.myCard = "placeholder";
     },

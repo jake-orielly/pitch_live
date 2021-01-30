@@ -29,7 +29,7 @@ http.listen(port, function () {
 var users = [];
 var teams = [{ name:"", cards: [], points: [] }, { name:"", cards: [], points: [] }];
 var score = [0, 0];
-var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currBout;
+var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currTrick;
 
 io.on('connection', function (socket) {
   socket.on('chat', function (msg) {
@@ -86,7 +86,7 @@ io.on('connection', function (socket) {
     let winning;
     sendChat(`${currPlayer.username} played the ${card.num} of ${card.suit}`)
     socket.broadcast.emit('played', { card: card, user: currPlayer.username });
-    currBout.push({ user: currPlayer, card: card });
+    currTrick.push({ user: currPlayer, card: card });
     if (!trumpSuit) {
       trumpSuit = card.suit
       callStoreMutation('setTrumpSuit', card.suit)
@@ -95,13 +95,13 @@ io.on('connection', function (socket) {
       leadSuit = card.suit
       callStoreMutation('setLeadSuit', card.suit)
     };
-    winning = gameFunctions.evalWinner(currBout, trumpSuit, leadSuit);
+    winning = gameFunctions.evalWinner(currTrick, trumpSuit, leadSuit);
     callStoreMutation('setLeader', winning.user.username)
     if (currPlayerNum == users.length - 1) {
       awardWinner(winning);
     }
     else
-      nextPlay();
+      nextTrick();
   })
 });
 
@@ -123,9 +123,9 @@ function sendUpdatedUsers() {
 
 function awardWinner(winning) {
   sendChat(`${winning.user.username} takes it with the ${winning.card.num} of ${winning.card.suit}`)
-  for (let i = 0; i < currBout.length; i++)
-    winning.user.team.push(currBout[i].card)
-  setTimeout(function () { boutReset(winning); }, 1500);
+  for (let i = 0; i < currTrick.length; i++)
+    winning.user.team.push(currTrick[i].card)
+  setTimeout(function () { trickReset(winning); }, 1500);
 };
 
 function generateTeamNames() {
@@ -145,23 +145,26 @@ function randomName() {
   return [chosenAdjective, chosenNoun];
 }
 
-function boutReset(winner) {
+function trickReset(winner) {
   // Rotate users array until winner is in 0th position
   while (users[0].username != winner.user.username)
     users.unshift(users.pop())
   winner.user.socket.broadcast.emit('chat', `${winner.user.username} has the lead`);
   winner.user.socket.emit('chat', 'Your lead')
 
-  // It will get incremented by nextPlay
+  // It will get incremented by nextTrick
   currPlayerNum = -1;
 
   callStoreMutation('setLeadSuit', undefined)
   leadSuit = undefined;
-  currBout = [];
+  currTrick = [];
 
-  io.sockets.emit('newBout', '');
+  io.sockets.emit('newTrick', '');
   callStoreMutation('setLeader', '')
 
+  console.log(teams[0].cards)
+  console.log(teams[1].cards)
+  console.log("-----------")
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6) {
     teams = gameFunctions.countPoints(teams, trumpSuit);
     
@@ -173,7 +176,7 @@ function boutReset(winner) {
     teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
   }
   else
-    nextPlay();
+    nextTrick();
 }
 
 function assignPoints() {
@@ -271,10 +274,10 @@ function setUpHand() {
   callStoreMutation('setTrumpSuit', '')
   trumpSuit = undefined;
   leadSuit = undefined;
-  currBout = [];
-  // Compensating for the increment at start of nextPlay
+  currTrick = [];
+  // Compensating for the increment at start of nextTrick
   currPlayerNum = -1;
-  nextPlay();
+  nextTrick();
 }
 
 function printPoints(team) {
@@ -305,7 +308,7 @@ function rotateArray(arr, num) {
   return arr;
 }
 
-function nextPlay() {
+function nextTrick() {
   currPlayerNum = (currPlayerNum + 1) % users.length;
   currPlayer = users[currPlayerNum]
   currPlayer.socket.broadcast.emit('status', `Waiting for ${currPlayer.username} to make a play`)

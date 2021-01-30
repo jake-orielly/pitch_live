@@ -28,8 +28,8 @@ describe('Game Functions', function() {
       assert(points, 8);
     });
   });
-  describe('bout point counting', function() {
-    it('check that we correctly count bout points #1', function() {
+  describe('trick point counting', function() {
+    it('check that we correctly count trick points #1', function() {
       let team0 = {
         cards:[
           {num:'Ace', suit:'Spades'},
@@ -60,7 +60,7 @@ describe('Game Functions', function() {
       assert.deepStrictEqual(result[0].points, ['High', 'Low', 'Jack']);
       assert.deepStrictEqual(result[1].points, []);
     });
-    it('check that we correctly count bout points #2', function() {
+    it('check that we correctly count trick points #2', function() {
       let team0 = {
         cards:[
           {num:'Ace', suit:'Spades'},
@@ -91,7 +91,7 @@ describe('Game Functions', function() {
       assert.deepStrictEqual(result[0].points, ['Game']);
       assert.deepStrictEqual(result[1].points, ['High','Low']);
     });
-    it('check that we correctly count bout points #3', function() {
+    it('check that we correctly count trick points #3', function() {
       let team0 = {
         cards:[
           {num:'Ace', suit:'Spades'},
@@ -122,7 +122,7 @@ describe('Game Functions', function() {
       assert.deepStrictEqual(result[0].points, ['High', 'Game']);
       assert.deepStrictEqual(result[1].points, ['Low', 'Jack']);
     });
-    it('check that we correctly count bout points #4', function() {
+    it('check that we correctly count trick points #4', function() {
       let team0 = {
         cards:[
           {num:'Ace', suit:'Spades'},
@@ -154,9 +154,9 @@ describe('Game Functions', function() {
       assert.deepStrictEqual(result[1].points, []);
     });
   });
-  describe('bout winner', function() {
-    it('check that we correctly judge bout winner #1', function() {
-      let bout = [
+  describe('trick winner', function() {
+    it('check that we correctly judge trick winner #1', function() {
+      let trick = [
         { 
           user: { username: 'User1',},
           card: { num: 'Ace', suit: 'Clubs' }
@@ -174,11 +174,11 @@ describe('Game Functions', function() {
           card: { num: 3, suit: 'Clubs' }
         }
       ]
-      let winner = gameFunctions.evalWinner(bout, 'Clubs', 'Clubs');
+      let winner = gameFunctions.evalWinner(trick, 'Clubs', 'Clubs');
       assert(winner.user.username, 'User1');
     });
-    it('check that we correctly judge bout winner #2', function() {
-      let bout = [
+    it('check that we correctly judge trick winner #2', function() {
+      let trick = [
         { 
           user: { username: 'User1',},
           card: { num: 'Ace', suit: 'Clubs' }
@@ -196,11 +196,11 @@ describe('Game Functions', function() {
           card: { num: 3, suit: 'Clubs' }
         }
       ]
-      let winner = gameFunctions.evalWinner(bout, 'Hearts', 'Clubs');
+      let winner = gameFunctions.evalWinner(trick, 'Hearts', 'Clubs');
       assert(winner.user.username, 'User3');
     });
-    it('check that we correctly judge bout winner #3', function() {
-      let bout = [
+    it('check that we correctly judge trick winner #3', function() {
+      let trick = [
         { 
           user: { username: 'User1',},
           card: { num: 5, suit: 'Clubs' }
@@ -218,7 +218,7 @@ describe('Game Functions', function() {
           card: { num: 3, suit: 'Clubs' }
         }
       ]
-      let winner = gameFunctions.evalWinner(bout, 'Diamons', 'Clubs');
+      let winner = gameFunctions.evalWinner(trick, 'Diamons', 'Clubs');
       assert(winner.user.username, 'User2');
     });
   });

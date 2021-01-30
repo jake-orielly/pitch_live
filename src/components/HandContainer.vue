@@ -51,7 +51,7 @@ export default {
               card.played = true;
               this.$parent.hand.splice(i, 1);
               this.$parent.myCard = card;
-              this.$parent.currBout++;
+              this.$parent.currTrick++;
               break;
             }
         }
@@ -82,7 +82,7 @@ export default {
       target.style.position = "absolute";
       target.style.top = dest_rect.y + "px";
       target.style.left = dest_rect.x + "px";
-      target.style["z-index"] = 10 + this.currBout;
+      target.style["z-index"] = 10 + this.currTrick;
     },
     cardSwitch() {
       let cardBacks = document.getElementsByClassName("deck-card");
