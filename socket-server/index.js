@@ -65,7 +65,7 @@ io.on('connection', function (socket) {
       clearInterval(gameStartCountdown);
       setProp('gameStarting', 0);
     }
-    else if (users.filter(user => !user.ready).length == 0) {
+    else if (users.filter(user => !user.ready).length == 0 && users.length == 4) {
       setProp('gameStarting', count);
       gameStartCountdown = setInterval(function () {
         count--;
@@ -220,7 +220,6 @@ function nextBidder() {
     val: true
   });
   currPlayer.socket.emit('status', 'Your bid' + addon);
-  console.log(currBid)
 }
 
 function recieveBid(data) {
