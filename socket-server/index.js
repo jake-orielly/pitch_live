@@ -39,7 +39,6 @@ io.on('connection', function (socket) {
 
   socket.on('usernameSubmission', function (data) {
     users.push({ username: data['usernameSubmission'], ready: false, socket: socket });
-    users[users.length - 1].team = teams[users.length % 2].cards;
     users[users.length - 1].teamNum = users.length % 2;
     socket.broadcast.emit('chat', `${data['usernameSubmission']} has joined`);
     sendUpdatedUsers();
@@ -124,10 +123,7 @@ function sendUpdatedUsers() {
 function awardWinner(winning) {
   sendChat(`${winning.user.username} takes it with the ${winning.card.num} of ${winning.card.suit}`)
   for (let i = 0; i < currTrick.length; i++)
-    winning.user.team.push(currTrick[i].card)
-  console.log(winning)
-  console.log(teams[0].cards)
-  console.log(teams[1].cards)
+    teams[winning.user.teamNum].cards.push(currTrick[i].card)
   setTimeout(function () { trickReset(winning); }, 1500);
 };
 
@@ -164,10 +160,6 @@ function trickReset(winner) {
 
   io.sockets.emit('newTrick', '');
   callStoreMutation('setLeader', '')
-
-  console.log(teams[0].cards.length)
-  console.log(teams[1].cards.length)
-  console.log(teams[0].cards.length, teams[1].cards.length, users.length * 6)
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6) {
     nextHand();
   }
@@ -189,7 +181,6 @@ function assignPoints() {
 };
 
 function dealCards() {
-  console.log("Dealing cards")
   deck = deckFunctions.shuffle()
 
   callStoreMutation('setDealer', false);
@@ -304,7 +295,6 @@ function rotateArray(arr, num) {
 }
 
 function nextTrick() {
-  console.log("Next trick")
   currPlayerNum = (currPlayerNum + 1) % users.length;
   currPlayer = users[currPlayerNum]
   currPlayer.socket.broadcast.emit('status', `Waiting for ${currPlayer.username} to make a play`)
@@ -316,7 +306,6 @@ function nextTrick() {
 }
 
 function nextHand() {
-  console.log("Next Hand")
   const teamPoints = gameFunctions.countPoints([teams[0].cards, teams[1].cards], trumpSuit);  
   teams[0].points = teamPoints[0];
   teams[1].points = teamPoints[1];
@@ -325,5 +314,5 @@ function nextHand() {
   sendChat(`${teams[1].name} won ${printPoints(teams[1])}`)
   setProp('score', score);
   dealCards();
-  teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
+  teams = [{ name: teams[0].name, cards: [], points: [] }, { name: teams[1].name, cards: [], points: [] }];
 }
