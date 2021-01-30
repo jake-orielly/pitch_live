@@ -182,7 +182,7 @@ function assignPoints() {
 
 function dealCards() {
   deck = deckFunctions.shuffle()
-
+  callStoreMutation('resetDeck');
   callStoreMutation('setDealer', false);
   dealer = users[users.length - 1]
   dealer.socket.broadcast.emit('chat', `${dealer.username} is dealer`)

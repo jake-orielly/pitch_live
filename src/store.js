@@ -17,6 +17,9 @@ const Store = new Vuex.Store({
         dealCard() {
             this.deckCards--;
         },
+        resetDeck() {
+            this.deckCards = 20;
+        },
         setCurrBid(state, val) {
             state.currBid = val;
         },
