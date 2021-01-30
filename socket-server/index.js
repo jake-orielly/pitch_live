@@ -125,6 +125,9 @@ function awardWinner(winning) {
   sendChat(`${winning.user.username} takes it with the ${winning.card.num} of ${winning.card.suit}`)
   for (let i = 0; i < currTrick.length; i++)
     winning.user.team.push(currTrick[i].card)
+  console.log(winning)
+  console.log(teams[0].cards)
+  console.log(teams[1].cards)
   setTimeout(function () { trickReset(winning); }, 1500);
 };
 
@@ -162,18 +165,11 @@ function trickReset(winner) {
   io.sockets.emit('newTrick', '');
   callStoreMutation('setLeader', '')
 
-  console.log(teams[0].cards)
-  console.log(teams[1].cards)
-  console.log("-----------")
+  console.log(teams[0].cards.length)
+  console.log(teams[1].cards.length)
+  console.log(teams[0].cards.length, teams[1].cards.length, users.length * 6)
   if (teams[0].cards.length + teams[1].cards.length == users.length * 6) {
-    teams = gameFunctions.countPoints(teams, trumpSuit);
-    
-    assignPoints();
-    sendChat(`${teams[0].name} won ${printPoints(teams[0])}`)
-    sendChat(`${teams[1].name} won ${printPoints(teams[1])}`)
-    setProp('score', score);
-    dealCards();
-    teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
+    nextHand();
   }
   else
     nextTrick();
@@ -193,6 +189,7 @@ function assignPoints() {
 };
 
 function dealCards() {
+  console.log("Dealing cards")
   deck = deckFunctions.shuffle()
 
   callStoreMutation('setDealer', false);
@@ -219,7 +216,7 @@ function dealCards() {
 }
 
 function nextBidder() {
-  let addon = ''
+  let addon = '';
   if (currBid.player)
     addon = `, ${currBid.player} has it for ${currBid.amount}`
   currPlayer.socket.broadcast.emit('status', `Waiting for ${currPlayer.username} to choose a bid${addon}.`);
@@ -281,10 +278,8 @@ function setUpHand() {
 }
 
 function printPoints(team) {
-  if (!team.points.length)
-    "Nothing"
-  else
-    return team.points.join(", ")
+  let pointText = team.points.join(", ");
+  return (pointText ? pointText : "nothing")
 }
 
 function setProp(prop, val) {
@@ -309,6 +304,7 @@ function rotateArray(arr, num) {
 }
 
 function nextTrick() {
+  console.log("Next trick")
   currPlayerNum = (currPlayerNum + 1) % users.length;
   currPlayer = users[currPlayerNum]
   currPlayer.socket.broadcast.emit('status', `Waiting for ${currPlayer.username} to make a play`)
@@ -317,4 +313,17 @@ function nextTrick() {
     prop: 'currPlay',
     val: true
   });
+}
+
+function nextHand() {
+  console.log("Next Hand")
+  const teamPoints = gameFunctions.countPoints([teams[0].cards, teams[1].cards], trumpSuit);  
+  teams[0].points = teamPoints[0];
+  teams[1].points = teamPoints[1];
+  assignPoints();
+  sendChat(`${teams[0].name} won ${printPoints(teams[0])}`)
+  sendChat(`${teams[1].name} won ${printPoints(teams[1])}`)
+  setProp('score', score);
+  dealCards();
+  teams = [{ cards: [], points: [] }, { cards: [], points: [] }];
 }

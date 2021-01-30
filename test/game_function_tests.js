@@ -30,128 +30,104 @@ describe('Game Functions', function() {
   });
   describe('trick point counting', function() {
     it('check that we correctly count trick points #1', function() {
-      let team0 = {
-        cards:[
-          {num:'Ace', suit:'Spades'},
-          {num:'King', suit:'Spades'},
-          {num:'Queen', suit:'Spades'},
-          {num:'Jack', suit:'Spades'},
-          {num:5, suit:'Spades'},
-          {num:6, suit:'Spades'}
-        ],
-        points:[]
-      };
+      let team0 = [
+        {num:'Ace', suit:'Spades'},
+        {num:'King', suit:'Spades'},
+        {num:'Queen', suit:'Spades'},
+        {num:'Jack', suit:'Spades'},
+        {num:5, suit:'Spades'},
+        {num:6, suit:'Spades'}
+      ];
 
-      let team1 = {
-        cards:[
+      let team1 = [
           {num:2, suit:'Diamonds'},
           {num:3, suit:'Diamonds'},
           {num:4, suit:'Diamonds'},
           {num:5, suit:'Diamonds'},
           {num:6, suit:'Diamonds'},
           {num:10, suit:'Diamonds'}
-        ],
-        points:[]
-      };
+      ];
 
-      let teams = [team0, team1];
+      let teamCards = [team0, team1];
 
-      result = gameFunctions.countPoints(teams, 'Spades');
-      assert.deepStrictEqual(result[0].points, ['High', 'Low', 'Jack']);
-      assert.deepStrictEqual(result[1].points, []);
+      result = gameFunctions.countPoints(teamCards, 'Spades');
+      assert.deepStrictEqual(result[0], ['High', 'Low', 'Jack']);
+      assert.deepStrictEqual(result[1], []);
     });
     it('check that we correctly count trick points #2', function() {
-      let team0 = {
-        cards:[
-          {num:'Ace', suit:'Spades'},
-          {num:'King', suit:'Spades'},
-          {num:'Queen', suit:'Spades'},
-          {num:'Jack', suit:'Spades'},
-          {num:5, suit:'Spades'},
-          {num:6, suit:'Spades'}
-        ],
-        points:[]
-      };
+      let team0 = [
+        {num:'Ace', suit:'Spades'},
+        {num:'King', suit:'Spades'},
+        {num:'Queen', suit:'Spades'},
+        {num:'Jack', suit:'Spades'},
+        {num:5, suit:'Spades'},
+        {num:6, suit:'Spades'}
+      ];
 
-      let team1 = {
-        cards:[
-          {num:'Queen', suit:'Diamonds'},
-          {num:3, suit:'Clubs'},
-          {num:4, suit:'Clubs'},
-          {num:5, suit:'Clubs'},
-          {num:6, suit:'Clubs'},
-          {num:7, suit:'Clubs'}
-        ],
-        points:[]
-      };
+      let team1 = [
+        {num:'Queen', suit:'Diamonds'},
+        {num:3, suit:'Clubs'},
+        {num:4, suit:'Clubs'},
+        {num:5, suit:'Clubs'},
+        {num:6, suit:'Clubs'},
+        {num:7, suit:'Clubs'}
+      ];
 
-      let teams = [team0, team1];
+      let teamCards = [team0, team1];
 
-      result = gameFunctions.countPoints(teams, 'Diamonds');
-      assert.deepStrictEqual(result[0].points, ['Game']);
-      assert.deepStrictEqual(result[1].points, ['High','Low']);
+      result = gameFunctions.countPoints(teamCards, 'Diamonds');
+      assert.deepStrictEqual(result[0], ['Game']);
+      assert.deepStrictEqual(result[1], ['High','Low']);
     });
     it('check that we correctly count trick points #3', function() {
-      let team0 = {
-        cards:[
-          {num:'Ace', suit:'Spades'},
-          {num:'King', suit:'Spades'},
-          {num:'Queen', suit:'Spades'},
-          {num:4, suit:'Hearts'},
-          {num:10, suit:'Hearts'},
-          {num:'Queen', suit:'Hearts'}
-        ],
-        points:[]
-      };
+      let team0 = [
+        {num:'Ace', suit:'Spades'},
+        {num:'King', suit:'Spades'},
+        {num:'Queen', suit:'Spades'},
+        {num:4, suit:'Hearts'},
+        {num:10, suit:'Hearts'},
+        {num:'Queen', suit:'Hearts'}
+      ];
 
-      let team1 = {
-        cards:[
-          {num:'Queen', suit:'Diamonds'},
-          {num:3, suit:'Hearts'},
-          {num:'Jack', suit:'Hearts'},
-          {num:'Ace', suit:'Clubs'},
-          {num:10, suit:'Clubs'},
-          {num:7, suit:'Clubs'}
-        ],
-        points:[]
-      };
+      let team1 = [
+        {num:'Queen', suit:'Diamonds'},
+        {num:3, suit:'Hearts'},
+        {num:'Jack', suit:'Hearts'},
+        {num:'Ace', suit:'Clubs'},
+        {num:10, suit:'Clubs'},
+        {num:7, suit:'Clubs'}
+      ];
 
-      let teams = [team0, team1];
+      let teamCards = [team0, team1];
 
-      result = gameFunctions.countPoints(teams, 'Hearts');
-      assert.deepStrictEqual(result[0].points, ['High', 'Game']);
-      assert.deepStrictEqual(result[1].points, ['Low', 'Jack']);
+      result = gameFunctions.countPoints(teamCards, 'Hearts');
+      assert.deepStrictEqual(result[0], ['High', 'Game']);
+      assert.deepStrictEqual(result[1], ['Low', 'Jack']);
     });
     it('check that we correctly count trick points #4', function() {
-      let team0 = {
-        cards:[
-          {num:'Ace', suit:'Spades'},
-          {num:'King', suit:'Spades'},
-          {num:'Queen', suit:'Spades'},
-          {num:'Jack', suit:'Spades'},
-          {num:5, suit:'Spades'},
-          {num:6, suit:'Spades'}
-        ],
-        points:[]
-      };
+      let team0 = [
+        {num:'Ace', suit:'Spades'},
+        {num:'King', suit:'Spades'},
+        {num:'Queen', suit:'Spades'},
+        {num:'Jack', suit:'Spades'},
+        {num:5, suit:'Spades'},
+        {num:6, suit:'Spades'}
+      ];
 
-      let team1 = {
-        cards:[
-          {num:2, suit:'Diamonds'},
-          {num:3, suit:'Diamonds'},
-          {num:4, suit:'Diamonds'},
-          {num:5, suit:'Diamonds'},
-          {num:6, suit:'Diamonds'},
-          {num:7, suit:'Diamonds'}
-        ],
-        points:[]
-      };
+      let team1 = [
+        {num:2, suit:'Diamonds'},
+        {num:3, suit:'Diamonds'},
+        {num:4, suit:'Diamonds'},
+        {num:5, suit:'Diamonds'},
+        {num:6, suit:'Diamonds'},
+        {num:7, suit:'Diamonds'}
+      ];
 
-      let teams = [team0, team1];
+      let teamCards = [team0, team1];
 
-      result = gameFunctions.countPoints(teams, 'Spades');
-      assert.deepStrictEqual(result[0].points, ['High', 'Low', 'Jack', 'Game']);
-      assert.deepStrictEqual(result[1].points, []);
+      result = gameFunctions.countPoints(teamCards, 'Spades');
+      assert.deepStrictEqual(result[0], ['High', 'Low', 'Jack', 'Game']);
+      assert.deepStrictEqual(result[1], []);
     });
   });
   describe('trick winner', function() {

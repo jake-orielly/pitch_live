@@ -9,37 +9,39 @@ function countGame(cards) {
   return total;
 }
 
-function countPoints(teams, trumpSuit) {
+function countPoints(teamCards, trumpSuit) {
   let high = { team: undefined, index: -1 };
   let low = { team: undefined, index: 14 };
-  let curr, game0, game1;
-
-  for (let team of teams)
-    for (let j = 0; j < team.cards.length; j++) {
-      curr = team.cards[j];
-      if (curr.suit == trumpSuit) {
-        if (curr.num == 'Jack')
-          team.points.push('Jack');
-        if (constants.nums.indexOf(curr.num) < low.index) {
-          low.team = team.points
-          low.index = constants.nums.indexOf(curr.num)
+  let game0, game1;
+  let teamPoints = [[],[]];
+  let currTeam = 0;
+  for (let team of teamCards) {
+    for (let card of team) {
+      if (card.suit == trumpSuit) {
+        if (card.num == 'Jack')
+          teamPoints[currTeam].push('Jack');
+        if (constants.nums.indexOf(card.num) < low.index) {
+          low.team = teamPoints[currTeam]
+          low.index = constants.nums.indexOf(card.num)
         }
-        if (constants.nums.indexOf(curr.num) > high.index) {
-          high.team = team.points
-          high.index = constants.nums.indexOf(curr.num)
+        if (constants.nums.indexOf(card.num) > high.index) {
+          high.team = teamPoints[currTeam]
+          high.index = constants.nums.indexOf(card.num)
         }
       }
     }
+    currTeam++;
+  }
   // Because I like the order High, Low, Jack, Game
   low.team.unshift('Low');
   high.team.unshift('High');
-  game0 = countGame(teams[0].cards);
-  game1 = countGame(teams[1].cards);
+  game0 = countGame(teamCards[0]);
+  game1 = countGame(teamCards[1]);
   if (game0 > game1)
-    teams[0].points.push('Game');
+    teamPoints[0].push('Game');
   else if (game0 < game1)
-    teams[1].points.push('Game');
-  return teams;
+    teamPoints[1].push('Game');
+  return teamPoints;
 };
 
 function evalWinner(currTrick, trumpSuit, leadSuit) {
