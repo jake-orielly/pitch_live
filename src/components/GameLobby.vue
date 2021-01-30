@@ -2,18 +2,18 @@
   <div id="lobby-container">
     <p>In This Lobby:</p>
     <table class="user-list">
-      <tr v-for="user in users" v-bind:key="user.username">
+      <tr v-for="user in users" v-bind:key="user.id">
         <td>{{ user.username }}</td>
         <td
-          @click="readyClick(user.username, false)"
-          :class="{ clickable: user.username == username }"
+          @click="readyClick(user.id, false)"
+          :class="{ clickable: user.id == id }"
           v-if="user.ready"
         >
           <span class="ready-mark">&#10004;</span>
         </td>
         <td
-          @click="readyClick(user.username, true)"
-          :class="{ clickable: user.username == username }"
+          @click="readyClick(user.id, true)"
+          :class="{ clickable: user.id == id }"
           v-if="!user.ready"
         >
           <span class="not-ready-mark">&#10006;</span>
@@ -22,7 +22,7 @@
     </table>
     <div v-if="gameStarting">
       <p>Game starting in {{ gameStarting }}</p>
-      <button @click="readyClick(this.username, false)">Cancel</button>
+      <button @click="readyClick(this.id, false)">Cancel</button>
     </div>
   </div>
 </template>
@@ -38,6 +38,10 @@ export default {
       type: String,
       required: true,
     },
+    id: {
+      type: String,
+      required: true,
+    },
     gameStarting: {
       type: Number,
       required: true
@@ -47,9 +51,8 @@ export default {
     return {};
   },
   methods: {
-    readyClick(name, ready) {
-      console.log("Ready:", name, ready);
-      if (name == this.username) this.$socket.emit("ready", ready);
+    readyClick(id, ready) {
+      if (id == this.id) this.$socket.emit("ready", ready);
     },
   },
 };

@@ -107,7 +107,7 @@ io.on('connection', function (socket) {
 function sendUpdatedUsers() {
   let simpleUsers = [];
   users.forEach(function (user) {
-    simpleUsers.push({ username: user.username, ready: user.ready, team: user.teamNum });
+    simpleUsers.push({ username: user.username, ready: user.ready, team: user.teamNum, id:user.socket.id });
   });
   for (let i in users) {
     i = parseInt(i);
@@ -170,7 +170,7 @@ function trickReset(winner) {
 function assignPoints() {
   let biddingTeam;
   for (let i in users)
-    if (users[i].username == currBid.player.username)
+    if (users[i].socket.id == currBid.player.socket.id)
       biddingTeam = users[i].teamNum;
 
   if (teams[biddingTeam].points.length < currBid.amount)
@@ -252,9 +252,12 @@ function setUpHand() {
     currBid = { player: currPlayer.username, amount: 2 }
   }
   sendChat(`${currBid.player.username} has it for ${currBid.amount}`);
+  console.log(currBid)
   for (var i = 0; i < users.length; i++) {
-    if (users[i].username == currBid.player.username)
+    if (users[i].socket.id == currBid.player.socket.id) {
       currPlayerNum = i;
+      break;
+    }
   }
 
   users = rotateArray(users, currPlayerNum);

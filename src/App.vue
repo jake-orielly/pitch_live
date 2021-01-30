@@ -6,6 +6,7 @@
         v-if="signedIn"
         :users="users"
         :username="username"
+        :id="id"
         :gameStarting="gameStarting"
       />
     </div>
@@ -81,6 +82,7 @@ export default {
       gameStage: "lobby",
       signedIn: false,
       users: [],
+      id: "",
       username: "",
       gameStarting: 0,
       currTrick: 0,
@@ -103,6 +105,9 @@ export default {
     UserOptions,
   },
   sockets: {
+    connect: function () {
+      this.id = this.$socket.id;
+    },
     setProp(data) {
       if (data.isJson) data.val = JSON.parse(data.val);
       this[data.prop] = data.val;
