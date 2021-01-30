@@ -13,9 +13,7 @@
         </div>
         <div v-if="message.type == 'chat'">
           <p>
-            <strong>
-              {{ message.username }}:
-            </strong>
+            <strong> {{ message.username }}: </strong>
             {{ message.content }}
           </p>
         </div>
@@ -29,22 +27,30 @@
         v-model="messageText"
         v-on:keyup.13="sendMessage"
       />
-      <button id="send" class="send-button" @click="sendMessage">Send</button>
-      <button @click="toggleEmojiPicker">😀</button>
+      <button 
+        id="emoji-button" 
+        @click="toggleEmojiPicker"
+      >
+        😀
+      </button>
+      <button 
+        id="send" 
+        class="send-button" 
+        @click="sendMessage"
+      >
+        Send
+      </button>
     </div>
-    <VEmojiPicker 
-      v-if="showingEmojiPicker"
-      @select="selectEmoji" 
-    />
+    <VEmojiPicker v-if="showingEmojiPicker" @select="selectEmoji" />
   </div>
 </template>
 
 <script>
-import { VEmojiPicker } from 'v-emoji-picker';
+import { VEmojiPicker } from "v-emoji-picker";
 
 export default {
   components: {
-    VEmojiPicker
+    VEmojiPicker,
   },
   props: {
     username: {
@@ -53,7 +59,7 @@ export default {
     },
   },
   sockets: {
-    chat (data) {
+    chat(data) {
       // When we receive a “chat” event, display the message to the user
       if (typeof data == "string")
         this.messages.push({
@@ -73,7 +79,7 @@ export default {
     return {
       messages: [],
       messageText: "",
-      showingEmojiPicker: false
+      showingEmojiPicker: false,
     };
   },
   methods: {
@@ -97,7 +103,7 @@ export default {
     },
     selectEmoji(emoji) {
       this.messageText += emoji.data;
-    }
+    },
   },
 };
 </script>
@@ -129,12 +135,22 @@ export default {
   font-size: 1rem;
 }
 
+#message,
+.send-button,
+#emoji-button {
+  font-size: 1.25rem;
+}
+
 .send-button {
   background: #ffffff;
-  border: 3px solid #00467d;
   box-shadow: 2px 2px 9px #0000009c;
   border-radius: 0.5rem;
-  color: #00467d;
+}
+
+#emoji-button {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
 }
 
 .event-text {
