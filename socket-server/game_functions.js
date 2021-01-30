@@ -9,7 +9,8 @@ function countGame(cards) {
   return total;
 }
 
-function countPoints(teamCards, trumpSuit) {
+function countPoints(teamCards, trumpSuit, currBid) {
+  const bidderTeam = currBid.player.teamNum;
   let high = { team: undefined, index: -1 };
   let low = { team: undefined, index: 14 };
   let game0, game1;
@@ -41,6 +42,10 @@ function countPoints(teamCards, trumpSuit) {
     teamPoints[0].push('Game');
   else if (game0 < game1)
     teamPoints[1].push('Game');
+  if (currBid.amount == 5 && 
+      teamPoints[bidderTeam].length == 4 &&
+      teamCards[bidderTeam].length == 24)
+    teamPoints[bidderTeam].push("Five")
   return teamPoints;
 };
 

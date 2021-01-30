@@ -170,7 +170,7 @@ function trickReset(winner) {
 function assignPoints() {
   let biddingTeam;
   for (let i in users)
-    if (users[i].username == currBid.player)
+    if (users[i].username == currBid.player.username)
       biddingTeam = users[i].teamNum;
 
   if (teams[biddingTeam].points.length < currBid.amount)
@@ -209,7 +209,7 @@ function dealCards() {
 function nextBidder() {
   let addon = '';
   if (currBid.player)
-    addon = `, ${currBid.player} has it for ${currBid.amount}`
+    addon = `, ${currBid.player.username} has it for ${currBid.amount}`
   currPlayer.socket.broadcast.emit('status', `Waiting for ${currPlayer.username} to choose a bid${addon}.`);
   currPlayer.socket.emit('callStoreMutation', {
     mutation: 'setCurrBid',
@@ -220,11 +220,12 @@ function nextBidder() {
     val: true
   });
   currPlayer.socket.emit('status', 'Your bid' + addon);
+  console.log(currBid)
 }
 
 function recieveBid(data) {
   if (data != 'pass') {
-    currBid = { player: currPlayer.username, amount: data }
+    currBid = { player: currPlayer, amount: data }
     currPlayer.socket.broadcast.emit('chat', `${currPlayer.username} bid ${data}`)
   }
   else
@@ -251,9 +252,9 @@ function setUpHand() {
     currPlayer = users[currPlayerNum];
     currBid = { player: currPlayer.username, amount: 2 }
   }
-  sendChat(`${currBid.player} has it for ${currBid.amount}`);
+  sendChat(`${currBid.player.username} has it for ${currBid.amount}`);
   for (var i = 0; i < users.length; i++) {
-    if (users[i].username == currBid.player)
+    if (users[i].username == currBid.player.username)
       currPlayerNum = i;
   }
 
@@ -306,7 +307,7 @@ function nextTrick() {
 }
 
 function nextHand() {
-  const teamPoints = gameFunctions.countPoints([teams[0].cards, teams[1].cards], trumpSuit);  
+  const teamPoints = gameFunctions.countPoints([teams[0].cards, teams[1].cards], trumpSuit, currBid);  
   teams[0].points = teamPoints[0];
   teams[1].points = teamPoints[1];
   assignPoints();

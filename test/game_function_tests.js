@@ -49,8 +49,8 @@ describe('Game Functions', function() {
       ];
 
       let teamCards = [team0, team1];
-
-      result = gameFunctions.countPoints(teamCards, 'Spades');
+      const bid = {amount:3,player:{teamNum:0}};
+      result = gameFunctions.countPoints(teamCards, 'Spades', bid);
       assert.deepStrictEqual(result[0], ['High', 'Low', 'Jack']);
       assert.deepStrictEqual(result[1], []);
     });
@@ -74,8 +74,8 @@ describe('Game Functions', function() {
       ];
 
       let teamCards = [team0, team1];
-
-      result = gameFunctions.countPoints(teamCards, 'Diamonds');
+      const bid = {amount:3,player:{teamNum:0}};
+      result = gameFunctions.countPoints(teamCards, 'Diamonds', bid);
       assert.deepStrictEqual(result[0], ['Game']);
       assert.deepStrictEqual(result[1], ['High','Low']);
     });
@@ -99,8 +99,8 @@ describe('Game Functions', function() {
       ];
 
       let teamCards = [team0, team1];
-
-      result = gameFunctions.countPoints(teamCards, 'Hearts');
+      const bid = {amount:3,player:{teamNum:0}};
+      result = gameFunctions.countPoints(teamCards, 'Hearts', bid);
       assert.deepStrictEqual(result[0], ['High', 'Game']);
       assert.deepStrictEqual(result[1], ['Low', 'Jack']);
     });
@@ -124,8 +124,153 @@ describe('Game Functions', function() {
       ];
 
       let teamCards = [team0, team1];
+      const bid = {amount:3,player:{teamNum:0}};
+      result = gameFunctions.countPoints(teamCards, 'Spades', bid);
+      assert.deepStrictEqual(result[0], ['High', 'Low', 'Jack', 'Game']);
+      assert.deepStrictEqual(result[1], []);
+    });
+    it('test 5 bid case #1', function() {
+      let team0 = [
+        {num:'Ace', suit:'Spades'},
+        {num:'King', suit:'Spades'},
+        {num:'Queen', suit:'Spades'},
+        {num:'Jack', suit:'Spades'},
+        {num:5, suit:'Spades'},
+        {num:6, suit:'Spades'},
+        {num:'Ace', suit:'Clubs'},
+        {num:'King', suit:'Clubs'},
+        {num:'Queen', suit:'Clubs'},
+        {num:'Jack', suit:'Clubs'},
+        {num:5, suit:'Clubs'},
+        {num:6, suit:'Clubs'},
+        {num:'Ace', suit:'Hearts'},
+        {num:'King', suit:'Hearts'},
+        {num:'Queen', suit:'Hearts'},
+        {num:'Jack', suit:'Hearts'},
+        {num:5, suit:'Hearts'},
+        {num:6, suit:'Hearts'},
+        {num:'Ace', suit:'Diamonds'},
+        {num:'King', suit:'Diamonds'},
+        {num:'Queen', suit:'Diamonds'},
+        {num:'Jack', suit:'Diamonds'},
+        {num:5, suit:'Diamonds'},
+        {num:6, suit:'Diamonds'},
+      ];
 
-      result = gameFunctions.countPoints(teamCards, 'Spades');
+      let team1 = [];
+
+      let teamCards = [team0, team1];
+      const bid = {amount:5,player:{teamNum:0}};
+      result = gameFunctions.countPoints(teamCards, 'Spades', bid);
+      assert.deepStrictEqual(result[0], ['High', 'Low', 'Jack', 'Game', 'Five']);
+      assert.deepStrictEqual(result[1], []);
+    });
+    it('test 5 bid case #2', function() {
+      let team0 = [
+        {num:'Ace', suit:'Spades'},
+        {num:'King', suit:'Spades'},
+        {num:'Queen', suit:'Spades'},
+        {num:'Jack', suit:'Spades'},
+        {num:5, suit:'Spades'},
+        {num:6, suit:'Spades'},
+        {num:'Ace', suit:'Clubs'},
+        {num:'King', suit:'Clubs'},
+        {num:'Queen', suit:'Clubs'},
+        {num:'Jack', suit:'Clubs'},
+        {num:5, suit:'Clubs'},
+        {num:6, suit:'Clubs'},
+        {num:'Ace', suit:'Hearts'},
+        {num:'King', suit:'Hearts'},
+        {num:'Queen', suit:'Hearts'},
+        {num:'Jack', suit:'Hearts'},
+        {num:5, suit:'Hearts'},
+        {num:6, suit:'Hearts'},
+        {num:'Ace', suit:'Diamonds'},
+        {num:'King', suit:'Diamonds'},
+        {num:'Queen', suit:'Diamonds'},
+        {num:'Jack', suit:'Diamonds'},
+        {num:5, suit:'Diamonds'},
+        {num:6, suit:'Diamonds'},
+      ];
+
+      let team1 = [];
+
+      let teamCards = [team0, team1];
+      const bid = {amount:4,player:{teamNum:0}};
+      result = gameFunctions.countPoints(teamCards, 'Spades', bid);
+      assert.deepStrictEqual(result[0], ['High', 'Low', 'Jack', 'Game']);
+      assert.deepStrictEqual(result[1], []);
+    });
+    it('test 5 bid case #3', function() {
+      let team0 = [
+        {num:'Ace', suit:'Spades'},
+        {num:'King', suit:'Spades'},
+        {num:'Queen', suit:'Spades'},
+        {num:'Jack', suit:'Spades'},
+        {num:5, suit:'Spades'},
+        {num:6, suit:'Spades'},
+        {num:'Ace', suit:'Clubs'},
+        {num:'King', suit:'Clubs'},
+        {num:'Queen', suit:'Clubs'},
+        {num:'Jack', suit:'Clubs'},
+        {num:5, suit:'Clubs'},
+        {num:6, suit:'Clubs'},
+        {num:'Ace', suit:'Hearts'},
+        {num:'King', suit:'Hearts'},
+        {num:'Queen', suit:'Hearts'},
+        {num:'Jack', suit:'Hearts'},
+        {num:5, suit:'Hearts'},
+        {num:6, suit:'Hearts'},
+        {num:'Ace', suit:'Diamonds'},
+        {num:'King', suit:'Diamonds'},
+      ];
+
+      let team1 = [
+        {num:'Queen', suit:'Diamonds'},
+        {num:'Jack', suit:'Diamonds'},
+        {num:5, suit:'Diamonds'},
+        {num:6, suit:'Diamonds'},
+      ];
+
+      let teamCards = [team0, team1];
+      const bid = {amount:5,player:{teamNum:0}};
+      result = gameFunctions.countPoints(teamCards, 'Spades', bid);
+      assert.deepStrictEqual(result[0], ['High', 'Low', 'Jack', 'Game']);
+      assert.deepStrictEqual(result[1], []);
+    });
+    it('test 5 bid case #4', function() {
+      let team0 = [
+        {num:'Ace', suit:'Spades'},
+        {num:'King', suit:'Spades'},
+        {num:'Queen', suit:'Spades'},
+        {num:'Jack', suit:'Spades'},
+        {num:5, suit:'Spades'},
+        {num:6, suit:'Spades'},
+        {num:'Ace', suit:'Clubs'},
+        {num:'King', suit:'Clubs'},
+        {num:'Queen', suit:'Clubs'},
+        {num:'Jack', suit:'Clubs'},
+        {num:5, suit:'Clubs'},
+        {num:6, suit:'Clubs'},
+        {num:'Ace', suit:'Hearts'},
+        {num:'King', suit:'Hearts'},
+        {num:'Queen', suit:'Hearts'},
+        {num:'Jack', suit:'Hearts'},
+        {num:5, suit:'Hearts'},
+        {num:6, suit:'Hearts'},
+        {num:'Ace', suit:'Diamonds'},
+        {num:'King', suit:'Diamonds'},
+        {num:'Queen', suit:'Diamonds'},
+        {num:'Jack', suit:'Diamonds'},
+        {num:5, suit:'Diamonds'},
+        {num:6, suit:'Diamonds'},
+      ];
+
+      let team1 = [];
+
+      let teamCards = [team0, team1];
+      const bid = {amount:5,player:{teamNum:1}};
+      result = gameFunctions.countPoints(teamCards, 'Spades', bid);
       assert.deepStrictEqual(result[0], ['High', 'Low', 'Jack', 'Game']);
       assert.deepStrictEqual(result[1], []);
     });
