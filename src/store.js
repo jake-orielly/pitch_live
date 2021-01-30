@@ -10,9 +10,13 @@ const Store = new Vuex.Store({
         trumpSuit: "",
         dealer: false,
         teamNames: [],
-        currBid: 0
+        currBid: 0,
+        deckCards: 20
     },
     mutations: {
+        dealCard() {
+            this.deckCards--;
+        },
         setCurrBid(state, val) {
             state.currBid = val;
         },

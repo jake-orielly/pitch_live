@@ -7,13 +7,21 @@
         @click="play(card)"
         class="hand-card-slot card-list"
       >
-        <img class="card hand-card" v-bind:src="getCardImage(card)" />
+        <img class="card hand-card" v-bind:src="getCardImage(card)" v-if="showCards"/>
+      </li>
+      <li
+        v-for="(card, ind) in dealCount"
+        v-bind:key="'card-back-' + ind"
+        class="hand-card-slot card-list"
+      >
+        <img class="card hand-card" v-bind:src="getCardImage('back')" v-if="!showCards"/>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import { EventBus } from '../event-bus.js';
 import utilities from "../js/utilities.js"
 
 export default {
@@ -25,7 +33,9 @@ export default {
   },
   data() {
     return {
+      dealCount: 0,
       dealDone: false,
+      showCards: false,
     };
   },
   methods: {
@@ -59,38 +69,21 @@ export default {
       }
     },
     deal(hand) {
-      let count = 0;
       this.$parent.hand = hand;
       this.dealDone = false;
-      document.getElementById("hand-container").style.display = "block";
-      let interval = setInterval(() => {
-        if (count == 6) {
-          interval = clearInterval(interval);
-          this.dealDone = true;
-          setTimeout(() => this.cardSwitch(), 700);
-        } else count = this.dealCard(count);
-      }, 500);
-    },
-    dealCard(num) {
-      let destination = document.getElementsByClassName("card hand-card")[num];
-      let target = document.getElementsByClassName("deck-card")[num];
-      this.moveCard(destination, target);
-      return num + 1;
-    },
-    moveCard(destination, target) {
-      let dest_rect = destination.getBoundingClientRect();
-      target.style.position = "absolute";
-      target.style.top = dest_rect.y + "px";
-      target.style.left = dest_rect.x + "px";
-      target.style["z-index"] = 10 + this.currTrick;
-    },
-    cardSwitch() {
-      let cardBacks = document.getElementsByClassName("deck-card");
-      let handCards = document.getElementsByClassName("hand-card");
-      for (let i = 0; i < 6; i++) 
-        cardBacks[i].style.display = "none";
-      for (let i = 0; i < handCards.length; i++)
-        handCards[i].style.visibility = "visible";
+      this.dealCount = 1;
+      let dealInterval = setInterval(
+        () => {
+          EventBus.$emit('card-dealt');
+          this.dealCount++;
+          if (this.dealCount == 6) {
+            setTimeout(() => {
+              this.showCards = true;
+            }, 450)
+            clearInterval(dealInterval);
+          }
+        }, 450
+      )
     },
     getCardImage(val) {
       return utilities.getCardImage(val);
@@ -102,12 +95,9 @@ export default {
 <style scoped>
 
 #hand-container {
+  display: block;
   position: absolute;
   bottom: 5%;
   z-index: 10;
-}
-
-.hand-card {
-  visibility: hidden;
 }
 </style>
