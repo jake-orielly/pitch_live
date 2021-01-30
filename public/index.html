@@ -1,109 +1,17 @@
-<html>
-    <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="style.css">
-        <script src="/jquery-3.4.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <title>Pitch Live</title>
-    </head>
-    <body>
-        <div id="vue-app">
-            <div v-if="game_stage == 'lobby'">
-                <div id="username-container">
-                    <button class="ui-button user-option-button" @click="set_user_mode('guest')">Play As Guest</button>
-                    <button class="ui-button user-option-button" @click="set_user_mode('existing')">Login</button>
-                    <button class="ui-button user-option-button" @click="set_user_mode('new')">Sign Up</button>
-                    <form id="login-form">
-                        <input class="login-input" id="username-input" type="text" placeholder="Username" v-if="user_mode" autocomplete="off" required/>
-                        <input class="login-input" id="password-input" type="password" placeholder="Password" v-if="user_mode == 'new' || user_mode == 'existing'"required/>
-                        <input class="ui-button" type="submit" id="username-confirm" v-if="user_mode" :value="user_confirm[user_mode]" @click="confirm_click">
-                    <p>{{login_status_map[login_status]}}</p>
-                    <p>{{signup_status}}</p>
-                </div>
-                <div v-if="signed_in">
-                    <p>In This Lobby:</p>
-                    <table class="user-list">
-                        <tr v-for="user in users" class="unselectable">
-                            <td>{{user.username}}</td>
-                            <td @click="ready_click(user.username,false)" :class="{clickable : user.username == username}" v-if="user.ready"><span class="ready-mark">&#10004;</span></td>
-                            <td @click="ready_click(user.username,true)" :class="{clickable : user.username == username}" v-if="!user.ready"><span class="not-ready-mark">&#10006;</span></td>
-                        </tr>
-                    </table>
-                    <div v-if="game_starting">
-                        <p>Game starting in {{game_starting}}</p>
-                        <button @click="ready_click('self',false)">Cancel</button>
-                    </div>
-                </div>
-            </div>
-            <div v-if="game_stage == 'playing'">
-                <p>Trump: <span :class="(trump_suit ? trump_suit.toLowerCase() : '')">{{suit_to_icon(trump_suit)}}</span></p>
-                <p>Lead: 
-                    <span :class="(lead_suit ? lead_suit.toLowerCase() : '')">{{suit_to_icon(lead_suit)}}</span>
-                    <span v-if="leader">Held by {{leader}}</span>
-                </p>
-                <div>
-                    <p id="status-text">{{status_text}}</p>
-                    <p v-if="status == 'bidder'" class="bid-div">Bid: 
-                        <button class="clickable bid-button" v-for="i in ['pass',2,3,4,5]
-                        .filter(bid => bid > curr_bid || 
-                        (bid > 0 && curr_bid == 'pass') ||
-                        (bid == 'pass' && (!dealer || curr_bid != 'pass')) ||
-                        (dealer && bid == curr_bid && curr_bid != 'pass'))"
-                            @click="bid(i)">{{i}}</button>
-                    </p>
-                    <!-- <p>{{curr_bid + ' : ' + dealer}}</p> -->
-                </div>
-                <div>
-                    <p class="score-text">Score: {{score[0]}} | {{score[1]}}</p>
-                </div>
-                <div id="deck-container">
-                    <ul>
-                        <li class="card-list" v-for="num in 20">
-                            <img class="deck-card" v-bind:src="get_card_image('back')">
-                        </li>
-                    </ul>
-                </div>
-                <div id="played-pile">
-                    <img v-for="i in 3" class="deck-card played" :id="'played-pos-' + (i-1)" v-bind:src="get_card_image(others_cards[i-1])">
-                    <img class="deck-card played" id="played-pos-3" v-bind:src="get_card_image(my_card)">
-                </div>
-                <div class="opponent-0 rotate-90">
-                    <p class="nametag">{{users[0].username}}</p>
-                    <img v-for="i in 6" 
-                    v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
-                    class="other-player-card opponent-0-card" v-bind:src="get_card_image('back')">
-                </div>
-                <div class="teammate-1">
-                    <p class="nametag">{{users[1].username}}</p>
-                    <img v-for="i in 6" 
-                    v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
-                    class="other-player-card" v-bind:src="get_card_image('back')">
-                </div>
-                <div class="opponent-1 rotate-270">
-                    <p class="nametag">{{users[2].username}}</p>
-                    <img v-for="i in 6" 
-                    v-bind:style="{transform: 'rotate(' + (i - 3.5)*5 + 'deg)' }"
-                    class="other-player-card opponent-1-card" v-bind:src="get_card_image('back')">
-                </div>
-                <div id="hand-container">
-                    <ul>
-                        <li v-for="card in hand" @click="play(card)" class="hand-card-slot card-list">
-                            <img class="card hand-card" v-bind:src="get_card_image(card)">
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div id="chat-container" v-if="signed_in">
-                <div id="messages"></div>
-                <div id="chat-ui-container">
-                    <input id="message" type="text" placeholder="Message" />
-                    <button id="send" class="send-button">Send</button>
-                </div>
-            </div>
-        </div>
-        <script src="main_vue.js"></script>
-        <script src="/chat.js"></script>
-        <script src="ui_functions.js"></script>
-    </body>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>dwarf-1.png">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
