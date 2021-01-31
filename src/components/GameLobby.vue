@@ -2,18 +2,18 @@
   <div id="lobby-container">
     <p>In This Lobby:</p>
     <table class="user-list">
-      <tr v-for="user in users" v-bind:key="user.id">
+      <tr v-for="user in $store.state.users" v-bind:key="user.id">
         <td>{{ user.username }}</td>
         <td
           @click="readyClick(user.id, false)"
-          :class="{ clickable: user.id == id }"
+          :class="{ clickable: user.id == $store.state.id }"
           v-if="user.ready"
         >
           <span class="ready-mark">&#10004;</span>
         </td>
         <td
           @click="readyClick(user.id, true)"
-          :class="{ clickable: user.id == id }"
+          :class="{ clickable: user.id == $store.state.id }"
           v-if="!user.ready"
         >
           <span class="not-ready-mark">&#10006;</span>
@@ -22,7 +22,7 @@
     </table>
     <div v-if="gameStarting">
       <p>Game starting in {{ gameStarting }}</p>
-      <button @click="readyClick(this.id, false)">Cancel</button>
+      <button @click="readyClick($store.state.id, false)">Cancel</button>
     </div>
   </div>
 </template>
@@ -30,15 +30,7 @@
 <script>
 export default {
   props: {
-    users: {
-      type: Array,
-      required: true,
-    },
     username: {
-      type: String,
-      required: true,
-    },
-    id: {
       type: String,
       required: true,
     },
@@ -52,7 +44,7 @@ export default {
   },
   methods: {
     readyClick(id, ready) {
-      if (id == this.id) this.$socket.emit("ready", ready);
+      if (id == this.$store.state.id) this.$socket.emit("ready", ready);
     },
   },
 };

@@ -114,10 +114,9 @@ function sendUpdatedUsers() {
   for (let i in users) {
     i = parseInt(i);
     ordered = rotateArray(simpleUsers, ((i + 1) % simpleUsers.length));
-    users[i].socket.emit('setProp', {
-      prop: 'users',
-      val: JSON.stringify(ordered),
-      isJson: true
+    users[i].socket.emit('callStoreMutation', {
+      mutation: 'setUsers',
+      val: JSON.stringify(ordered)
     });
   }
 }

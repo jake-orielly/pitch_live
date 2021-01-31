@@ -4,9 +4,7 @@
       <UserOptions v-if="showingUserOptionsContainer" />
       <GameLobby
         v-if="signedIn"
-        :users="users"
         :username="username"
-        :id="id"
         :gameStarting="gameStarting"
       />
     </div>
@@ -31,17 +29,17 @@
         :myCard="myCard"
       />
       <OthersHand
-        :username="users[0].username"
+        :username="$store.state.users[0].username"
         :numCards="6"
         :playerClass="'opponent-0'"
       />
       <OthersHand
-        :username="users[1].username"
+        :username="$store.state.users[1].username"
         :numCards="6"
         :playerClass="'teammate-1'"
       />
       <OthersHand
-        :username="users[2].username"
+        :username="$store.state.users[2].username"
         :numCards="6"
         :playerClass="'opponent-1'"
       />
@@ -83,7 +81,6 @@ export default {
       nums: [1, 2, 3, 4, 5, 6],
       gameStage: "lobby",
       signedIn: false,
-      users: [],
       id: "",
       username: "",
       gameStarting: 0,
@@ -109,7 +106,7 @@ export default {
   },
   sockets: {
     connect: function () {
-      this.id = this.$socket.id;
+      this.$store.commit("setId", this.$socket.id);
     },
     setProp(data) {
       if (data.isJson) data.val = JSON.parse(data.val);
@@ -139,7 +136,7 @@ export default {
       function findUser(element) {
         return element.username == data.user;
       }
-      let theirIndex = this.users.findIndex(findUser);
+      let theirIndex = this.$store.state.users.findIndex(findUser);
       console.log(this.othersCards, data.card, theirIndex)
       this.$set(this.othersCards, theirIndex, data.card);
       console.log(this.othersCards)

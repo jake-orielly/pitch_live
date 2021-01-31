@@ -13,18 +13,26 @@ const Store = new Vuex.Store({
         teamNames: [],
         currBid: 0,
         deckCards: 20,
-        winningTeam: ""
+        winningTeam: "",
+        id: undefined,
+        users: []
     },
     mutations: {
-        dealCard() {
-            this.deckCards--;
+        setUsers(state, val) {
+            state.users = JSON.parse(val);
+        },
+        setId(state, val) {
+            state.id = val;
+        },
+        dealCard(state) {
+            state.deckCards--;
         },
         gameOver(state, team) {
             state.winningTeam = team;
             EventBus.$emit('game-over');
         },
-        resetDeck() {
-            this.deckCards = 20;
+        resetDeck(state) {
+            state.deckCards = 20;
         },
         setCurrBid(state, val) {
             state.currBid = val;
