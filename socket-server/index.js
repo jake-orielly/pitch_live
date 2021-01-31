@@ -29,7 +29,7 @@ http.listen(port, function () {
 var users = [];
 var teams = [{ name:"", cards: [], points: [] }, { name:"", cards: [], points: [] }];
 var score = [0, 0];
-var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currTrick;
+var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currTrick, lastDealer;
 
 io.on('connection', function (socket) {
   socket.on('chat', function (msg) {
@@ -184,7 +184,11 @@ function dealCards() {
   deck = deckFunctions.shuffle()
   callStoreMutation('resetDeck');
   callStoreMutation('setDealer', false);
-  dealer = users[users.length - 1]
+  console.log(users.indexOf(lastDealer), (users.indexOf(lastDealer) + 2) % 4)
+  if (lastDealer)
+    users = rotateArray(users, (users.indexOf(lastDealer) + 2) % 4)
+  dealer = users[users.length - 1];
+  lastDealer = dealer;
   dealer.socket.broadcast.emit('chat', `${dealer.username} is dealer`)
   dealer.socket.emit('chat', 'You are the dealer')
   dealer.socket.emit('callStoreMutation', {
@@ -252,7 +256,6 @@ function setUpHand() {
     currBid = { player: currPlayer.username, amount: 2 }
   }
   sendChat(`${currBid.player.username} has it for ${currBid.amount}`);
-  console.log(currBid)
   for (var i = 0; i < users.length; i++) {
     if (users[i].socket.id == currBid.player.socket.id) {
       currPlayerNum = i;

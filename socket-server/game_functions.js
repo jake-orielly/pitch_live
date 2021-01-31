@@ -42,6 +42,7 @@ function countPoints(teamCards, trumpSuit, currBid) {
     teamPoints[0].push('Game');
   else if (game0 < game1)
     teamPoints[1].push('Game');
+  //TODO: == 24 is hardcoded for 4 player game
   if (currBid.amount == 5 && 
       teamPoints[bidderTeam].length == 4 &&
       teamCards[bidderTeam].length == 24)
