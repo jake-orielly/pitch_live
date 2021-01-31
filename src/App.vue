@@ -25,6 +25,7 @@
         <LeadSuitContainer/>
       </div>
       <DeckCards />
+      <GameOverContainer />
       <PlayedPile 
         :othersCards="othersCards"
         :myCard="myCard"
@@ -59,6 +60,7 @@ import BidOptions from "./components/BidOptions.vue";
 import ChatBox from "./components/ChatBox.vue";
 import DeckCards from "./components/DeckCards.vue"
 import GameLobby from "./components/GameLobby.vue";
+import GameOverContainer from "./components/GameOverContainer.vue";
 import HandContainer from "./components/HandContainer.vue";
 import LeadSuitContainer from "./components/LeadSuitContainer.vue";
 import OthersHand from "./components/OthersHand.vue";
@@ -96,6 +98,7 @@ export default {
     ChatBox,
     DeckCards,
     GameLobby,
+    GameOverContainer,
     HandContainer,
     LeadSuitContainer,
     OthersHand,

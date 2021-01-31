@@ -27,7 +27,6 @@ export default {
     this.numCards = this.$store.state.deckCards;
     EventBus.$on('card-dealt', () => {
       this.numCards--;
-      console.log(`Oh, that's nice. It's gotten clicks! :)`)
     });
   }
 };

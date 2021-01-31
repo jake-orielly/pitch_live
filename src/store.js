@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { EventBus } from './event-bus.js';
 
 Vue.use(Vuex)
 
@@ -11,11 +12,16 @@ const Store = new Vuex.Store({
         dealer: false,
         teamNames: [],
         currBid: 0,
-        deckCards: 20
+        deckCards: 20,
+        winningTeam: ""
     },
     mutations: {
         dealCard() {
             this.deckCards--;
+        },
+        gameOver(state, team) {
+            state.winningTeam = team;
+            EventBus.$emit('game-over');
         },
         resetDeck() {
             this.deckCards = 20;

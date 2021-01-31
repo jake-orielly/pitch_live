@@ -6,7 +6,7 @@ const adjectives = [
     "Evil",
     "Fancy",
     "Graceful",
-    "Little",
+    "Tiny",
     "Lovely",
     "Mysterious",
     "Roaring",

@@ -16,6 +16,7 @@ var gameStartCountdown;
 
 const htmlPath = path.join(__dirname, 'public');
 
+const constants = require('./constants.js');
 const deckFunctions = require('./deck_functions.js');
 const gameFunctions = require('./game_functions.js');
 const teamNameWords = require('./team_name_words.js');
@@ -29,6 +30,7 @@ http.listen(port, function () {
 var users = [];
 var teams = [{ name:"", cards: [], points: [] }, { name:"", cards: [], points: [] }];
 var score = [0, 0];
+var gameOver = false;
 var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currTrick, lastDealer;
 
 io.on('connection', function (socket) {
@@ -178,13 +180,25 @@ function assignPoints() {
   else
     score[biddingTeam] += teams[biddingTeam].points.length;
   score[(biddingTeam + 1) % 2] += teams[(biddingTeam + 1) % 2].points.length;
+
+  // If both teams cross 11 in the same round, the bidding team wins
+  if (score[biddingTeam] >= constants.scoreToWin) {
+    endGame(teams[biddingTeam])
+  }
+  else if (score[(biddingTeam + 1) % 2] >= constants.scoreToWin) {
+    endGame(teams[(biddingTeam + 1) % 2]);
+  }
 };
+
+function endGame(team) {
+  callStoreMutation('gameOver', team.name);
+  gameOver = true;
+}
 
 function dealCards() {
   deck = deckFunctions.shuffle()
   callStoreMutation('resetDeck');
   callStoreMutation('setDealer', false);
-  console.log(users.indexOf(lastDealer), (users.indexOf(lastDealer) + 2) % 4)
   if (lastDealer)
     users = rotateArray(users, (users.indexOf(lastDealer) + 2) % 4)
   dealer = users[users.length - 1];
@@ -319,6 +333,8 @@ function nextHand() {
   sendChat(`${teams[0].name} won ${printPoints(teams[0])}`)
   sendChat(`${teams[1].name} won ${printPoints(teams[1])}`)
   setProp('score', score);
-  dealCards();
-  teams = [{ name: teams[0].name, cards: [], points: [] }, { name: teams[1].name, cards: [], points: [] }];
+  if (!gameOver) {
+    dealCards();
+    teams = [{ name: teams[0].name, cards: [], points: [] }, { name: teams[1].name, cards: [], points: [] }];
+  }
 }
