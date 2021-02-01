@@ -147,7 +147,7 @@ function randomName() {
 
 function trickReset(winner) {
   // Rotate users array until winner is in 0th position
-  while (users[0].username != winner.user.username)
+  while (users[0].socket.id != winner.user.socket.id)
     users.unshift(users.pop())
   winner.user.socket.broadcast.emit('chat', `${winner.user.username} has the lead`);
   winner.user.socket.emit('chat', 'Your lead')
