@@ -20,6 +20,7 @@
         </td>
       </tr>
     </table>
+    <TeamNameSelection />
     <div v-if="gameStarting">
       <p>Game starting in {{ gameStarting }}</p>
       <button @click="readyClick($store.state.id, false)">Cancel</button>
@@ -28,7 +29,12 @@
 </template>
 
 <script>
+import TeamNameSelection from "./TeamNameSelection.vue";
+
 export default {
+  components: {
+    TeamNameSelection
+  },
   props: {
     username: {
       type: String,

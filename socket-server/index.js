@@ -28,10 +28,12 @@ http.listen(port, function () {
 });
 
 var users = [];
-var teams = [{ name:"", cards: [], points: [] }, { name:"", cards: [], points: [] }];
+var teams = [{ name:[], cards: [], points: [] }, { name:[], cards: [], points: [] }];
 var score = [0, 0];
 var gameOver = false;
 var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currTrick, lastDealer;
+
+const teamWords = generateTeamWords();
 
 io.on('connection', function (socket) {
   socket.on('chat', function (msg) {
@@ -40,9 +42,30 @@ io.on('connection', function (socket) {
   socket.on('bid', recieveBid);
 
   socket.on('usernameSubmission', function (data) {
-    users.push({ username: data['usernameSubmission'], ready: false, socket: socket });
-    users[users.length - 1].teamNum = users.length % 2;
+    let newUser = { 
+      username: data['usernameSubmission'], 
+      ready: false, 
+      socket: socket,
+      teamNum: users.length % 2
+    };
+    let options;
+    let partOfSpeech;
+    users.push(newUser);
     socket.broadcast.emit('chat', `${data['usernameSubmission']} has joined`);
+    partOfSpeech = (parseInt((users.length - 1 ) / 2) == 1 ? "nouns" : "adjectives");
+    teammatePartOfSpeech = (partOfSpeech == "nouns" ? "adjectives" : "nouns");
+    options = teamWords[(users.length - 1) % 2][partOfSpeech];
+    socket.emit('callStoreMutation', {
+      mutation:'setTeamWordOptions', 
+      val: {
+        partOfSpeech,
+        options
+      }
+    });
+    socket.emit('callStoreMutation', {
+      mutation: 'setTeammatesWord',
+      val: teamWords[(users.length - 1) % 2][teammatePartOfSpeech][0]
+    });
     sendUpdatedUsers();
   });
 
@@ -74,8 +97,7 @@ io.on('connection', function (socket) {
         setProp('gameStarting', count);
         if (count == 0) {
           clearInterval(gameStartCountdown);
-          generateTeamNames();
-          callStoreMutation('setTeamNames', [teams[0].name, teams[1].name])
+          callStoreMutation('setTeamNames', [teams[0].name.join(" "), teams[1].name.join(" ")]);
           setProp('gameStage', 'playing')
           setTimeout(dealCards, 500);
         }
@@ -103,7 +125,22 @@ io.on('connection', function (socket) {
     }
     else
       nextTrick();
-  })
+  });
+
+  socket.on('selectTeamWord', function(data) {
+    // TODO: Harcoded for 4 players
+    let userToUpdate = users.filter(
+      user => user.teamNum == data.teamNum && user.socket.id != socket.id
+    )[0];
+    let position = (data.partOfSpeech == 'adjectives' ? 0 : 1);
+    if (userToUpdate)
+      userToUpdate.socket.emit('callStoreMutation', {
+        mutation: 'setTeammatesWord',
+        val: data.val
+      });
+    console.log(data.teamNum, position)
+    teams[data.teamNum].name[position] = data.val;
+  });
 });
 
 function sendUpdatedUsers() {
@@ -128,21 +165,35 @@ function awardWinner(winning) {
   setTimeout(function () { trickReset(winning); }, 1500);
 };
 
-function generateTeamNames() {
-  let team0Name = randomName();
-  let team1Name = randomName();
-  while (team1Name[0] == team0Name[0] || team1Name[1] == team0Name[1])
-    team1Name = randomName();
-  teams[0].name = team0Name.join(" ");
-  teams[1].name = team1Name.join(" ");
+function generateTeamWords() {
+  let adjectives = teamNameWords.adjectives.slice();
+  let nouns = teamNameWords.nouns.slice();
+  const numOptions = 3;
+
+  shuffleArray(adjectives);
+  shuffleArray(nouns);
+
+  const team0Adjectives = adjectives.slice(0, numOptions);
+  const team0Nouns = nouns.slice(0, numOptions);
+  const team1Adjectives = adjectives.slice(numOptions, numOptions * 2);
+  const team1Nouns = nouns.slice(numOptions, numOptions * 2);
+  
+  // Default values in case users don't make a selection
+  teams[0].name = [team0Adjectives[0], team0Nouns[0]];
+  teams[1].name = [team1Adjectives[0], team1Nouns[0]];
+  return [
+    {adjectives: team0Adjectives, nouns: team0Nouns},
+    {adjectives: team1Adjectives, nouns: team1Nouns}
+  ]
 }
 
-function randomName() {
-  const adjectives = teamNameWords.adjectives;
-  const nouns = teamNameWords.nouns;
-  const chosenAdjective = adjectives[Math.floor( Math.random() * adjectives.length)];
-  const chosenNoun = nouns[Math.floor( Math.random() * nouns.length)];
-  return [chosenAdjective, chosenNoun];
+function shuffleArray(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+  }
 }
 
 function trickReset(winner) {
@@ -241,6 +292,7 @@ function nextBidder() {
 
 function recieveBid(data) {
   if (data != 'pass') {
+    // Any bid that isn't pass will be greater than than the current bid
     currBid = { player: currPlayer, amount: data }
     currPlayer.socket.broadcast.emit('chat', `${currPlayer.username} bid ${data}`)
   }
@@ -329,8 +381,8 @@ function nextHand() {
   teams[0].points = teamPoints[0];
   teams[1].points = teamPoints[1];
   assignPoints();
-  sendChat(`${teams[0].name} won ${printPoints(teams[0])}`)
-  sendChat(`${teams[1].name} won ${printPoints(teams[1])}`)
+  sendChat(`${teams[0].name.join(" ")} won ${printPoints(teams[0])}`)
+  sendChat(`${teams[1].name.join(" ")} won ${printPoints(teams[1])}`)
   setProp('score', score);
   if (!gameOver) {
     dealCards();

@@ -15,11 +15,19 @@ const Store = new Vuex.Store({
         deckCards: 20,
         winningTeam: "",
         id: undefined,
-        users: []
+        users: [],
+        teamWordOptions: [],
+        teammatesWord: ""
     },
     mutations: {
         setUsers(state, val) {
             state.users = JSON.parse(val);
+        },
+        setTeammatesWord(state, val) {
+            state.teammatesWord = val;
+        },
+        setTeamWordOptions(state, val) {
+            state.teamWordOptions = val;
         },
         setId(state, val) {
             state.id = val;
