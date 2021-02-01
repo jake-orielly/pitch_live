@@ -134,7 +134,7 @@ export default {
   methods: {
     otherPlayed(data) {
       function findUser(element) {
-        return element.username == data.user;
+        return element.id == data.id;
       }
       let theirIndex = this.$store.state.users.findIndex(findUser);
       console.log(this.othersCards, data.card, theirIndex)

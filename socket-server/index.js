@@ -86,7 +86,7 @@ io.on('connection', function (socket) {
   socket.on('play', function (card) {
     let winning;
     sendChat(`${currPlayer.username} played the ${card.num} of ${card.suit}`)
-    socket.broadcast.emit('played', { card: card, user: currPlayer.username });
+    socket.broadcast.emit('played', { card: card, id: currPlayer.socket.id });
     currTrick.push({ user: currPlayer, card: card });
     if (!trumpSuit) {
       trumpSuit = card.suit
