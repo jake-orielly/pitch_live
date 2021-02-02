@@ -3,12 +3,12 @@
     <table>
       <tr>
         <td class="team-label">{{teamLabels[0]}}:</td>
-        <td class="team-name">{{ $store.state.teamNames[0] }}:</td>
+        <td class="team-name">{{ $store.state.teamNames[0].join(" ") }}:</td>
         <td>{{ score[0] }}</td>
       </tr>
       <tr>
         <td class="team-label">{{teamLabels[1]}}:</td>
-        <td class="team-name">{{ $store.state.teamNames[1] }}:</td>
+        <td class="team-name">{{ $store.state.teamNames[1].join(" ") }}:</td>
         <td>{{ score[1] }}</td>
       </tr>
     </table>

@@ -1,26 +1,57 @@
 <template>
   <div id="lobby-container">
-    <p>In This Lobby:</p>
-    <table class="user-list">
-      <tr v-for="user in $store.state.users" v-bind:key="user.id">
-        <td>{{ user.username }}</td>
-        <td
-          @click="readyClick(user.id, false)"
-          :class="{ clickable: user.id == $store.state.id }"
-          v-if="user.ready"
-        >
-          <span class="ready-mark">&#10004;</span>
-        </td>
-        <td
-          @click="readyClick(user.id, true)"
-          :class="{ clickable: user.id == $store.state.id }"
-          v-if="!user.ready"
-        >
-          <span class="not-ready-mark">&#10006;</span>
-        </td>
-      </tr>
-    </table>
-    <TeamNameSelection />
+    <div id="teams-container">
+      <table class="user-list">
+        <tr>
+          <th v-if="myTeam == 0">
+            <TeamNameSelection /> 
+          </th>
+          <th v-if="myTeam == 1">{{otherTeamName}}</th>
+        </tr>
+        <tr v-for="user in team0" v-bind:key="user.id">
+          <td>{{ user.username }}</td>
+          <td
+            @click="readyClick(user.id, false)"
+            :class="{ clickable: user.id == $store.state.id }"
+            v-if="user.ready"
+          >
+            <span class="ready-mark">&#10004;</span>
+          </td>
+          <td
+            @click="readyClick(user.id, true)"
+            :class="{ clickable: user.id == $store.state.id }"
+            v-if="!user.ready"
+          >
+            <span class="not-ready-mark">&#10006;</span>
+          </td>
+        </tr>
+      </table>
+      <table class="user-list">
+        <tr>
+          <th v-if="myTeam == 1">
+            <TeamNameSelection /> 
+          </th>
+          <th v-if="myTeam == 0">{{otherTeamName}}</th>
+        </tr>
+        <tr v-for="user in team1" v-bind:key="user.id">
+          <td>{{ user.username }}</td>
+          <td
+            @click="readyClick(user.id, false)"
+            :class="{ clickable: user.id == $store.state.id }"
+            v-if="user.ready"
+          >
+            <span class="ready-mark">&#10004;</span>
+          </td>
+          <td
+            @click="readyClick(user.id, true)"
+            :class="{ clickable: user.id == $store.state.id }"
+            v-if="!user.ready"
+          >
+            <span class="not-ready-mark">&#10006;</span>
+          </td>
+        </tr>
+      </table>
+    </div>
     <div v-if="gameStarting">
       <p>Game starting in {{ gameStarting }}</p>
       <button @click="readyClick($store.state.id, false)">Cancel</button>
@@ -45,6 +76,37 @@ export default {
       required: true
     }
   },
+  computed: {
+    myTeam() {
+      if (this.$store.state.users.length) {
+        console.log(this.$store.state.users)
+        return this.$store.state.users.filter(
+          user => user.id == this.$store.state.id
+        )[0].team;
+      }
+      else 
+        return undefined;
+    },
+    team0() {
+      if (this.$store.state.users.length)
+        return this.$store.state.users.filter(
+          user => user.team == 0
+        );
+      else 
+        return undefined;
+    },
+    team1() {
+      if (this.$store.state.users.length)
+        return this.$store.state.users.filter(
+          user => user.team == 1
+        );
+      else 
+        return undefined;   
+    },
+    otherTeamName() {
+      return this.$store.state.teamNames[(this.myTeam + 1) % 2].join(" ");
+    }
+  },
   data() {
     return {};
   },
@@ -58,11 +120,26 @@ export default {
 
 <style scoped>
 #lobby-container {
+  padding: 5rem 0em;
   color: white;
+}
+
+#teams-container {
+  text-align: center;
+}
+
+table {
+  display: inline-block;
+  margin-right: 4rem;
+  height: 15rem;
 }
 
 p {
   font-size: 1.5rem;
+}
+
+th {
+  font-weight: bold;
 }
 
 .ready-mark {

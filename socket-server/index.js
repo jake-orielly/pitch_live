@@ -62,10 +62,7 @@ io.on('connection', function (socket) {
         options
       }
     });
-    socket.emit('callStoreMutation', {
-      mutation: 'setTeammatesWord',
-      val: teamWords[(users.length - 1) % 2][teammatePartOfSpeech][0]
-    });
+    callStoreMutation('setTeamNames', [teams[0].name, teams[1].name]);
     sendUpdatedUsers();
   });
 
@@ -97,7 +94,7 @@ io.on('connection', function (socket) {
         setProp('gameStarting', count);
         if (count == 0) {
           clearInterval(gameStartCountdown);
-          callStoreMutation('setTeamNames', [teams[0].name.join(" "), teams[1].name.join(" ")]);
+          callStoreMutation('setTeamNames', [teams[0].name, teams[1].name]);
           setProp('gameStage', 'playing')
           setTimeout(dealCards, 500);
         }
@@ -128,18 +125,9 @@ io.on('connection', function (socket) {
   });
 
   socket.on('selectTeamWord', function(data) {
-    // TODO: Harcoded for 4 players
-    let userToUpdate = users.filter(
-      user => user.teamNum == data.teamNum && user.socket.id != socket.id
-    )[0];
     let position = (data.partOfSpeech == 'adjectives' ? 0 : 1);
-    if (userToUpdate)
-      userToUpdate.socket.emit('callStoreMutation', {
-        mutation: 'setTeammatesWord',
-        val: data.val
-      });
-    console.log(data.teamNum, position)
     teams[data.teamNum].name[position] = data.val;
+    callStoreMutation('setTeamNames', [teams[0].name, teams[1].name]);
   });
 });
 
@@ -153,7 +141,7 @@ function sendUpdatedUsers() {
     ordered = rotateArray(simpleUsers, ((i + 1) % simpleUsers.length));
     users[i].socket.emit('callStoreMutation', {
       mutation: 'setUsers',
-      val: JSON.stringify(ordered)
+      val: ordered
     });
   }
 }

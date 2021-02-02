@@ -17,14 +17,10 @@ const Store = new Vuex.Store({
         id: undefined,
         users: [],
         teamWordOptions: [],
-        teammatesWord: ""
     },
     mutations: {
         setUsers(state, val) {
-            state.users = JSON.parse(val);
-        },
-        setTeammatesWord(state, val) {
-            state.teammatesWord = val;
+            state.users = val;
         },
         setTeamWordOptions(state, val) {
             state.teamWordOptions = val;
