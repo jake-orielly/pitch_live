@@ -46,7 +46,8 @@ io.on('connection', function (socket) {
       username: data['usernameSubmission'], 
       ready: false, 
       socket: socket,
-      teamNum: users.length % 2
+      teamNum: users.length % 2,
+      cards: 0
     };
     let options;
     let partOfSpeech;
@@ -104,7 +105,9 @@ io.on('connection', function (socket) {
 
   socket.on('play', function (card) {
     let winning;
-    sendChat(`${currPlayer.username} played the ${card.num} of ${card.suit}`)
+    sendChat(`${currPlayer.username} played the ${card.num} of ${card.suit}`);
+    currPlayer.cards--;
+    sendUpdatedUsers();
     socket.broadcast.emit('played', { card: card, id: currPlayer.socket.id });
     currTrick.push({ user: currPlayer, card: card });
     if (!trumpSuit) {
@@ -134,7 +137,13 @@ io.on('connection', function (socket) {
 function sendUpdatedUsers() {
   let simpleUsers = [];
   users.forEach(function (user) {
-    simpleUsers.push({ username: user.username, ready: user.ready, team: user.teamNum, id:user.socket.id });
+    simpleUsers.push({ 
+      username: user.username,
+      ready: user.ready, 
+      team: user.teamNum, 
+      id:user.socket.id,
+      cards: user.cards 
+    });
   });
   for (let i in users) {
     i = parseInt(i);
@@ -255,6 +264,10 @@ function dealCards() {
       hand.push(deck.pop())
     users[i].socket.emit('deal', hand)
   }
+
+  for (let user of users)
+    user.cards = 6;
+  sendUpdatedUsers();
 
   currBid = { player: '', amount: 'pass' }
   currPlayerNum = 0;

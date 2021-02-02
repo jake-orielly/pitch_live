@@ -20,6 +20,7 @@ const Store = new Vuex.Store({
     },
     mutations: {
         setUsers(state, val) {
+            console.log(val)
             state.users = val;
         },
         setTeamWordOptions(state, val) {

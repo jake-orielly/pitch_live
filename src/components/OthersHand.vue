@@ -42,6 +42,10 @@ export default {
 </script>
 
 <style scoped>
+.opponent-0, .opponent-1, .teammate-1 {
+  min-width: 10rem;
+}
+
 .opponent-0 {
   position: absolute;
   left: 4em;

@@ -30,17 +30,17 @@
       />
       <OthersHand
         :username="$store.state.users[0].username"
-        :numCards="6"
+        :numCards="$store.state.users[0].cards"
         :playerClass="'opponent-0'"
       />
       <OthersHand
         :username="$store.state.users[1].username"
-        :numCards="6"
+        :numCards="$store.state.users[1].cards"
         :playerClass="'teammate-1'"
       />
       <OthersHand
         :username="$store.state.users[2].username"
-        :numCards="6"
+        :numCards="$store.state.users[2].cards"
         :playerClass="'opponent-1'"
       />
       <HandContainer
