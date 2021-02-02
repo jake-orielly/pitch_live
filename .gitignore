@@ -1,4 +1,7 @@
 node_modules/
+cypress/videos
+cypress/screenshots
+cypress/support
 hug_api/config.py
 hug_api/__pycache__
 *.pyc
