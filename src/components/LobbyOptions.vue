@@ -7,7 +7,7 @@
     <div>
       <button class="lobby-button" @click="toggleExistingLobby">Join Existing Lobby</button>
       <div v-if="existingLobby" id="lobby-code-div">
-        <input v-model="lobbyCode" />
+        <input v-model="lobbyCode" @keyup.enter="joinLobby"/>
         <button @click="joinLobby">Join</button>
         <p v-if="badLobby">
           {{`Lobby code ${badLobbyCode} is not valid`}}
