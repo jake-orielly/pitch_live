@@ -1,20 +1,7 @@
 <template>
   <div id="user-options-container">
-    <button class="ui-button user-option-button" @click="setUserMode('guest')">
-      Play As Guest
-    </button>
-    <button
-      class="ui-button user-option-button"
-      @click="setUserMode('existing')"
-    >
-      Login
-    </button>
-    <button class="ui-button user-option-button" @click="setUserMode('new')">
-      Sign Up
-    </button>
     <form id="login-form">
       <input
-        v-if="userMod"
         v-model="usernameInput"
         ref="usernameInput"
         class="login-input"
@@ -25,25 +12,13 @@
         required
       />
       <input
-        v-if="userMod == 'new' || userMod == 'existing'"
-        v-model="passwordInput"
-        type="password"
-        placeholder="Password"
-        class="login-input"
-        id="password-input"
-        required
-      />
-      <input
         class="ui-button"
         type="submit"
         id="username-confirm"
-        v-if="userMod"
         :value="userConfirm[userMod]"
-        @click="confirmClick"
+        @click="submitUsername"
       />
     </form>
-    <p>{{ loginStatusMap[loginStatus] }}</p>
-    <p>{{ signupStatus }}</p>
   </div>
 </template>
 
@@ -73,33 +48,10 @@ export default {
       console.log("Ready:", name, ready);
       if (name == this.username) this.$socket.emit("ready", ready);
     },
-    setUserMode(given) {
-      this.userMod = given;
-      setTimeout(() => {
-        this.$refs.usernameInput.focus();
-      }, 2);
-    },
-    confirmClick(e) {
-      e.preventDefault();
-      switch (this.userMod) {
-        case "guest":
-          this.guestConfirm();
-          break;
-        case "existing":
-          this.login();
-          break;
-        case "new":
-          this.createAccount();
-          break;
-      }
-    },
-    guestConfirm() {
-      this.submitUsername();
-    },
     submitUsername() {
       this.$parent.signedIn = true;
       this.$parent.username = this.usernameInput;
-      this.$parent.showingUserOptionsContainer = false;
+      this.$emit('usernameSubmitted');
       this.$socket.emit("usernameSubmission", {
         usernameSubmission: this.usernameInput,
       });
@@ -145,12 +97,17 @@ form {
   text-align: center;
 }
 
-#username-container {
+#user-options-container {
   text-align: center;
+  padding-top: 15%;
 }
 
 #username-input, #username-confirm {
-  font-size: 1.5rem;
+  font-size: 2rem;
+}
+
+#username-confirm {
+  margin-top: 3rem;
 }
 
 .user-option-button {

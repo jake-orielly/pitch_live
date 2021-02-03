@@ -1,7 +1,14 @@
 <template>
   <div>
     <div v-if="gameStage == 'lobby'">
-      <UserOptions v-if="showingUserOptionsContainer" />
+      <UserOptions
+        v-if="joinStage == 'choosingName'"
+        @usernameSubmitted="setStage('joined')"
+      />
+      <LobbyOptions 
+        v-if="joinStage == 'initial'"
+        @joinedLobby="setStage('choosingName')"
+      />
       <GameLobby
         v-if="signedIn"
         :username="username"
@@ -61,6 +68,7 @@ import GameLobby from "./components/GameLobby.vue";
 import GameOverContainer from "./components/GameOverContainer.vue";
 import HandContainer from "./components/HandContainer.vue";
 import LeadSuitContainer from "./components/LeadSuitContainer.vue";
+import LobbyOptions from "./components/LobbyOptions.vue";
 import OthersHand from "./components/OthersHand.vue";
 import PlayedPile from "./components/PlayedPile.vue";
 import ScoreContainer from "./components/ScoreContainer.vue";
@@ -87,7 +95,7 @@ export default {
       currTrick: 0,
       othersCards: ["placeholder", "placeholder", "placeholder"],
       myCard: "placeholder",
-      showingUserOptionsContainer: true,
+      joinStage: "initial"
     };
   },
   components: {
@@ -98,6 +106,7 @@ export default {
     GameOverContainer,
     HandContainer,
     LeadSuitContainer,
+    LobbyOptions,
     OthersHand,
     PlayedPile,
     ScoreContainer,
@@ -148,6 +157,9 @@ export default {
     getCardImage(val) {
       return utilities.getCardImage(val);
     },
+    setStage(val) {
+      this.joinStage = val;
+    }
   },
 };
 </script>
