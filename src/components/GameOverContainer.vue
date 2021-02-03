@@ -1,6 +1,6 @@
 <template>
   <div v-if="gameOver" id="game-over-container">
-    <h1>The {{winningTeam}} win!</h1>
+    <h1>The {{winningTeam.join(" ")}} win!</h1>
   </div>
 </template>
 
@@ -24,6 +24,9 @@ export default {
 </script>
 
 <style scoped>
+#game-over-container {
+  margin-top: 8rem;
+}
 h1 {
   text-align: center;
   color: white;
