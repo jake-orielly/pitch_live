@@ -19,21 +19,20 @@ const htmlPath = path.join(__dirname, 'public');
 const constants = require('./constants.js');
 const deckFunctions = require('./deck_functions.js');
 const gameFunctions = require('./game_functions.js');
-const teamNameWords = require('./team_name_words.js');
 const Lobby = require('./lobby_class.js')
-app.use(express.static(htmlPath));
 
+app.use(express.static(htmlPath));
 http.listen(port, function () {
   console.log('listening on *:' + port);
 });
 
 var users = [];
-var teams = [{ name:[], cards: [], points: [] }, { name:[], cards: [], points: [] }];
 var score = [0, 0];
 var gameOver = false;
 var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currTrick, lastDealer;
 var lobbies = [new Lobby()];
-const teamWords = generateTeamWords();
+
+console.log(lobbies[0].id)
 
 io.on('connection', function (socket) {
   socket.on('chat', function (msg) {
@@ -47,8 +46,10 @@ io.on('connection', function (socket) {
     )[0];
     if (!lobby)
       socket.emit('joinFailed');
-    else
+    else {
       socket.emit('joinSucceeded');
+      socket.lobby = lobby
+    }
   });
 
   socket.on('usernameSubmission', function (data) {
@@ -65,7 +66,7 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('chat', `${data['usernameSubmission']} has joined`);
     partOfSpeech = (parseInt((users.length - 1 ) / 2) == 1 ? "nouns" : "adjectives");
     teammatePartOfSpeech = (partOfSpeech == "nouns" ? "adjectives" : "nouns");
-    options = teamWords[(users.length - 1) % 2][partOfSpeech];
+    options = socket.lobby.teamWords[(users.length - 1) % 2][partOfSpeech];
     socket.emit('callStoreMutation', {
       mutation:'setTeamWordOptions', 
       val: {
@@ -73,7 +74,7 @@ io.on('connection', function (socket) {
         options
       }
     });
-    callStoreMutation('setTeamNames', [teams[0].name, teams[1].name]);
+    callStoreMutation('setTeamNames', [socket.lobby.teams[0].name, socket.lobby.teams[1].name]);
     sendUpdatedUsers();
   });
 
@@ -105,7 +106,10 @@ io.on('connection', function (socket) {
         setProp('gameStarting', count);
         if (count == 0) {
           clearInterval(gameStartCountdown);
-          callStoreMutation('setTeamNames', [teams[0].name, teams[1].name]);
+          callStoreMutation('setTeamNames', [
+            socket.lobby.teams[0].name, 
+            socket.lobby.teams[1].name
+          ]);
           setProp('gameStage', 'playing')
           setTimeout(dealCards, 500);
         }
@@ -131,7 +135,7 @@ io.on('connection', function (socket) {
     winning = gameFunctions.evalWinner(currTrick, trumpSuit, leadSuit);
     callStoreMutation('setLeader', winning.user.username)
     if (currPlayerNum == users.length - 1) {
-      awardWinner(winning);
+      awardWinner(winning, socket.lobby);
     }
     else
       nextTrick();
@@ -139,8 +143,11 @@ io.on('connection', function (socket) {
 
   socket.on('selectTeamWord', function(data) {
     let position = (data.partOfSpeech == 'adjectives' ? 0 : 1);
-    teams[data.teamNum].name[position] = data.val;
-    callStoreMutation('setTeamNames', [teams[0].name, teams[1].name]);
+    socket.lobby.teams[data.teamNum].name[position] = data.val;
+    callStoreMutation('setTeamNames', [
+      socket.lobby.teams[0].name, 
+      socket.lobby.teams[1].name
+    ]);
   });
 });
 
@@ -165,45 +172,14 @@ function sendUpdatedUsers() {
   }
 }
 
-function awardWinner(winning) {
+function awardWinner(winning, lobby) {
   sendChat(`${winning.user.username} takes it with the ${winning.card.num} of ${winning.card.suit}`)
   for (let i = 0; i < currTrick.length; i++)
-    teams[winning.user.teamNum].cards.push(currTrick[i].card)
-  setTimeout(function () { trickReset(winning); }, 1500);
+    lobby.teams[winning.user.teamNum].cards.push(currTrick[i].card)
+  setTimeout(function () { trickReset(winning, lobby); }, 1500);
 };
 
-function generateTeamWords() {
-  let adjectives = teamNameWords.adjectives.slice();
-  let nouns = teamNameWords.nouns.slice();
-  const numOptions = 3;
-
-  shuffleArray(adjectives);
-  shuffleArray(nouns);
-
-  const team0Adjectives = adjectives.slice(0, numOptions);
-  const team0Nouns = nouns.slice(0, numOptions);
-  const team1Adjectives = adjectives.slice(numOptions, numOptions * 2);
-  const team1Nouns = nouns.slice(numOptions, numOptions * 2);
-  
-  // Default values in case users don't make a selection
-  teams[0].name = [team0Adjectives[0], team0Nouns[0]];
-  teams[1].name = [team1Adjectives[0], team1Nouns[0]];
-  return [
-    {adjectives: team0Adjectives, nouns: team0Nouns},
-    {adjectives: team1Adjectives, nouns: team1Nouns}
-  ]
-}
-
-function shuffleArray(arr) {
-  for (var i = arr.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = temp;
-  }
-}
-
-function trickReset(winner) {
+function trickReset(winner, lobby) {
   // Rotate users array until winner is in 0th position
   while (users[0].socket.id != winner.user.socket.id)
     users.unshift(users.pop())
@@ -219,8 +195,8 @@ function trickReset(winner) {
 
   io.sockets.emit('newTrick', '');
   callStoreMutation('setLeader', '')
-  if (teams[0].cards.length + teams[1].cards.length == users.length * 6) {
-    nextHand();
+  if (lobby.teams[0].cards.length + lobby.teams[1].cards.length == users.length * 6) {
+    nextHand(lobby);
   }
   else
     nextTrick();
@@ -232,18 +208,18 @@ function assignPoints() {
     if (users[i].socket.id == currBid.player.socket.id)
       biddingTeam = users[i].teamNum;
 
-  if (teams[biddingTeam].points.length < currBid.amount)
+  if (lobby.teams[biddingTeam].points.length < currBid.amount)
     score[biddingTeam] -= currBid.amount;
   else
-    score[biddingTeam] += teams[biddingTeam].points.length;
-  score[(biddingTeam + 1) % 2] += teams[(biddingTeam + 1) % 2].points.length;
+    score[biddingTeam] += lobby.teams[biddingTeam].points.length;
+  score[(biddingTeam + 1) % 2] += lobby.teams[(biddingTeam + 1) % 2].points.length;
 
   // If both teams cross 11 in the same round, the bidding team wins
   if (score[biddingTeam] >= constants.scoreToWin) {
-    endGame(teams[biddingTeam])
+    endGame(lobby.teams[biddingTeam])
   }
   else if (score[(biddingTeam + 1) % 2] >= constants.scoreToWin) {
-    endGame(teams[(biddingTeam + 1) % 2]);
+    endGame(lobby.teams[(biddingTeam + 1) % 2]);
   }
 };
 
@@ -387,16 +363,16 @@ function nextTrick() {
   });
 }
 
-function nextHand() {
-  const teamPoints = gameFunctions.countPoints([teams[0].cards, teams[1].cards], trumpSuit, currBid);  
-  teams[0].points = teamPoints[0];
-  teams[1].points = teamPoints[1];
-  assignPoints();
-  sendChat(`${teams[0].name.join(" ")} won ${printPoints(teams[0])}`)
-  sendChat(`${teams[1].name.join(" ")} won ${printPoints(teams[1])}`)
+function nextHand(lobby) {
+  const teamPoints = gameFunctions.countPoints([lobby.teams[0].cards, lobby.teams[1].cards], trumpSuit, currBid);  
+  lobby.teams[0].points = teamPoints[0];
+  lobby.teams[1].points = teamPoints[1];
+  assignPoints(lobby);
+  sendChat(`${lobby.teams[0].name.join(" ")} won ${printPoints(lobby.teams[0])}`)
+  sendChat(`${lobby.teams[1].name.join(" ")} won ${printPoints(lobby.teams[1])}`)
   setProp('score', score);
   if (!gameOver) {
     dealCards();
-    teams = [{ name: teams[0].name, cards: [], points: [] }, { name: teams[1].name, cards: [], points: [] }];
+    lobby.teams = [{ name: lobby.teams[0].name, cards: [], points: [] }, { name: lobby.teams[1].name, cards: [], points: [] }];
   }
 }
