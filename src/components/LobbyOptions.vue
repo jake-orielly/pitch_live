@@ -38,6 +38,7 @@ export default {
       this.existingLobby = !this.existingLobby;
     },
     createLobby() {
+      this.$socket.emit("createLobby");
       this.$emit("joinedLobby");
     },
     joinLobby() {

@@ -30,6 +30,13 @@ io.on('connection', function (socket) {
     io.emit('chat', msg);
   });
 
+  socket.on('createLobby', function() {
+    let lobby = new Lobby(io);
+    lobbies.push(lobby);
+    console.log(lobbies[lobbies.length - 1].id);
+    joinLobby(socket, lobby);
+  })
+
   socket.on('joinLobby', function(id) {
     let lobby = lobbies.filter(
       l => l.id == id
@@ -37,15 +44,7 @@ io.on('connection', function (socket) {
     if (!lobby)
       socket.emit('joinFailed');
     else {
-      socket.emit('joinSucceeded');
-      socket.lobby = lobby;
-      socket.on('bid', (data) => {
-        socket.lobby.recieveBid(data)
-      });
-      socket.emit('callStoreMutation', {
-        mutation:'setLobbyId', 
-        val: lobby.id
-      });
+      joinLobby(socket, lobby);
     }
   });
 
@@ -78,6 +77,8 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function () {
     let pos;
+    if (!socket.lobby)
+      return;
     for (let i = 0; i < socket.lobby.getUsers().length; i++)
       if (socket.lobby.getUser(i).socket.id == socket.id)
         pos = i;
@@ -86,6 +87,8 @@ io.on('connection', function (socket) {
       socket.lobby.removeUser(pos);
       socket.lobby.sendUpdatedUsers();
     }
+    if (socket.lobby.getUsers().length == 0)
+      lobbies.splice(lobbies.indexOf(socket.lobby))
   });
 
   socket.on('ready', function (ready) {
@@ -130,6 +133,18 @@ io.on('connection', function (socket) {
     socket.lobby.setTeamWord(data);
   });
 });
+
+function joinLobby(socket, lobby) {
+  socket.lobby = lobby;
+  socket.on('bid', (data) => {
+    socket.lobby.recieveBid(data)
+  });
+  socket.emit('joinSucceeded');
+  socket.emit('callStoreMutation', {
+    mutation:'setLobbyId', 
+    val: lobby.id
+  });
+}
 
 function setProp(prop, val) {
   io.sockets.emit('setProp', {
