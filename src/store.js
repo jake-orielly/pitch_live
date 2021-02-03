@@ -17,11 +17,15 @@ const Store = new Vuex.Store({
         id: undefined,
         users: [],
         teamWordOptions: [],
+        lobbyId: undefined
     },
     mutations: {
         setUsers(state, val) {
             console.log(val)
             state.users = val;
+        },
+        setLobbyId(state, val) {
+            state.lobbyId = val;
         },
         setTeamWordOptions(state, val) {
             state.teamWordOptions = val;

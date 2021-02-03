@@ -1,5 +1,8 @@
 <template>
   <div id="lobby-container">
+    <p id="lobby-id">
+      Lobby Id: {{$store.state.lobbyId}}
+    </p>
     <div id="teams-container">
       <table class="user-list">
         <tr>
@@ -161,6 +164,11 @@ th {
 
 .user-list td {
   padding-right: 1em;
+}
+
+#lobby-id {
+  position: absolute;
+  top: 1rem;
 }
 
 </style>

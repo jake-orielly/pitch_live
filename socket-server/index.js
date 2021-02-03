@@ -42,6 +42,10 @@ io.on('connection', function (socket) {
       socket.on('bid', (data) => {
         socket.lobby.recieveBid(data)
       });
+      socket.emit('callStoreMutation', {
+        mutation:'setLobbyId', 
+        val: lobby.id
+      });
     }
   });
 
