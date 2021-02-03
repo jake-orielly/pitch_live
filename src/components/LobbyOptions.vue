@@ -9,6 +9,9 @@
       <div v-if="existingLobby" id="lobby-code-div">
         <input v-model="lobbyCode" />
         <button @click="joinLobby">Join</button>
+        <p v-if="badLobby">
+          {{`Lobby code ${badLobbyCode} is not valid`}}
+        </p>
       </div>
     </div>
   </div>
@@ -19,8 +22,16 @@ export default {
   data() {
     return {
       existingLobby: false,
-      lobbyCode: ""
+      lobbyCode: "",
+      badLobby: false,
+      badLobbyCode: ""
     };
+  },
+  sockets: {
+    joinFailed: function () {
+      this.badLobbyCode = this.lobbyCode.toUpperCase();
+      this.badLobby = true;
+    },
   },
   methods: {
     toggleExistingLobby() {
@@ -31,6 +42,7 @@ export default {
     },
     joinLobby() {
       this.$emit("joinedLobby");
+      this.$socket.emit("joinLobby", this.lobbyCode.toUpperCase());
     }
   },
 };
@@ -73,5 +85,10 @@ input {
   color: white;
   width: 40%;
   margin-right: 1rem;
+}
+
+p {
+  color: white;
+  position: absolute;
 }
 </style>

@@ -7,7 +7,6 @@
       />
       <LobbyOptions 
         v-if="joinStage == 'initial'"
-        @joinedLobby="setStage('choosingName')"
       />
       <GameLobby
         v-if="signedIn"
@@ -136,6 +135,9 @@ export default {
     played(data) {
       this.otherPlayed(data);
     },
+    joinSucceeded() {
+      this.setStage('choosingName');
+    }
   },
   destroy() {
     this.$socket.disconnect();

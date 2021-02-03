@@ -20,7 +20,7 @@ const constants = require('./constants.js');
 const deckFunctions = require('./deck_functions.js');
 const gameFunctions = require('./game_functions.js');
 const teamNameWords = require('./team_name_words.js');
-
+const Lobby = require('./lobby_class.js')
 app.use(express.static(htmlPath));
 
 http.listen(port, function () {
@@ -32,7 +32,7 @@ var teams = [{ name:[], cards: [], points: [] }, { name:[], cards: [], points: [
 var score = [0, 0];
 var gameOver = false;
 var currPlayerNum, currBid, currPlayer, trumpSuit, leadSuit, currTrick, lastDealer;
-
+var lobbies = [new Lobby()];
 const teamWords = generateTeamWords();
 
 io.on('connection', function (socket) {
@@ -40,6 +40,16 @@ io.on('connection', function (socket) {
     io.emit('chat', msg);
   });
   socket.on('bid', recieveBid);
+
+  socket.on('joinLobby', function(id) {
+    let lobby = lobbies.filter(
+      l => l.id == id
+    )[0];
+    if (!lobby)
+      socket.emit('joinFailed');
+    else
+      socket.emit('joinSucceeded');
+  });
 
   socket.on('usernameSubmission', function (data) {
     let newUser = { 
