@@ -21,19 +21,12 @@ http.listen(port, function () {
   console.log('listening on *:' + port);
 });
 
-var lobbies = [new Lobby(io)];
-
-console.log(lobbies[0].id)
+var lobbies = [];
 
 io.on('connection', function (socket) {
-  socket.on('chat', function (msg) {
-    io.emit('chat', msg);
-  });
-
   socket.on('createLobby', function() {
     let lobby = new Lobby(io);
     lobbies.push(lobby);
-    console.log(lobbies[lobbies.length - 1].id);
     joinLobby(socket, lobby);
   })
 
@@ -60,7 +53,8 @@ io.on('connection', function (socket) {
     let options;
     let partOfSpeech;
     lobby.addUser(newUser);
-    socket.broadcast.emit('chat', `${data['usernameSubmission']} has joined`);
+    for (let user of lobby.getUsers())
+      user.socket.emit('chat', `${data['usernameSubmission']} has joined`);
     partOfSpeech = (parseInt((lobby.getUsers().length - 1 ) / 2) == 1 ? "nouns" : "adjectives");
     teammatePartOfSpeech = (partOfSpeech == "nouns" ? "adjectives" : "nouns");
     options = lobby.getTeamWords((lobby.getUsers().length - 1) % 2, partOfSpeech);
@@ -71,7 +65,11 @@ io.on('connection', function (socket) {
         options
       }
     });
-    callStoreMutation('setTeamNames', [lobby.getTeams(0).name, lobby.getTeams(1).name]);
+    callStoreMutation(
+      'setTeamNames', 
+      [lobby.getTeams(0).name, lobby.getTeams(1).name],
+      lobby
+    );
     lobby.sendUpdatedUsers();
   });
 
@@ -83,7 +81,8 @@ io.on('connection', function (socket) {
       if (socket.lobby.getUser(i).socket.id == socket.id)
         pos = i;
     if (socket.lobby.getUser(pos)) {
-      io.emit('chat', `${socket.lobby.getUser(pos).username} has left`);
+      for (let user of lobby.getUsers())
+        user.socket.emit('chat', `${socket.lobby.getUser(pos).username} has left`);
       socket.lobby.removeUser(pos);
       socket.lobby.sendUpdatedUsers();
     }
@@ -94,25 +93,30 @@ io.on('connection', function (socket) {
   socket.on('ready', function (ready) {
     //let count = 5;
     let count = 1;
+    let lobby = socket.lobby;
     const users = socket.lobby.getUsers();
     users.filter(user => user.socket == socket)[0].ready = ready;
     socket.lobby.sendUpdatedUsers();
     if (count && !ready) {
       clearInterval(socket.lobby.getGameStartCountdown);
-      setProp('gameStarting', 0);
+      setProp('gameStarting', 0, lobby);
     }
     else if (users.filter(user => !user.ready).length == 0 && users.length == 4) {
-      setProp('gameStarting', count);
+      setProp('gameStarting', count, lobby);
       socket.lobby.gameStartCountdown = setInterval(function () {
         count--;
-        setProp('gameStarting', count);
+        setProp('gameStarting', count, lobby);
         if (count == 0) {
           clearInterval(socket.lobby.gameStartCountdown);
-          callStoreMutation('setTeamNames', [
-            socket.lobby.getTeams(0).name, 
-            socket.lobby.getTeams(1).name
-          ]);
-          setProp('gameStage', 'playing')
+          callStoreMutation(
+            'setTeamNames', 
+            [
+              socket.lobby.getTeams(0).name, 
+              socket.lobby.getTeams(1).name
+            ],
+            lobby
+          );
+          setProp('gameStage', 'playing', lobby)
           setTimeout(() => {
             socket.lobby.dealCards()
           }, 500);
@@ -123,9 +127,13 @@ io.on('connection', function (socket) {
 
   socket.on('play', function (card) {
     let currPlayer = socket.lobby.getCurrPlayer();
-    sendChat(`${currPlayer.username} played the ${card.num} of ${card.suit}`);
+    sendChat(
+      `${currPlayer.username} played the ${card.num} of ${card.suit}`, 
+      socket.lobby
+    );
     socket.lobby.sendUpdatedUsers();
-    socket.broadcast.emit('played', { card: card, id: currPlayer.socket.id });
+    for (let user of socket.lobby.getUsers())
+      user.socket.emit('played', { card: card, id: currPlayer.socket.id });
     socket.lobby.playCard(card);
   });
 
@@ -139,6 +147,10 @@ function joinLobby(socket, lobby) {
   socket.on('bid', (data) => {
     socket.lobby.recieveBid(data)
   });
+  socket.on('chat', function (msg) {
+    for (let user of socket.lobby.getUsers())
+      user.socket.emit('chat', msg);
+  });
   socket.emit('joinSucceeded');
   socket.emit('callStoreMutation', {
     mutation:'setLobbyId', 
@@ -146,18 +158,21 @@ function joinLobby(socket, lobby) {
   });
 }
 
-function setProp(prop, val) {
-  io.sockets.emit('setProp', {
-    prop, val
-  });
+function setProp(prop, val, lobby) {
+  for (let user of lobby.getUsers())
+    user.socket.emit('setProp', {
+      prop, val
+    });
 }
 
-function callStoreMutation(mutation, val) {
-  io.sockets.emit('callStoreMutation', {
-    mutation, val 
-  });
+function callStoreMutation(mutation, val, lobby) {
+  for (let user of lobby.getUsers())
+    user.socket.emit('callStoreMutation', {
+      mutation, val 
+    });
 }
 
-function sendChat(msg) {
-  io.sockets.emit('chat', msg);
+function sendChat(msg, lobby) {
+  for (let user of lobby.getUsers())
+    user.socket.emit('chat', msg);
 }

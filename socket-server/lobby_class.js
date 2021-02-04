@@ -90,7 +90,7 @@ class Lobby {
     nextTrick() {
         this.currPlayerNum = (this.currPlayerNum + 1) % this.users.length;
         this.currPlayer = this.users[this.currPlayerNum];
-        this.currPlayer.socket.broadcast.emit('status', `Waiting for ${this.currPlayer.username} to make a play`)
+        this.broadcastToLobby('status', `Waiting for ${this.currPlayer.username} to make a play`);
         this.currPlayer.socket.emit('status', 'Waiting for you to make a play')
         this.currPlayer.socket.emit('setProp', {
             prop: 'currPlay',
@@ -108,7 +108,8 @@ class Lobby {
     }
 
     awardWinner(winning) {
-        this.io.sockets.emit('chat', `${winning.user.username} takes it with the ${winning.card.num} of ${winning.card.suit}`);
+        for (let user of this.getUsers())
+            user.socket.emit('chat', `${winning.user.username} takes it with the ${winning.card.num} of ${winning.card.suit}`);
         for (let i = 0; i < this.currTrick.length; i++)
             this.teams[winning.user.teamNum].cards.push(this.currTrick[i].card)
         setTimeout(() => { this.trickReset(winning); }, 1500);
@@ -118,7 +119,7 @@ class Lobby {
         // Rotate users array until winner is in 0th position
         while (this.users[0].socket.id != winner.user.socket.id)
             this.users.unshift(this.users.pop())
-        winner.user.socket.broadcast.emit('chat', `${winner.user.username} has the lead`);
+        this.broadcastToLobby('chat', `${winner.user.username} has the lead`);
         winner.user.socket.emit('chat', 'Your lead')
 
         // It will get incremented by nextTrick
@@ -128,7 +129,8 @@ class Lobby {
         this.leadSuit = undefined;
         this.currTrick = [];
 
-        this.io.sockets.emit('newTrick', '');
+        for (let user of this.getUsers())
+            user.socket.emit('newTrick', '');
         this.callStoreMutation('setLeader', '')
         if (this.teams[0].cards.length + this.teams[1].cards.length == this.users.length * 6) {
             this.nextHand();
@@ -172,7 +174,7 @@ class Lobby {
             this.users = this.rotateArray(this.users, (this.users.indexOf(this.lastDealer) + 2) % 4);
         this.dealer = this.users[this.users.length - 1];
         this.lastDealer = this.dealer;
-        this.dealer.socket.broadcast.emit('chat', `${this.dealer.username} is dealer`)
+        this.broadcastToLobby('chat', `${this.dealer.username} is dealer`);
         this.dealer.socket.emit('chat', 'You are the dealer.')
         this.dealer.socket.emit('callStoreMutation', {
             mutation: 'setDealer',
@@ -202,7 +204,8 @@ class Lobby {
         let addon = '';
         if (this.currBid.player)
             addon = `, ${this.currBid.player.username} has it for ${this.currBid.amount}`
-        this.currPlayer.socket.broadcast.emit('status', `Waiting for ${this.currPlayer.username} to choose a bid${addon}.`);
+        this.broadcastToLobby('status', `Waiting for ${this.currPlayer.username} to choose a bid${addon}.`);
+
         this.currPlayer.socket.emit('callStoreMutation', {
             mutation: 'setCurrBid',
             val: this.currBid.amount
@@ -218,10 +221,10 @@ class Lobby {
         if (data != 'pass') {
             // Any bid that isn't pass will be greater than than the current bid
             this.currBid = { player: this.currPlayer, amount: data }
-            this.currPlayer.socket.broadcast.emit('chat', `${this.currPlayer.username} bid ${data}`)
+            this.broadcastToLobby('chat', `${this.currPlayer.username} bid ${data}`);
         }
         else
-            this.currPlayer.socket.broadcast.emit('chat', `${this.currPlayer.username} passed`)
+            this.broadcastToLobby('chat', `${this.currPlayer.username} passed`);
         this.currPlayer.socket.emit('setProp', {
             prop: 'bidding',
             val: false
@@ -244,7 +247,8 @@ class Lobby {
             this.currPlayer = this.users[this.currPlayerNum];
             this.currBid = { player: this.currPlayer.username, amount: 2 }
         }
-        this.io.sockets.emit('chat', `${this.currBid.player.username} has it for ${this.currBid.amount}`);
+        for (let user of this.getUsers())
+            user.socket.emit('chat', `${this.currBid.player.username} has it for ${this.currBid.amount}`);
         for (var i = 0; i < this.users.length; i++) {
             if (this.users[i].socket.id == this.currBid.player.socket.id) {
                 this.currPlayerNum = i;
@@ -268,22 +272,30 @@ class Lobby {
         this.teams[0].points = teamPoints[0];
         this.teams[1].points = teamPoints[1];
         this.assignPoints();
-        this.io.sockets.emit('chat', `${this.teams[0].name.join(" ")} won ${this.printPoints(this.teams[0])}`);
-        this.io.sockets.emit('chat', `${this.teams[1].name.join(" ")} won ${this.printPoints(this.teams[1])}`);
-        this.io.sockets.emit('setProp', {
-            prop: 'score',
-            val: this.score
-        });
+        for (let user of this.getUsers()) {
+            user.socket.emit('chat', `${this.teams[0].name.join(" ")} won ${this.printPoints(this.teams[0])}`);
+            user.socket.emit('chat', `${this.teams[1].name.join(" ")} won ${this.printPoints(this.teams[1])}`);
+            user.socket.emit('setProp', {
+                prop: 'score',
+                val: this.score
+            });
+        }
         if (!this.gameOver) {
             this.dealCards();
             this.teams = [{ name: this.teams[0].name, cards: [], points: [] }, { name: this.teams[1].name, cards: [], points: [] }];
         }
     }
 
+    broadcastToLobby(prop, val) {
+        for (let user of this.getUsers())
+            user.socket.emit(prop, val);
+    }
+
     callStoreMutation(mutation, val) {
-        this.io.sockets.emit('callStoreMutation', {
-            mutation, val
-        });
+        for (let user of this.getUsers())
+            user.socket.emit('callStoreMutation', {
+                mutation, val
+            });
     }
 
     printPoints(team) {

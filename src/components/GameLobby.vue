@@ -169,6 +169,7 @@ th {
 #lobby-id {
   position: absolute;
   top: 1rem;
+  user-select: text;
 }
 
 </style>
