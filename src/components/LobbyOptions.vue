@@ -1,22 +1,26 @@
 <template>
   <div id="lobby-options-container">
     <div>
-      <button class="lobby-button" @click="createLobby">Create New Lobby</button>
+      <button class="lobby-button animated-button" @click="createLobby">
+        Create New Lobby
+      </button>
     </div>
     <div>
-      <button class="lobby-button" @click="toggleExistingLobby">Join Existing Lobby</button>
+      <button class="lobby-button animated-button" @click="toggleExistingLobby">
+        Join Existing Lobby
+      </button>
       <div v-if="existingLobby" id="lobby-code-div">
-        <input v-model="lobbyCode" @keyup.enter="joinLobby"/>
-        <button @click="joinLobby">Join</button>
+        <input v-model="lobbyCode" @keyup.enter="joinLobby" />
+        <button @click="joinLobby" class="animated-button">Join</button>
         <p v-if="badLobby">
-          {{`Lobby code ${badLobbyCode} is not valid`}}
+          {{ `Lobby code ${badLobbyCode} is not valid` }}
         </p>
       </div>
     </div>
     <div>
       <button
         @click="startTutorial"
-        class="lobby-button"
+        class="lobby-button animated-button"
         id="tutorial-button"
       >
         Tutorial
@@ -32,7 +36,7 @@ export default {
       existingLobby: false,
       lobbyCode: "",
       badLobby: false,
-      badLobbyCode: ""
+      badLobbyCode: "",
     };
   },
   sockets: {
@@ -53,14 +57,16 @@ export default {
     },
     startTutorial() {
       this.$emit("startTutorial");
-    }
+    },
   },
 };
 </script>
 
 <style scoped>
+@import "../scss/button.scss";
+
 *:focus {
-    outline: none;
+  outline: none;
 }
 
 #lobby-options-container {
@@ -68,14 +74,6 @@ export default {
   margin-top: 10%;
 }
 
-button {
-  background: none;
-  border: 3px solid white;
-  color: white;
-  box-shadow: 1px 1px 9px #0000009c;
-  border-radius: 0.5rem;
-  font-size: 1.5rem;
-}
 .lobby-button {
   padding: 0.5rem;
   margin: 1rem;
