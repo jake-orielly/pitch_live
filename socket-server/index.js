@@ -99,7 +99,7 @@ io.on('connection', function (socket) {
     else if (users.filter(user => !user.ready).length == 0 && users.length == 4) {
       setProp('gameStarting', count, lobby);
       socket.lobby.gameStartCountdown = setInterval(function () {
-        count--;
+        //count--;
         setProp('gameStarting', count, lobby);
         if (count == 0) {
           clearInterval(socket.lobby.gameStartCountdown);

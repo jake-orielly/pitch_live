@@ -53,15 +53,14 @@
         </tr>
       </table>
     </div>
-    <div 
-      v-if="gameStarting" 
-      id="game-starting-container"
-    >
+    <div v-if="gameStarting" id="game-starting-container">
       <p>Game starting in {{ gameStarting }}</p>
-      <button 
+      <button
         @click="readyClick($store.state.id, false)"
         class="animated-button"
-      >Cancel</button>
+      >
+        Cancel
+      </button>
     </div>
   </div>
 </template>
