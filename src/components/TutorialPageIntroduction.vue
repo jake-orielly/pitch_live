@@ -10,6 +10,6 @@
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 @import "../scss/tutorial_page.scss";
 </style>
