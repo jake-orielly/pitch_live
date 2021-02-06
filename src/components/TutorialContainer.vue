@@ -11,31 +11,27 @@
             />
         </div>
         <div id="tutorial-control-container">
-            <div>
-                <button 
-                    v-if="currentSectionNum > 0"
-                    @click="changeSection(-1)"
-                    class="animated-button"
-                >
-                    Back
-                </button>
-            </div>
-            <div>
-                <button 
-                    v-if="currentSectionNum < sections.length - 1"
-                    @click="changeSection(1)"
-                    class="animated-button"
-                >
-                    Next
-                </button>
-                <button 
-                    v-if="currentSectionNum == sections.length - 1"
-                    @click="closeTutorial"
-                    class="animated-button"
-                >
-                    Done
-                </button>
-            </div>
+            <button 
+                v-if="currentSectionNum > 0"
+                @click="changeSection(-1)"
+                class="animated-button"
+            >
+                Back
+            </button>
+            <button 
+                v-if="currentSectionNum < sections.length - 1"
+                @click="changeSection(1)"
+                class="animated-button"
+            >
+                Next
+            </button>
+            <button 
+                v-if="currentSectionNum == sections.length - 1"
+                @click="closeTutorial"
+                class="animated-button"
+            >
+                Done
+            </button>
         </div>
     </div>
 </template>
@@ -52,7 +48,8 @@ export default {
     data() {
         return {
             sections: [
-                "Introduction"
+                "Introduction",
+                "Points"
             ],
             currentSectionNum: 0,
         }
@@ -88,5 +85,9 @@ export default {
 #tutorial-control-container {
     text-align: right;
     margin-right: 15%;
+}
+
+button {
+    margin-left: 1rem;
 }
 </style>

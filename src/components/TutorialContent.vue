@@ -1,11 +1,13 @@
 <template>
     <div>
         <TutorialPageIntroduction v-if="currentSection == 'Introduction'"/>
+        <TutorialPagePoints v-if="currentSection == 'Points'"/>
     </div>
 </template>
 
 <script>
-import TutorialPageIntroduction from "./TutorialPageIntroduction.vue"
+import TutorialPageIntroduction from "./TutorialPageIntroduction.vue";
+import TutorialPagePoints from "./TutorialPagePoints.vue";
 
 export default {
     props: {
@@ -16,6 +18,7 @@ export default {
     },
     components: {
         TutorialPageIntroduction,
+        TutorialPagePoints
     }
 };
 </script>
