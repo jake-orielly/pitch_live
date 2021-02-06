@@ -45,7 +45,7 @@ export default {
   },
   data() {
     return {
-      sections: ["Introduction", "Points"],
+      sections: ["Introduction", "Tricks", "Points"],
       currentSectionNum: 0,
     };
   },
