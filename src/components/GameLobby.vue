@@ -53,9 +53,15 @@
         </tr>
       </table>
     </div>
-    <div v-if="gameStarting">
+    <div 
+      v-if="gameStarting" 
+      id="game-starting-container"
+    >
       <p>Game starting in {{ gameStarting }}</p>
-      <button @click="readyClick($store.state.id, false)">Cancel</button>
+      <button 
+        @click="readyClick($store.state.id, false)"
+        class="animated-button"
+      >Cancel</button>
     </div>
   </div>
 </template>
@@ -114,6 +120,7 @@ export default {
 
 <style scoped>
 @import "../scss/common.scss";
+@import "../scss/button.scss";
 
 #lobby-container {
   padding: 5rem 0em;
@@ -163,5 +170,10 @@ th {
   position: absolute;
   top: 1rem;
   user-select: text;
+}
+
+#game-starting-container {
+  text-align: center;
+  font-size: 1.5rem;
 }
 </style>
