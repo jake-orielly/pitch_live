@@ -207,11 +207,6 @@ body {
   color: white;
 }
 
-.clickable {
-  cursor: pointer;
-  user-select: none;
-}
-
 .card,
 .deck-card,
 .other-player-card {
@@ -220,11 +215,6 @@ body {
 
 .card {
   margin-right: 1em;
-}
-
-.deck-card {
-  margin-right: -6.4em;
-  transition: 1s;
 }
 
 .card-list {

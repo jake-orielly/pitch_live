@@ -40,6 +40,8 @@ export default {
 </script>
 
 <style scoped>
+@import "../scss/common.scss";
+
 #played-pile {
   position: absolute;
   left: calc(50% - 6.5em);

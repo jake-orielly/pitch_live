@@ -40,6 +40,8 @@ export default {
 </script>
 
 <style scoped>
+@import "../scss/common.scss";
+
 .bid-button {
   margin-left: 0.25em;
 }

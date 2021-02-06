@@ -123,6 +123,8 @@ export default {
 </script>
 
 <style scoped>
+@import "../scss/common.scss";
+
 #lobby-container {
   padding: 5rem 0em;
   color: white;
