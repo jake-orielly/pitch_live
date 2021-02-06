@@ -4,7 +4,7 @@
       v-if="(gameStage == 'lobby' && joinStage != 'initial') ||
              gameStage == 'tutorial'"
       @click="backClick"
-      class="clickable"
+      class="animated-button clickable"
       id="back-button"
     >
       &larr; Back
@@ -190,10 +190,9 @@ export default {
 </script>
 
 <style>
+@import "./scss/button.scss";
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-</style>
 
-<style>
 html,
 body {
   margin: 5px 5px 5px 1em;

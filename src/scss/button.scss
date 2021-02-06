@@ -1,0 +1,19 @@
+.animated-button {
+    background: none;
+    border: 3px solid white;
+    color: white;
+    box-shadow: 1px 1px 9px #0000009c;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    outline:none;
+}
+
+.animated-button:hover {
+    transform: scale(1.02) translate(2px, -2px);
+    box-shadow: 2px 2px 9px #0000009c;
+}
+
+.animated-button:active {
+    box-shadow: 1px 1px 6px #0000009c;
+    transform: scale(0.98) translate(-2px, 2px);
+}
