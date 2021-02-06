@@ -1,7 +1,8 @@
 <template>
   <div>
     <button
-      v-if="gameStage == 'lobby' && joinStage != 'initial'"
+      v-if="(gameStage == 'lobby' && joinStage != 'initial') ||
+             gameStage == 'tutorial'"
       @click="backClick"
       class="clickable"
       id="back-button"
@@ -15,6 +16,7 @@
       />
       <LobbyOptions 
         v-if="joinStage == 'initial'"
+        @startTutorial="gameStage = 'startTutorial'"
       />
       <GameLobby
         v-if="signedIn"
@@ -63,6 +65,9 @@
       />
     </div>
     <ChatBox v-if="signedIn" :username="username" />
+    <TutorialContainer 
+      v-if="gameStage == 'tutorial'"
+    />
   </div>
 </template>
 <script src="./chat.js"></script>
@@ -79,6 +84,7 @@ import LobbyOptions from "./components/LobbyOptions.vue";
 import OthersHand from "./components/OthersHand.vue";
 import PlayedPile from "./components/PlayedPile.vue";
 import ScoreContainer from "./components/ScoreContainer.vue";
+import TutorialContainer from "./components/TutorialContainer.vue";
 import TrumpSuitContainer from "./components/TrumpSuitContainer.vue";
 import UserOptions from "./components/UserOptions.vue";
 
@@ -117,6 +123,7 @@ export default {
     OthersHand,
     PlayedPile,
     ScoreContainer,
+    TutorialContainer,
     TrumpSuitContainer,
     UserOptions,
   },
@@ -152,6 +159,7 @@ export default {
   },
   methods: {
     backClick() {
+      this.gameStage = "lobby";
       this.joinStage = "initial";
       this.signedIn = false;
       this.$socket.emit("userLeft", {

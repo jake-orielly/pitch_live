@@ -1,6 +1,5 @@
 <template>
   <div id="lobby-options-container">
-    <div></div>
     <div>
       <button class="lobby-button" @click="createLobby">Create New Lobby</button>
     </div>
@@ -13,6 +12,15 @@
           {{`Lobby code ${badLobbyCode} is not valid`}}
         </p>
       </div>
+    </div>
+    <div>
+      <button
+        @click="startTutorial"
+        class="lobby-button"
+        id="tutorial-button"
+      >
+        Tutorial
+      </button>
     </div>
   </div>
 </template>
@@ -39,11 +47,12 @@ export default {
     },
     createLobby() {
       this.$socket.emit("createLobby");
-      this.$emit("joinedLobby");
     },
     joinLobby() {
-      this.$emit("joinedLobby");
       this.$socket.emit("joinLobby", this.lobbyCode.toUpperCase());
+    },
+    startTutorial() {
+      this.$emit("startTutorial");
     }
   },
 };
@@ -55,9 +64,8 @@ export default {
 }
 
 #lobby-options-container {
-  display: grid;
-  grid-template-columns: 25% 25% 25%;
-  padding-top: 15%;
+  text-align: center;
+  margin-top: 10%;
 }
 
 button {
@@ -70,7 +78,7 @@ button {
 }
 .lobby-button {
   padding: 0.5rem;
-  margin: 2rem;
+  margin: 1rem;
 }
 
 #lobby-code-div {
