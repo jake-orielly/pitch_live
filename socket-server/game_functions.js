@@ -14,7 +14,7 @@ function countPoints(teamCards, trumpSuit, currBid) {
   let high = { team: undefined, index: -1 };
   let low = { team: undefined, index: 14 };
   let game0, game1;
-  let teamPoints = [[],[]];
+  let teamPoints = [[], []];
   let currTeam = 0;
   for (let team of teamCards) {
     for (let card of team) {
@@ -43,9 +43,9 @@ function countPoints(teamCards, trumpSuit, currBid) {
   else if (game0 < game1)
     teamPoints[1].push('Game');
   //TODO: == 24 is hardcoded for 4 player game
-  if (currBid.amount == 5 && 
-      teamPoints[bidderTeam].length == 4 &&
-      teamCards[bidderTeam].length == 24)
+  if (currBid.amount == 5 &&
+    teamPoints[bidderTeam].length == 4 &&
+    teamCards[bidderTeam].length == 24)
     teamPoints[bidderTeam].push("Five")
   return teamPoints;
 };

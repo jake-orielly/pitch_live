@@ -1,40 +1,35 @@
 <template>
-    <div>
-        <h1>
-            Tutorial
-        </h1>
-        <ul class="clickable">
-            <li
-                v-for="(section, ind) in sections"
-                v-bind:key="section"
-                :class="{'active-section' : currentSection == section}"
-                @click="$emit('sectionClick',ind)"
-            >
-                {{section}}
-            </li>
-        </ul>
-    </div>
+  <div>
+    <h1>Tutorial</h1>
+    <ul class="clickable">
+      <li
+        v-for="(section, ind) in sections"
+        v-bind:key="section"
+        :class="{ 'active-section': currentSection == section }"
+        @click="$emit('sectionClick', ind)"
+      >
+        {{ section }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
 export default {
-    props: {
-        sections: {
-            type: Array,
-            required: true
-        },
-        currentSection: {
-            type: String,
-            required: true
-        }
+  props: {
+    sections: {
+      type: Array,
+      required: true,
     },
-    data() {
-        return {
-        }
+    currentSection: {
+      type: String,
+      required: true,
     },
-	methods: {
-
-    }
+  },
+  data() {
+    return {};
+  },
+  methods: {},
 };
 </script>
 
@@ -42,23 +37,22 @@ export default {
 @import "../scss/common.scss";
 
 * {
-    color: white;
-    text-shadow: 1px 2px 2px black;
+  color: white;
+  text-shadow: 1px 2px 2px black;
 }
 
 ul {
-    font-size: 1.5rem;
-    list-style: none;
-    padding-left: 2rem;
-    margin-top: 0.75rem;
+  font-size: 1.5rem;
+  list-style: none;
+  padding-left: 2rem;
+  margin-top: 0.75rem;
 }
 
 li {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .active-section {
-    font-weight: bold;
+  font-weight: bold;
 }
-
 </style>

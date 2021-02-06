@@ -1,15 +1,13 @@
 <template>
   <div id="lobby-container">
-    <p id="lobby-id">
-      Lobby Id: {{$store.state.lobbyId}}
-    </p>
+    <p id="lobby-id">Lobby Id: {{ $store.state.lobbyId }}</p>
     <div id="teams-container">
       <table class="user-list">
         <tr>
           <th v-if="myTeam == 0">
-            <TeamNameSelection /> 
+            <TeamNameSelection />
           </th>
-          <th v-if="myTeam == 1">{{otherTeamName}}</th>
+          <th v-if="myTeam == 1">{{ otherTeamName }}</th>
         </tr>
         <tr v-for="user in team0" v-bind:key="user.id">
           <td>{{ user.username }}</td>
@@ -32,9 +30,9 @@
       <table class="user-list">
         <tr>
           <th v-if="myTeam == 1">
-            <TeamNameSelection /> 
+            <TeamNameSelection />
           </th>
-          <th v-if="myTeam == 0">{{otherTeamName}}</th>
+          <th v-if="myTeam == 0">{{ otherTeamName }}</th>
         </tr>
         <tr v-for="user in team1" v-bind:key="user.id">
           <td>{{ user.username }}</td>
@@ -67,7 +65,7 @@ import TeamNameSelection from "./TeamNameSelection.vue";
 
 export default {
   components: {
-    TeamNameSelection
+    TeamNameSelection,
   },
   props: {
     username: {
@@ -76,40 +74,32 @@ export default {
     },
     gameStarting: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     myTeam() {
       if (this.$store.state.users.length) {
-        console.log(this.$store.state.users)
-        console.log(this.$store.state.id)
+        console.log(this.$store.state.users);
+        console.log(this.$store.state.id);
         return this.$store.state.users.filter(
-          user => user.id == this.$store.state.id
+          (user) => user.id == this.$store.state.id
         )[0].team;
-      }
-      else 
-        return undefined;
+      } else return undefined;
     },
     team0() {
       if (this.$store.state.users.length)
-        return this.$store.state.users.filter(
-          user => user.team == 0
-        );
-      else 
-        return undefined;
+        return this.$store.state.users.filter((user) => user.team == 0);
+      else return undefined;
     },
     team1() {
       if (this.$store.state.users.length)
-        return this.$store.state.users.filter(
-          user => user.team == 1
-        );
-      else 
-        return undefined;   
+        return this.$store.state.users.filter((user) => user.team == 1);
+      else return undefined;
     },
     otherTeamName() {
       return this.$store.state.teamNames[(this.myTeam + 1) % 2].join(" ");
-    }
+    },
   },
   data() {
     return {};
@@ -174,5 +164,4 @@ th {
   top: 1rem;
   user-select: text;
 }
-
 </style>

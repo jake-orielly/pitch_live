@@ -7,29 +7,37 @@
         @click="play(card)"
         class="hand-card-slot card-list"
       >
-        <img class="card hand-card" v-bind:src="getCardImage(card)" v-if="showCards"/>
+        <img
+          class="card hand-card"
+          v-bind:src="getCardImage(card)"
+          v-if="showCards"
+        />
       </li>
       <li
         v-for="(card, ind) in dealCount"
         v-bind:key="'card-back-' + ind"
         class="hand-card-slot card-list"
       >
-        <img class="card hand-card" v-bind:src="getCardImage('back')" v-if="!showCards"/>
+        <img
+          class="card hand-card"
+          v-bind:src="getCardImage('back')"
+          v-if="!showCards"
+        />
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { EventBus } from '../event-bus.js';
-import utilities from "../js/utilities.js"
+import { EventBus } from "../event-bus.js";
+import utilities from "../js/utilities.js";
 
 export default {
   props: {
     hand: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -72,28 +80,25 @@ export default {
       this.$parent.hand = hand;
       this.dealDone = false;
       this.dealCount = 1;
-      let dealInterval = setInterval(
-        () => {
-          EventBus.$emit('card-dealt');
-          this.dealCount++;
-          if (this.dealCount == 6) {
-            setTimeout(() => {
-              this.showCards = true;
-            }, 450)
-            clearInterval(dealInterval);
-          }
-        }, 450
-      )
+      let dealInterval = setInterval(() => {
+        EventBus.$emit("card-dealt");
+        this.dealCount++;
+        if (this.dealCount == 6) {
+          setTimeout(() => {
+            this.showCards = true;
+          }, 450);
+          clearInterval(dealInterval);
+        }
+      }, 450);
     },
     getCardImage(val) {
       return utilities.getCardImage(val);
-    }
+    },
   },
 };
 </script>
 
 <style scoped>
-
 #hand-container {
   display: block;
   position: absolute;

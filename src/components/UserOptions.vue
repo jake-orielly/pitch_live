@@ -29,10 +29,10 @@ export default {
       userMod: "",
       usernameInput: "",
       passwordInput: "",
-      userConfirm: { 
-        guest: "Confirm", 
-        existing: "Log In", 
-        new: "Sign Up"
+      userConfirm: {
+        guest: "Confirm",
+        existing: "Log In",
+        new: "Sign Up",
       },
       loginStatus: undefined,
       loginStatusMap: {
@@ -51,7 +51,7 @@ export default {
     submitUsername() {
       this.$parent.signedIn = true;
       this.$parent.username = this.usernameInput;
-      this.$emit('usernameSubmitted');
+      this.$emit("usernameSubmitted");
       this.$socket.emit("usernameSubmission", {
         usernameSubmission: this.usernameInput,
       });
@@ -87,7 +87,7 @@ export default {
           else this.signupStatus = "Error: Uknown Error";
         }
       };
-    }
+    },
   },
 };
 </script>
@@ -102,7 +102,8 @@ form {
   padding-top: 15%;
 }
 
-#username-input, #username-confirm {
+#username-input,
+#username-confirm {
   font-size: 2rem;
 }
 

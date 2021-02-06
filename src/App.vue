@@ -1,8 +1,10 @@
 <template>
   <div>
     <button
-      v-if="(gameStage == 'lobby' && joinStage != 'initial') ||
-             gameStage == 'tutorial'"
+      v-if="
+        (gameStage == 'lobby' && joinStage != 'initial') ||
+        gameStage == 'tutorial'
+      "
       @click="backClick"
       class="animated-button clickable"
       id="back-button"
@@ -14,7 +16,7 @@
         v-if="joinStage == 'choosingName'"
         @usernameSubmitted="setStage('joined')"
       />
-      <LobbyOptions 
+      <LobbyOptions
         v-if="joinStage == 'initial'"
         @startTutorial="gameStage = 'tutorial'"
       />
@@ -27,23 +29,16 @@
     <div v-if="gameStage == 'playing'">
       <div>
         <p id="status-text">{{ statusText }}</p>
-        <BidOptions 
-          :bidding="bidding"
-        />
+        <BidOptions :bidding="bidding" />
       </div>
       <div id="game-info-container">
-        <ScoreContainer 
-          :score="score" 
-        />
+        <ScoreContainer :score="score" />
         <TrumpSuitContainer />
-        <LeadSuitContainer/>
+        <LeadSuitContainer />
       </div>
       <DeckCards />
       <GameOverContainer />
-      <PlayedPile 
-        :othersCards="othersCards"
-        :myCard="myCard"
-      />
+      <PlayedPile :othersCards="othersCards" :myCard="myCard" />
       <OthersHand
         :username="$store.state.users[0].username"
         :numCards="$store.state.users[0].cards"
@@ -59,15 +54,12 @@
         :numCards="$store.state.users[2].cards"
         :playerClass="'opponent-1'"
       />
-      <HandContainer
-        :hand="hand"
-        ref="handContainer"
-      />
+      <HandContainer :hand="hand" ref="handContainer" />
     </div>
     <ChatBox v-if="signedIn" :username="username" />
-    <TutorialContainer 
+    <TutorialContainer
       v-if="gameStage == 'tutorial'"
-      @closeTutorial='backClick'
+      @closeTutorial="backClick"
     />
   </div>
 </template>
@@ -76,7 +68,7 @@
 <script>
 import BidOptions from "./components/BidOptions.vue";
 import ChatBox from "./components/ChatBox.vue";
-import DeckCards from "./components/DeckCards.vue"
+import DeckCards from "./components/DeckCards.vue";
 import GameLobby from "./components/GameLobby.vue";
 import GameOverContainer from "./components/GameOverContainer.vue";
 import HandContainer from "./components/HandContainer.vue";
@@ -109,7 +101,7 @@ export default {
       currTrick: 0,
       othersCards: ["placeholder", "placeholder", "placeholder"],
       myCard: "placeholder",
-      joinStage: "initial"
+      joinStage: "initial",
     };
   },
   components: {
@@ -152,8 +144,8 @@ export default {
       this.otherPlayed(data);
     },
     joinSucceeded() {
-      this.setStage('choosingName');
-    }
+      this.setStage("choosingName");
+    },
   },
   destroy() {
     this.$socket.disconnect();
@@ -164,7 +156,7 @@ export default {
       this.joinStage = "initial";
       this.signedIn = false;
       this.$socket.emit("userLeft", {
-        id: this.$store.state.id
+        id: this.$store.state.id,
       });
     },
     otherPlayed(data) {
@@ -172,9 +164,9 @@ export default {
         return element.id == data.id;
       }
       let theirIndex = this.$store.state.users.findIndex(findUser);
-      console.log(this.othersCards, data.card, theirIndex)
+      console.log(this.othersCards, data.card, theirIndex);
       this.$set(this.othersCards, theirIndex, data.card);
-      console.log(this.othersCards)
+      console.log(this.othersCards);
     },
     newTrick() {
       this.othersCards = ["placeholder", "placeholder", "placeholder"];
@@ -185,14 +177,14 @@ export default {
     },
     setStage(val) {
       this.joinStage = val;
-    }
+    },
   },
 };
 </script>
 
 <style>
 @import "./scss/button.scss";
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 html,
 body {
@@ -200,7 +192,7 @@ body {
   padding: 0;
   background: seagreen;
   user-select: none;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 #status-text {

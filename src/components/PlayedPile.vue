@@ -1,8 +1,5 @@
 <template>
-  <div 
-    v-if="othersCards"
-    id="played-pile"
-  >
+  <div v-if="othersCards" id="played-pile">
     <img
       v-for="i in 3"
       v-bind:key="'played-card-' + i"

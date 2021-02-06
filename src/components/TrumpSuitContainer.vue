@@ -1,9 +1,12 @@
 <template>
   <p v-if="$store.state.trumpSuit">
     Trump:
-    <span :class="$store.state.trumpSuit ? $store.state.trumpSuit.toLowerCase() : ''">{{
-      suitToIcon($store.state.trumpSuit)
-    }}</span>
+    <span
+      :class="
+        $store.state.trumpSuit ? $store.state.trumpSuit.toLowerCase() : ''
+      "
+      >{{ suitToIcon($store.state.trumpSuit) }}</span
+    >
   </p>
 </template>
 
@@ -14,7 +17,7 @@ export default {
   methods: {
     suitToIcon(val) {
       return utilities.suitToIcon(val);
-    }
+    },
   },
 };
 </script>

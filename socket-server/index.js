@@ -24,13 +24,13 @@ http.listen(port, function () {
 var lobbies = [];
 
 io.on('connection', function (socket) {
-  socket.on('createLobby', function() {
+  socket.on('createLobby', function () {
     let lobby = new Lobby(io);
     lobbies.push(lobby);
     joinLobby(socket, lobby);
   })
 
-  socket.on('joinLobby', function(id) {
+  socket.on('joinLobby', function (id) {
     let lobby = lobbies.filter(
       l => l.id == id
     )[0];
@@ -43,9 +43,9 @@ io.on('connection', function (socket) {
 
   socket.on('usernameSubmission', function (data) {
     let lobby = socket.lobby;
-    let newUser = { 
-      username: data['usernameSubmission'], 
-      ready: false, 
+    let newUser = {
+      username: data['usernameSubmission'],
+      ready: false,
       socket: socket,
       teamNum: lobby.getUsers().length % 2,
       cards: 0
@@ -55,18 +55,18 @@ io.on('connection', function (socket) {
     lobby.addUser(newUser);
     for (let user of lobby.getUsers())
       user.socket.emit('chat', `${data['usernameSubmission']} has joined`);
-    partOfSpeech = (parseInt((lobby.getUsers().length - 1 ) / 2) == 1 ? "nouns" : "adjectives");
+    partOfSpeech = (parseInt((lobby.getUsers().length - 1) / 2) == 1 ? "nouns" : "adjectives");
     teammatePartOfSpeech = (partOfSpeech == "nouns" ? "adjectives" : "nouns");
     options = lobby.getTeamWords((lobby.getUsers().length - 1) % 2, partOfSpeech);
     socket.emit('callStoreMutation', {
-      mutation:'setTeamWordOptions', 
+      mutation: 'setTeamWordOptions',
       val: {
         partOfSpeech,
         options
       }
     });
     callStoreMutation(
-      'setTeamNames', 
+      'setTeamNames',
       [lobby.getTeams(0).name, lobby.getTeams(1).name],
       lobby
     );
@@ -104,9 +104,9 @@ io.on('connection', function (socket) {
         if (count == 0) {
           clearInterval(socket.lobby.gameStartCountdown);
           callStoreMutation(
-            'setTeamNames', 
+            'setTeamNames',
             [
-              socket.lobby.getTeams(0).name, 
+              socket.lobby.getTeams(0).name,
               socket.lobby.getTeams(1).name
             ],
             lobby
@@ -123,7 +123,7 @@ io.on('connection', function (socket) {
   socket.on('play', function (card) {
     let currPlayer = socket.lobby.getCurrPlayer();
     sendChat(
-      `${currPlayer.username} played the ${card.num} of ${card.suit}`, 
+      `${currPlayer.username} played the ${card.num} of ${card.suit}`,
       socket.lobby
     );
     socket.lobby.sendUpdatedUsers();
@@ -132,7 +132,7 @@ io.on('connection', function (socket) {
     socket.lobby.playCard(card);
   });
 
-  socket.on('selectTeamWord', function(data) {
+  socket.on('selectTeamWord', function (data) {
     socket.lobby.setTeamWord(data);
   });
 });
@@ -148,7 +148,7 @@ function joinLobby(socket, lobby) {
   });
   socket.emit('joinSucceeded');
   socket.emit('callStoreMutation', {
-    mutation:'setLobbyId', 
+    mutation: 'setLobbyId',
     val: lobby.id
   });
 }
@@ -178,7 +178,7 @@ function setProp(prop, val, lobby) {
 function callStoreMutation(mutation, val, lobby) {
   for (let user of lobby.getUsers())
     user.socket.emit('callStoreMutation', {
-      mutation, val 
+      mutation, val
     });
 }
 

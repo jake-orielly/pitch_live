@@ -2,12 +2,12 @@
   <div>
     <table>
       <tr>
-        <td class="team-label">{{teamLabels[0]}}:</td>
+        <td class="team-label">{{ teamLabels[0] }}:</td>
         <td class="team-name">{{ $store.state.teamNames[0].join(" ") }}:</td>
         <td>{{ score[0] }}</td>
       </tr>
       <tr>
-        <td class="team-label">{{teamLabels[1]}}:</td>
+        <td class="team-label">{{ teamLabels[1] }}:</td>
         <td class="team-name">{{ $store.state.teamNames[1].join(" ") }}:</td>
         <td>{{ score[1] }}</td>
       </tr>
@@ -19,8 +19,8 @@
 export default {
   data() {
     return {
-      teamLabels: ["", ""]
-    }
+      teamLabels: ["", ""],
+    };
   },
   props: {
     score: {
@@ -29,10 +29,11 @@ export default {
     },
   },
   mounted() {
-    const usTeam = this.$store.state.users[this.$store.state.users.length - 1].team;
+    const usTeam = this.$store.state.users[this.$store.state.users.length - 1]
+      .team;
     this.$set(this.teamLabels, usTeam, "Us");
     this.$set(this.teamLabels, (usTeam + 1) % 2, "Them");
-  }
+  },
 };
 </script>
 

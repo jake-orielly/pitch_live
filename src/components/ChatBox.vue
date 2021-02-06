@@ -27,19 +27,8 @@
         v-model="messageText"
         v-on:keyup.13="sendMessage"
       />
-      <button 
-        id="emoji-button" 
-        @click="toggleEmojiPicker"
-      >
-        😀
-      </button>
-      <button 
-        id="send" 
-        class="send-button" 
-        @click="sendMessage"
-      >
-        Send
-      </button>
+      <button id="emoji-button" @click="toggleEmojiPicker">😀</button>
+      <button id="send" class="send-button" @click="sendMessage">Send</button>
     </div>
     <VEmojiPicker v-if="showingEmojiPicker" @select="selectEmoji" />
   </div>

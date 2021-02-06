@@ -2,9 +2,10 @@
   <p v-if="$store.state.leadSuit">
     Lead:
     <span v-if="$store.state.leader">{{ `${$store.state.leader}'s ` }}</span>
-    <span :class="$store.state.leadSuit ? $store.state.leadSuit.toLowerCase() : ''">{{
-      suitToIcon($store.state.leadSuit)
-    }}</span>
+    <span
+      :class="$store.state.leadSuit ? $store.state.leadSuit.toLowerCase() : ''"
+      >{{ suitToIcon($store.state.leadSuit) }}</span
+    >
   </p>
 </template>
 
@@ -15,7 +16,7 @@ export default {
   methods: {
     suitToIcon(val) {
       return utilities.suitToIcon(val);
-    }
+    },
   },
 };
 </script>

@@ -2,17 +2,17 @@
   <div :class="playerClass">
     <p class="nametag">{{ username }}</p>
     <img
-        v-for="i in numCards"
-        v-bind:key="`${username}-${i}`"
-        v-bind:style="{ transform: 'rotate(' + (i - 3.5) * 5 + 'deg)' }"
-        class="other-player-card"
-        v-bind:src="getCardImage('back')"
-      />
+      v-for="i in numCards"
+      v-bind:key="`${username}-${i}`"
+      v-bind:style="{ transform: 'rotate(' + (i - 3.5) * 5 + 'deg)' }"
+      class="other-player-card"
+      v-bind:src="getCardImage('back')"
+    />
   </div>
 </template>
 
 <script>
-import utilities from "../js/utilities.js"
+import utilities from "../js/utilities.js";
 
 export default {
   props: {
@@ -22,27 +22,28 @@ export default {
     },
     numCards: {
       type: Number,
-      required: true
+      required: true,
     },
     playerClass: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
-    return {
-    };
+    return {};
   },
   methods: {
     getCardImage(val) {
       return utilities.getCardImage(val);
-    }
+    },
   },
 };
 </script>
 
 <style scoped>
-.opponent-0, .opponent-1, .teammate-1 {
+.opponent-0,
+.opponent-1,
+.teammate-1 {
   min-width: 10rem;
 }
 
@@ -83,5 +84,4 @@ export default {
   padding: 0em 1em;
   font-size: 1.5rem;
 }
-
 </style>

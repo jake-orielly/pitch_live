@@ -1,19 +1,19 @@
 <template>
   <div>
     <span v-if="$store.state.teamWordOptions.partOfSpeech == 'nouns'">
-      {{$store.state.teamNames[myTeam][0]}}
+      {{ $store.state.teamNames[myTeam][0] }}
     </span>
-    <select
-      @change="onChange($event)" 
-      name="options" 
-      id="options"
-    >
-      <option v-for="option in $store.state.teamWordOptions.options" v-bind:key="option" :value="option">
+    <select @change="onChange($event)" name="options" id="options">
+      <option
+        v-for="option in $store.state.teamWordOptions.options"
+        v-bind:key="option"
+        :value="option"
+      >
         {{ option }}
       </option>
     </select>
     <span v-if="$store.state.teamWordOptions.partOfSpeech == 'adjectives'">
-      {{$store.state.teamNames[myTeam][1]}}
+      {{ $store.state.teamNames[myTeam][1] }}
     </span>
   </div>
 </template>
@@ -23,31 +23,31 @@ export default {
   computed: {
     myTeam() {
       if (this.$store.state.users.length) {
-        console.log(this.$store.state.users)
+        console.log(this.$store.state.users);
         return this.$store.state.users.filter(
-          user => user.id == this.$store.state.id
+          (user) => user.id == this.$store.state.id
         )[0].team;
-      }
-      else 
-        return undefined;
-    }
+      } else return undefined;
+    },
   },
   methods: {
-      onChange(event) {
-        const teamNum = this.$store.state.users[this.$store.state.users.length - 1].team;
-        this.$socket.emit("selectTeamWord", {
-          val:event.target.value,
-          partOfSpeech: this.$store.state.teamWordOptions.partOfSpeech,
-          teamNum
-        });
-      }
-  }
+    onChange(event) {
+      const teamNum = this.$store.state.users[
+        this.$store.state.users.length - 1
+      ].team;
+      this.$socket.emit("selectTeamWord", {
+        val: event.target.value,
+        partOfSpeech: this.$store.state.teamWordOptions.partOfSpeech,
+        teamNum,
+      });
+    },
+  },
 };
 </script>
 
 <style scoped>
-
-select, option {
+select,
+option {
   background: none;
   border: none;
   color: white;
@@ -56,7 +56,7 @@ select, option {
 }
 
 *:focus {
-    outline: none;
+  outline: none;
 }
 
 select {
