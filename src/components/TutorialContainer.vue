@@ -1,18 +1,92 @@
 <template>
-  <p>
-    HI
-  </p>
+    <div id="tutorial-content-container">
+        <div id="tutorial-body-container">
+            <TableOfContents
+                :sections="sections"
+                :currentSection="currentSection"
+                @sectionClick="setSelection"
+            />
+            <TutorialContent
+                :currentSection="currentSection"
+            />
+        </div>
+        <div id="tutorial-control-container">
+            <div>
+                <button 
+                    v-if="currentSectionNum > 0"
+                    @click="changeSection(-1)"
+                    class="animated-button"
+                >
+                    Back
+                </button>
+            </div>
+            <div>
+                <button 
+                    v-if="currentSectionNum < sections.length - 1"
+                    @click="changeSection(1)"
+                    class="animated-button"
+                >
+                    Next
+                </button>
+                <button 
+                    v-if="currentSectionNum == sections.length - 1"
+                    @click="closeTutorial"
+                    class="animated-button"
+                >
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
+import TableOfContents from './TableOfContents.vue'
+import TutorialContent from './TutorialContent.vue'
 
 export default {
-  methods: {
-
-  },
+    components: {
+        TableOfContents,
+        TutorialContent
+    },
+    data() {
+        return {
+            sections: [
+                "Introduction"
+            ],
+            currentSectionNum: 0,
+        }
+	},
+    computed: {
+        currentSection() {
+            return this.sections[this.currentSectionNum];
+        }
+    },
+	methods: {
+        changeSection(val) {
+            this.currentSectionNum += val;
+        },
+        setSelection(val) {
+            this.currentSectionNum = val;
+        },
+        closeTutorial() {
+            this.$emit("closeTutorial");
+        }
+	}
 };
 </script>
 
 <style scoped>
+@import "../scss/button.scss";
 
+#tutorial-body-container {
+    display: grid;
+    grid-template-columns: 20% 60%;
+    margin-top: 5%;
+}
+
+#tutorial-control-container {
+    text-align: right;
+    margin-right: 15%;
+}
 </style>

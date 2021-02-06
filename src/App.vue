@@ -16,7 +16,7 @@
       />
       <LobbyOptions 
         v-if="joinStage == 'initial'"
-        @startTutorial="gameStage = 'startTutorial'"
+        @startTutorial="gameStage = 'tutorial'"
       />
       <GameLobby
         v-if="signedIn"
@@ -67,6 +67,7 @@
     <ChatBox v-if="signedIn" :username="username" />
     <TutorialContainer 
       v-if="gameStage == 'tutorial'"
+      @closeTutorial='backClick'
     />
   </div>
 </template>
