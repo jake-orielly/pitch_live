@@ -81,13 +81,13 @@ io.on('connection', function (socket) {
       if (socket.lobby.getUser(i).socket.id == socket.id)
         pos = i;
     if (socket.lobby.getUser(pos)) {
-      for (let user of lobby.getUsers())
+      for (let user of socket.lobby.getUsers())
         user.socket.emit('chat', `${socket.lobby.getUser(pos).username} has left`);
       socket.lobby.removeUser(pos);
       socket.lobby.sendUpdatedUsers();
     }
     if (socket.lobby.getUsers().length == 0)
-      lobbies.splice(lobbies.indexOf(socket.lobby))
+      lobbies.splice(lobbies.indexOf(socket.lobby));
   });
 
   socket.on('ready', function (ready) {
