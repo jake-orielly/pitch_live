@@ -1,5 +1,8 @@
 <template>
-  <div id="lobby-container">
+  <div 
+    class="white-text"
+    id="lobby-container"
+  >
     <p id="lobby-id">Lobby Id: {{ $store.state.lobbyId }}</p>
     <div id="teams-container">
       <table class="user-list">
@@ -123,7 +126,6 @@ export default {
 
 #lobby-container {
   padding: 5rem 0em;
-  color: white;
 }
 
 #teams-container {

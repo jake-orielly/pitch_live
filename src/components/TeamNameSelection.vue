@@ -3,7 +3,12 @@
     <span v-if="$store.state.teamWordOptions.partOfSpeech == 'nouns'">
       {{ $store.state.teamNames[myTeam][0] }}
     </span>
-    <select @change="onChange($event)" name="options" id="options">
+    <select 
+      @change="onChange($event)" 
+      name="options"
+      class="white-text" 
+      id="options"
+    >
       <option
         v-for="option in $store.state.teamWordOptions.options"
         v-bind:key="option"

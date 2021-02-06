@@ -3,9 +3,11 @@
     border: 3px solid white;
     color: white;
     box-shadow: 1px 1px 9px #0000009c;
+    text-shadow: 1px 1px 3px #0000006b;
     border-radius: 0.5rem;
     font-size: 1.5rem;
     outline:none;
+    transition: 0.05s;
 }
 
 .animated-button:hover {

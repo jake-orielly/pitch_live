@@ -4,7 +4,7 @@
       <input
         v-model="usernameInput"
         ref="usernameInput"
-        class="login-input"
+        class="login-input white-text"
         id="username-input"
         type="text"
         placeholder="Username"
@@ -12,7 +12,7 @@
         required
       />
       <input
-        class="ui-button"
+        class="animated-button"
         type="submit"
         id="username-confirm"
         :value="userConfirm[userMod]"
@@ -93,6 +93,9 @@ export default {
 </script>
 
 <style scoped>
+@import "../scss/button.scss";
+@import "../scss/common.scss";
+
 form {
   text-align: center;
 }
@@ -127,9 +130,8 @@ form {
   margin: 0.5em auto;
   background: none;
   border: none;
-  color: white;
   text-align: center;
-  padding: 0.5em;
+  padding: 0em 0.5rem;
   border-bottom: 2px solid white;
 }
 
@@ -141,28 +143,5 @@ form {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: white;
   opacity: 1; /* Firefox */
-}
-
-.ui-button {
-  background: none;
-  border: 3px solid white;
-  color: white;
-  box-shadow: 1px 1px 9px #0000009c;
-  border-radius: 0.5rem;
-}
-
-.ui-button:hover {
-  box-shadow: 2px 2px 9px #000000de;
-  transform: scale(1.01) translateY(-2px);
-}
-
-.ui-button:active {
-  outline: none;
-  box-shadow: 1px 1px 5px #00000085;
-  transform: scale(0.99) translateY(2px);
-}
-
-.ui-button:focus {
-  outline: none;
 }
 </style>
