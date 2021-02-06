@@ -74,20 +74,15 @@ io.on('connection', function (socket) {
   });
 
   socket.on('disconnect', function () {
-    let pos;
     if (!socket.lobby)
       return;
-    for (let i = 0; i < socket.lobby.getUsers().length; i++)
-      if (socket.lobby.getUser(i).socket.id == socket.id)
-        pos = i;
-    if (socket.lobby.getUser(pos)) {
-      for (let user of socket.lobby.getUsers())
-        user.socket.emit('chat', `${socket.lobby.getUser(pos).username} has left`);
-      socket.lobby.removeUser(pos);
-      socket.lobby.sendUpdatedUsers();
-    }
+    removeUser(socket);
     if (socket.lobby.getUsers().length == 0)
       lobbies.splice(lobbies.indexOf(socket.lobby));
+  });
+
+  socket.on('userLeft', () => {
+    removeUser(socket)
   });
 
   socket.on('ready', function (ready) {
@@ -156,6 +151,21 @@ function joinLobby(socket, lobby) {
     mutation:'setLobbyId', 
     val: lobby.id
   });
+}
+
+function removeUser(socket) {
+  let pos;
+  if (!socket.lobby)
+    return;
+  for (let i = 0; i < socket.lobby.getUsers().length; i++)
+    if (socket.lobby.getUser(i).socket.id == socket.id)
+      pos = i;
+  if (socket.lobby.getUser(pos)) {
+    for (let user of socket.lobby.getUsers())
+      user.socket.emit('chat', `${socket.lobby.getUser(pos).username} has left`);
+    socket.lobby.removeUser(pos);
+    socket.lobby.sendUpdatedUsers();
+  }
 }
 
 function setProp(prop, val, lobby) {

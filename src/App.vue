@@ -1,5 +1,13 @@
 <template>
   <div>
+    <button
+      v-if="gameStage == 'lobby' && joinStage != 'initial'"
+      @click="backClick"
+      class="clickable"
+      id="back-button"
+    >
+      &larr; Back
+    </button>
     <div v-if="gameStage == 'lobby'">
       <UserOptions
         v-if="joinStage == 'choosingName'"
@@ -143,6 +151,13 @@ export default {
     this.$socket.disconnect();
   },
   methods: {
+    backClick() {
+      this.joinStage = "initial";
+      this.signedIn = false;
+      this.$socket.emit("userLeft", {
+        id: this.$store.state.id
+      });
+    },
     otherPlayed(data) {
       function findUser(element) {
         return element.id == data.id;
@@ -224,5 +239,17 @@ body {
   position: absolute;
   top: 0rem;
   right: 2rem;
+}
+
+#back-button {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  background: none;
+  border: 3px solid white;
+  color: white;
+  box-shadow: 1px 1px 9px #0000009c;
+  border-radius: 0.5rem;
+  font-size: 1.5rem;
 }
 </style>

@@ -83,6 +83,7 @@ export default {
     myTeam() {
       if (this.$store.state.users.length) {
         console.log(this.$store.state.users)
+        console.log(this.$store.state.id)
         return this.$store.state.users.filter(
           user => user.id == this.$store.state.id
         )[0].team;
