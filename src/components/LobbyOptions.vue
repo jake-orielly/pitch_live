@@ -75,7 +75,6 @@ button {
 
 #lobby-code-div {
   margin: 0rem 2rem;
-  text-align: center;
 }
 
 input {
