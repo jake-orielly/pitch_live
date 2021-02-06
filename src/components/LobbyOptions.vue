@@ -95,6 +95,5 @@ input {
 
 p {
   color: white;
-  position: absolute;
 }
 </style>
