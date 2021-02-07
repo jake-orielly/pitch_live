@@ -45,7 +45,7 @@ export default {
   },
   data() {
     return {
-      sections: ["Introduction", "Tricks", "Points"],
+      sections: ["Introduction", "Tricks", "Points", "Bidding"],
       currentSectionNum: 0,
     };
   },

@@ -1,8 +1,9 @@
 <template>
   <div>
     <TutorialPageIntroduction v-if="currentSection == 'Introduction'" />
-    <TutorialPagePoints v-if="currentSection == 'Points'" />
     <TutorialPageTricks v-if="currentSection == 'Tricks'" />
+    <TutorialPagePoints v-if="currentSection == 'Points'" />
+    <TutorialPageBidding v-if="currentSection == 'Bidding'" />
   </div>
 </template>
 
@@ -10,6 +11,7 @@
 import TutorialPageIntroduction from "./TutorialPageIntroduction.vue";
 import TutorialPagePoints from "./TutorialPagePoints.vue";
 import TutorialPageTricks from "./TutorialPageTricks.vue";
+import TutorialPageBidding from "./TutorialPageBidding.vue";
 
 export default {
   props: {
@@ -21,7 +23,8 @@ export default {
   components: {
     TutorialPageIntroduction,
     TutorialPagePoints,
-    TutorialPageTricks
+    TutorialPageTricks,
+    TutorialPageBidding
   },
 };
 </script>

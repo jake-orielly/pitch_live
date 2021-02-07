@@ -20,12 +20,7 @@
       Not all of the points are available every game. Sometimes, no one gets
       dealt the Jack of the trump suit, and if the teams game points are tied at
       the end of the hand, neither gets the point. Keep this in mind when making
-      your bids! Additionally, there is a secret, fifth point that is awarded in
-      very special situations. If you bid 5, collect all four points, and take
-      all 24 cards, you get awarded five points instead of four. However, if you
-      don't bid five, you cannot win the fifth point. Making a 5 bid is
-      one-in-a-million, and should only be attempted by experts and the truly
-      desperate.
+      your bids!
     </p>
   </div>
 </template>
