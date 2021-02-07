@@ -3,16 +3,7 @@
     Bid:
     <button
       class="clickable bid-button"
-      v-for="i in ['pass', 2, 3, 4, 5].filter(
-        (bid) =>
-          bid > $store.state.currBid ||
-          (bid > 0 && $store.state.currBid == 'pass') ||
-          (bid == 'pass' &&
-            (!$store.state.dealer || $store.state.currBid != 'pass')) ||
-          ($store.state.dealer &&
-            bid == $store.state.currBid &&
-            $store.state.currBid != 'pass')
-      )"
+      v-for="i in bidOptions"
       @click="bid(i)"
       v-bind:key="'bid-' + i"
     >
@@ -27,6 +18,23 @@ export default {
     bidding: {
       type: Boolean,
       required: true,
+    },
+  },
+  computed: {
+    bidOptions() {
+      let baseOptions = ["pass", 2, 3, 4, 5];
+      if (this.$store.state.dealer)
+        if (this.$store.state.currBid == "pass")
+          return "2"
+        else
+          return ["pass", this.$store.state.currBid]
+      else
+        return baseOptions.filter(
+          (bid) =>
+            bid > this.$store.state.currBid ||
+            (bid > 0 && this.$store.state.currBid == "pass") ||
+            bid == "pass"
+        );
     },
   },
   methods: {
