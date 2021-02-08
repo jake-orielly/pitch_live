@@ -274,12 +274,14 @@ class Lobby {
 
     nextHand() {
         const teamPoints = gameFunctions.countPoints([this.teams[0].cards, this.teams[1].cards], this.trumpSuit, this.currBid);
+        let team0Name = this.teams[0].name.join(" ");
+        let team1Name = this.teams[1].name.join(" ");
         this.teams[0].points = teamPoints[0];
         this.teams[1].points = teamPoints[1];
         this.assignPoints();
         for (let user of this.getUsers()) {
-            user.socket.emit('chat', `${this.teams[0].name.join(" ")} won ${this.printPoints(this.teams[0])}`);
-            user.socket.emit('chat', `${this.teams[1].name.join(" ")} won ${this.printPoints(this.teams[1])}`);
+            user.socket.emit('chat', `${team0Name} won ${this.printPoints(this.teams[0])}`);
+            user.socket.emit('chat', `${team1Name} won ${this.printPoints(this.teams[1])}`);
             user.socket.emit('setProp', {
                 prop: 'score',
                 val: this.score
