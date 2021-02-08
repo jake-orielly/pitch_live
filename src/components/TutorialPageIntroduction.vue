@@ -7,7 +7,7 @@
       take your through the basic rules of the game, as well as the
       usage of the web interface. It may seem like there's a lot to learn, 
       but once you get into a game many of the elements will become more clear.
-      Feel free to try it out and return to this tutorial whenever you're confused! 
+      Feel free to try it out and return to this tutorial whenever you'd like! 
     </p>
   </div>
 </template>

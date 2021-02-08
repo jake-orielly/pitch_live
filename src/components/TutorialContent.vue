@@ -3,6 +3,7 @@
     <TutorialPageIntroduction v-if="currentSection == 'Introduction'" />
     <TutorialPageLobbies v-if="currentSection == 'Lobbies'" />
     <TutorialPageTricks v-if="currentSection == 'Tricks'" />
+    <TutorialPageWinningTricks v-if="currentSection == 'Winning Tricks'" />
     <TutorialPagePoints v-if="currentSection == 'Points'" />
     <TutorialPageBidding v-if="currentSection == 'Bidding'" />
     <TutorialPageConclusion v-if="currentSection == 'Thank You'" />
@@ -14,6 +15,7 @@ import TutorialPageIntroduction from "./TutorialPageIntroduction.vue";
 import TutorialPageLobbies from "./TutorialPageLobbies.vue";
 import TutorialPagePoints from "./TutorialPagePoints.vue";
 import TutorialPageTricks from "./TutorialPageTricks.vue";
+import TutorialPageWinningTricks from "./TutorialPageWinningTricks.vue";
 import TutorialPageBidding from "./TutorialPageBidding.vue";
 import TutorialPageConclusion from "./TutorialPageConclusion.vue";
 
@@ -29,6 +31,7 @@ export default {
     TutorialPageLobbies,
     TutorialPagePoints,
     TutorialPageTricks,
+    TutorialPageWinningTricks,
     TutorialPageBidding,
     TutorialPageConclusion
   },

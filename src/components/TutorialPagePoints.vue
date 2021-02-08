@@ -18,7 +18,7 @@
     </p>
     <p>
       Not all of the points are available every game. Sometimes, no one gets
-      dealt the Jack of the trump suit, and if the teams game points are tied at
+      dealt the Jack of the trump suit, and if the team's game points are tied at
       the end of the hand, neither gets the point. Keep this in mind when making
       your bids!
     </p>
