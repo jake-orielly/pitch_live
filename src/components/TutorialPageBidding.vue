@@ -5,7 +5,7 @@
       At the start of every hand, players each take turns making a bid. A bid is
       an estimate of how many points the player thinks they can make, and must
       be at least two. In addition, if another player has already bid, the new
-      players bid must be higher than the old one. If you do not want to bid,
+      player's bid must be higher than the old one. If you do not want to bid,
       simply select "Pass". The last player to bid is the dealer, who has the
       option to either take the current bid, or pass. If there is no bid, the
       dealer must take it for 2. Bad luck!
