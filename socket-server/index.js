@@ -120,6 +120,10 @@ io.on('connection', function (socket) {
     socket.lobby.playCard(card);
   });
 
+  socket.on('declareAlternate', function(suit) {
+    socket.lobby.declareAlternate(suit);
+  })
+
   socket.on('selectTeamWord', function (data) {
     socket.lobby.setTeamWord(data);
   });

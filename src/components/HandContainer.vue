@@ -24,6 +24,42 @@
           v-if="!showCards"
         />
       </li>
+      <li 
+        v-if="!this.$store.state.trumpSuit && this.$parent.currPlay"
+        id="declare-alternate-list-item"
+      >
+        <div id="alternate-container">
+          <p
+            class="white-text"
+          >
+            Declare Alternate
+          </p>
+          <button
+            @click="declareAlternate('Spades')"
+            class="animated-button"
+          >
+            ♠
+          </button>
+          <button
+            @click="declareAlternate('Clubs')"
+            class="animated-button"
+          >
+            ♣
+          </button>
+          <button
+            @click="declareAlternate('Hearts')"
+            class="animated-button"
+          >
+            ♥
+          </button>
+          <button
+            @click="declareAlternate('Diamonds')"
+            class="animated-button"
+          >
+            ♦
+          </button>
+        </div>
+      </li>
     </ul>
   </div>
 </template>
@@ -76,6 +112,9 @@ export default {
         return;
       }
     },
+    declareAlternate(suit) {
+      this.$socket.emit("declareAlternate", suit);
+    },
     deal(hand) {
       this.$parent.hand = hand;
       this.dealDone = false;
@@ -98,11 +137,23 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "../scss/button.scss";
+@import "../scss/common.scss";
+
 #hand-container {
   display: block;
   position: absolute;
   bottom: 5%;
   z-index: 10;
+}
+
+#declare-alternate-list-item {
+  float: right;
+  list-style: none;
+
+  button {
+    margin-right: 0.5rem;
+  }
 }
 </style>

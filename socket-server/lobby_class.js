@@ -72,11 +72,11 @@ class Lobby {
         this.currPlayer.cards--;
         if (!this.trumpSuit) {
             this.trumpSuit = card.suit
-            this.callStoreMutation('setTrumpSuit', card.suit)
+            this.callStoreMutation('setTrumpSuit', card.suit);
         }
         if (!this.leadSuit) {
             this.leadSuit = card.suit
-            this.callStoreMutation('setLeadSuit', card.suit)
+            this.callStoreMutation('setLeadSuit', card.suit);
         };
         winning = gameFunctions.evalWinner(this.currTrick, this.trumpSuit, this.leadSuit);
         this.callStoreMutation('setLeader', winning.user.username)
@@ -85,6 +85,12 @@ class Lobby {
         }
         else
             this.nextTrick();
+    }
+
+    declareAlternate(suit) {
+        this.trumpSuit = suit;
+        this.callStoreMutation('setTrumpSuit', suit);
+        this.broadcastToLobby('chat', `${this.currPlayer.username} has declared ${suit} as trump!`);
     }
 
     nextTrick() {
