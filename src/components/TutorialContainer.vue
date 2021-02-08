@@ -73,7 +73,7 @@ export default {
 
 #tutorial-body-container {
   display: grid;
-  grid-template-columns: 20% 60%;
+  grid-template-columns: 20% 50%;
   margin-top: 5%;
 }
 
