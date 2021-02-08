@@ -10,7 +10,7 @@ class Lobby {
         this.users = [];
         this.teams = [{ name: [], cards: [], points: [] }, { name: [], cards: [], points: [] }];
         this.teamWords = this.generateTeamWords();
-        this.score = [0, 0]
+        this.score = [0, 0];
         this.gameStartCountdown = 0;
         this.gameOver = false;
         this.currPlayerNum = undefined;
@@ -163,6 +163,11 @@ class Lobby {
     endGame(team) {
         this.callStoreMutation('gameOver', team.name);
         this.gameOver = true;
+        for (let user of this.getUsers())
+            user.ready = false;
+        this.sendUpdatedUsers();
+        this.teamWords = this.generateTeamWords();
+        this.score = [0, 0];
     }
 
     dealCards() {

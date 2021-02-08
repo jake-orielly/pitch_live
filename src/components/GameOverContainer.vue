@@ -1,6 +1,12 @@
 <template>
   <div v-if="gameOver" id="game-over-container">
     <h1>The {{ winningTeam.join(" ") }} win!</h1>
+    <button
+      class="animated-button"
+      @click="backToLobby"
+    >
+      Return to Lobby
+    </button>
   </div>
 </template>
 
@@ -20,12 +26,20 @@ export default {
       this.winningTeam = this.$store.state.winningTeam;
     });
   },
+  methods: {
+    backToLobby() {
+      this.gameOver = false;
+      this.winningTeam = undefined;
+      this.$emit("backToLobby");
+    }
+  }
 };
 </script>
 
 <style scoped>
 #game-over-container {
-  margin-top: 8rem;
+  margin-top: -4rem;
+  text-align: center;
 }
 h1 {
   text-align: center;

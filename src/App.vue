@@ -37,7 +37,9 @@
         <LeadSuitContainer />
       </div>
       <DeckCards />
-      <GameOverContainer />
+      <GameOverContainer 
+        @backToLobby="backToLobby"
+      />
       <PlayedPile :othersCards="othersCards" :myCard="myCard" />
       <OthersHand
         :username="$store.state.users[0].username"
@@ -158,6 +160,10 @@ export default {
       this.$socket.emit("userLeft", {
         id: this.$store.state.id,
       });
+    },
+    backToLobby() {
+      this.gameStage = "lobby";
+      this.$socket.emit("returnToLobby");
     },
     otherPlayed(data) {
       function findUser(element) {

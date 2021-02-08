@@ -50,28 +50,16 @@ io.on('connection', function (socket) {
       teamNum: lobby.getUsers().length % 2,
       cards: 0
     };
-    let options;
-    let partOfSpeech;
     lobby.addUser(newUser);
     for (let user of lobby.getUsers())
       user.socket.emit('chat', `${data['usernameSubmission']} has joined`);
-    partOfSpeech = (parseInt((lobby.getUsers().length - 1) / 2) == 1 ? "nouns" : "adjectives");
-    teammatePartOfSpeech = (partOfSpeech == "nouns" ? "adjectives" : "nouns");
-    options = lobby.getTeamWords((lobby.getUsers().length - 1) % 2, partOfSpeech);
-    socket.emit('callStoreMutation', {
-      mutation: 'setTeamWordOptions',
-      val: {
-        partOfSpeech,
-        options
-      }
-    });
-    callStoreMutation(
-      'setTeamNames',
-      [lobby.getTeams(0).name, lobby.getTeams(1).name],
-      lobby
-    );
+    sendTeamWords(socket, lobby);
     lobby.sendUpdatedUsers();
   });
+
+  socket.on('returnToLobby', function() {
+    sendTeamWords(socket, socket.lobby);
+  })
 
   socket.on('disconnect', function () {
     if (!socket.lobby)
@@ -166,6 +154,30 @@ function removeUser(socket) {
     socket.lobby.removeUser(pos);
     socket.lobby.sendUpdatedUsers();
   }
+}
+
+function sendTeamWords(socket, lobby) {
+  let options, partOfSpeech, userPos;
+  for (let i = 0; i < lobby.getUsers().length; i++)
+    if (lobby.getUsers()[i].socket == socket) {
+      userPos = i;
+      break;
+    }
+  partOfSpeech = (parseInt(userPos / 2) == 1 ? "nouns" : "adjectives");
+  teammatePartOfSpeech = (partOfSpeech == "nouns" ? "adjectives" : "nouns");
+  options = lobby.getTeamWords(lobby.getUsers()[userPos].teamNum, partOfSpeech);
+  socket.emit('callStoreMutation', {
+    mutation: 'setTeamWordOptions',
+    val: {
+      partOfSpeech,
+      options
+    }
+  });
+  callStoreMutation(
+    'setTeamNames',
+    [lobby.getTeams(0).name, lobby.getTeams(1).name],
+    lobby
+  );
 }
 
 function setProp(prop, val, lobby) {
