@@ -74,8 +74,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('ready', function (ready) {
-    //let count = 5;
-    let count = 1;
+    let count = 5;
     let lobby = socket.lobby;
     const users = socket.lobby.getUsers();
     users.filter(user => user.socket == socket)[0].ready = ready;
