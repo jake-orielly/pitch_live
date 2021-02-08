@@ -22,6 +22,11 @@
       the end of the hand, neither gets the point. Keep this in mind when making
       your bids!
     </p>
+    <p>
+      Once the hand is over, a new hand will be dealt. Play continues until one
+      team reaches 11 points, and is declared winner! If both teams reach 11
+      points in the same hand, the team that bid wins.
+    </p>
   </div>
 </template>
 
